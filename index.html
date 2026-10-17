@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="濟州行程">
+<meta name="theme-color" content="#eef0ee">
+<title>濟州行程板</title>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&family=IBM+Plex+Sans+KR:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: phone = one column (day head → map → timeline → add → route → data); ≥980px = sticky map+route on the left, day timeline on the right */
+:root{
+  --bg:#eef0ee; --surface:#ffffff; --ink:#1d2421; --muted:#5f6b66; --line:#d5dbd8;
+  --basalt:#3a403d; --sea:#2f7f86; --sea-soft:#d6ebec; --tang:#e6781e; --tang-soft:#fbe6d3;
+  --naver:#03a94f; --land:#dfe4dc; --land-edge:#9aa59c; --shade:rgba(29,36,33,.10);
+  --f-body:"Noto Sans TC",system-ui,sans-serif;
+  --f-display:"Noto Serif TC","Noto Sans TC",serif;
+  --f-ko:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141816; --surface:#1d2320; --ink:#e7ece9; --muted:#9aa7a1; --line:#2f3733;
+  --basalt:#c9d1cc; --sea:#5fb7bd; --sea-soft:#1c3638; --tang:#f39246; --tang-soft:#3a2716;
+  --naver:#2fcf74; --land:#28302c; --land-edge:#4c5751; --shade:rgba(0,0,0,.45); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141816; --surface:#1d2320; --ink:#e7ece9; --muted:#9aa7a1; --line:#2f3733;
+  --basalt:#c9d1cc; --sea:#5fb7bd; --sea-soft:#1c3638; --tang:#f39246; --tang-soft:#3a2716;
+  --naver:#2fcf74; --land:#28302c; --land-edge:#4c5751; --shade:rgba(0,0,0,.45); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 120px;display:flex;flex-direction:column;gap:14px}
+
+/* header */
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:10px 16px;flex-wrap:wrap}
+h1{font-family:var(--f-display);font-weight:900;font-size:1.9rem;line-height:1.15;margin:0;letter-spacing:.02em;text-wrap:balance}
+h1 small{display:block;font-family:var(--f-ko);font-weight:500;font-size:.78rem;color:var(--muted);letter-spacing:.1em;margin-bottom:2px}
+.summary{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.84rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip{display:inline-block;font-size:.72rem;padding:2px 8px;border-radius:99px;background:var(--tang-soft);color:var(--tang);font-weight:700;letter-spacing:.04em}
+
+/* controls */
+button,.btn{font:inherit;font-size:.86rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:7px 11px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;line-height:1.2}
+button:hover,.btn:hover{border-color:var(--muted)}
+button:disabled{opacity:.4;cursor:default}
+:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+.btn.naver{background:var(--naver);border-color:var(--naver);color:#fff;font-weight:700}
+.ghost{background:transparent!important}
+.small{font-size:.78rem;padding:5px 9px}
+
+/* day strip */
+.strip{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:8px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;flex-direction:column;align-items:flex-start;gap:0;border-radius:10px;padding:6px 12px;max-width:10.5rem;text-align:left}
+.tab b{font-family:var(--f-mono);font-size:.74rem;font-weight:500;letter-spacing:.06em;color:var(--muted)}
+.tab span{font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.tab[aria-selected="true"]{background:var(--basalt);border-color:var(--basalt);color:var(--bg)}
+.tab[aria-selected="true"] b{color:var(--bg);opacity:.75}
+.tab.add{color:var(--muted);border-style:dashed;justify-content:center;align-items:center}
+
+/* board */
+.board{display:flex;flex-direction:column;gap:16px}
+.side,.day{display:contents}
+.dayhead{order:1}.mapblock{order:2}.stopsblock{order:3}.planner{order:5}#formPanel{order:4}#dataPanel{order:6}
+
+.dayhead{display:flex;flex-direction:column;gap:2px}
+.eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.08em;color:var(--sea);font-variant-numeric:tabular-nums}
+.titlerow{display:flex;align-items:center;gap:8px}
+.daytitle{flex:1;min-width:0;font-family:var(--f-display);font-weight:700;font-size:1.45rem;color:var(--ink);background:transparent;border:0;border-bottom:1px dashed transparent;border-radius:0;padding:2px 0}
+.daytitle:hover{border-bottom-color:var(--line)}
+.daytitle:focus{outline:none;border-bottom-color:var(--sea)}
+.daytitle::placeholder{color:var(--muted);opacity:.7}
+
+.mapblock{display:flex;flex-direction:column;gap:6px}
+.mapbox{background:var(--sea-soft);border-radius:14px;overflow:hidden;position:relative}
+.mapbox svg{display:block;width:100%;height:auto}
+.mapbox .pin{cursor:pointer}
+.mapbox .pin circle{transition:r .15s}
+.mapbox .pin.hot circle{r:15}
+.maplabel{position:absolute;left:12px;bottom:8px;font-size:.7rem;color:var(--sea);letter-spacing:.08em}
+.legend{font-size:.78rem;color:var(--muted)}
+
+/* timeline */
+.stopsblock{display:flex;flex-direction:column;gap:10px}
+ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.stop,.legrow{display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:0 12px;position:relative}
+.stop::before,.legrow::before{content:"";position:absolute;left:1.6rem;top:0;bottom:0;border-left:2px dashed var(--line)}
+.stop:first-child::before{top:18px}
+.stop:last-child::before{bottom:auto;height:18px}
+.stop:only-child::before{display:none}
+.mark{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;z-index:1}
+.num{width:34px;height:34px;border-radius:50%;background:var(--tang);color:#fff;display:grid;place-items:center;font-weight:700;font-family:var(--f-mono);box-shadow:0 0 0 3px var(--bg)}
+.time{font-family:var(--f-mono);font-size:.78rem;color:var(--ink);font-variant-numeric:tabular-nums;background:var(--bg);padding:0 2px}
+.card{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;transition:box-shadow .2s,border-color .2s}
+.card.hit{border-color:var(--tang);box-shadow:0 0 0 3px var(--tang-soft)}
+.cardtop{display:flex;align-items:flex-start;gap:8px}
+.names{flex:1;min-width:0}
+.ko{font-family:var(--f-ko);font-weight:600;font-size:1.12rem;line-height:1.3;overflow-wrap:anywhere}
+.zh{color:var(--muted);font-size:.88rem}
+.more{flex:0 0 auto;width:32px;height:32px;padding:0;border-color:transparent;background:transparent;color:var(--muted);font-size:1.1rem;letter-spacing:.05em}
+.more[aria-expanded="true"]{background:var(--bg);border-color:var(--line)}
+.note{font-size:.84rem;color:var(--ink);background:var(--tang-soft);border-radius:6px;padding:4px 8px;align-self:flex-start;max-width:100%}
+.actions{display:flex;flex-wrap:wrap;gap:6px}
+.tray{border-top:1px dashed var(--line);padding-top:8px;display:flex;flex-direction:column;gap:6px}
+.coord{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.legrow{min-height:30px}
+.leg{grid-column:2;align-self:center;font-size:.76rem;color:var(--sea);font-variant-numeric:tabular-nums;padding-block:4px}
+.addstop{border-style:dashed;color:var(--muted);padding:12px;width:100%;background:transparent}
+.empty{padding:22px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;list-style:none}
+
+/* panels */
+.planner,details.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+details.panel{padding:12px 14px}
+details.panel summary{cursor:pointer;font-weight:700}
+.planner{padding:14px;display:flex;flex-direction:column;gap:10px}
+.plan-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.plan-head b{font-family:var(--f-display);font-size:1.05rem}
+.plan-pair{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:stretch}
+.plan-pair .stack{display:flex;flex-direction:column;gap:8px;min-width:0}
+.swap{padding:0 12px;font-size:1.1rem}
+.modes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.modes button{padding:8px 4px}
+.modes button[aria-pressed="true"]{background:var(--sea);border-color:var(--sea);color:#fff;font-weight:700}
+.go{font-size:1rem;padding:11px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.form .full{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:3px;font-size:.78rem;color:var(--muted);min-width:0}
+input,textarea,select{font:inherit;font-size:.95rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+textarea{resize:vertical;min-height:60px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.msg{font-size:.82rem;min-height:1.2em}
+.msg.ok{color:var(--naver)} .msg.err{color:var(--tang)}
+.help{font-size:.82rem;color:var(--muted);margin:0}
+.help code{font-family:var(--f-mono);font-size:.76rem;background:var(--bg);padding:1px 4px;border-radius:4px;word-break:break-all}
+
+@media (max-width:440px){.form{grid-template-columns:1fr}}
+@media (min-width:980px){
+  .wrap{gap:18px}
+  .board{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:start}
+  .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px)}
+  .day{display:flex;flex-direction:column;gap:16px}
+  .tab{max-width:13rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1><small lang="ko">제주 여행 일정</small>濟州行程板</h1>
+    <div class="summary"><span id="tripSum"></span><span class="chip" id="sampleChip">範例行程・可直接修改</span></div>
+  </header>
+
+  <div class="strip"><nav class="tabs" id="tabs" role="tablist" aria-label="行程天數"></nav></div>
+
+  <div class="board">
+    <div class="side">
+      <div class="mapblock">
+        <div class="mapbox">
+          <svg id="map" viewBox="0 0 720 400" role="img" aria-label="濟州島行程點位"></svg>
+          <span class="maplabel">濟州島 · 示意圖，非導航用</span>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+
+      <section class="planner" id="planner" aria-label="路線導航">
+        <div class="plan-head"><b>自訂路線</b><span class="help" id="planDist"></span></div>
+        <div class="plan-pair">
+          <div class="stack">
+            <label>起點<select id="pFrom"></select></label>
+            <label>目的地<select id="pTo"></select></label>
+          </div>
+          <button id="swapBtn" class="swap ghost" aria-label="對調起點和目的地">⇅</button>
+        </div>
+        <div class="modes" id="modes" role="group" aria-label="交通方式">
+          <button data-mode="car">開車</button><button data-mode="public">大眾運輸</button><button data-mode="walk">步行</button><button data-mode="bicycle">單車</button>
+        </div>
+        <a id="goBtn" class="btn naver go" href="#">用 NAVER App 導航</a>
+        <a id="goWeb" class="btn small ghost" href="https://map.naver.com/" target="_blank" rel="noopener">App 沒開？改用網頁版</a>
+      </section>
+    </div>
+
+    <div class="day">
+      <div class="dayhead">
+        <span class="eyebrow" id="dayEyebrow"></span>
+        <div class="titlerow">
+          <input id="dayTitle" class="daytitle" aria-label="這一天的標題" placeholder="幫這天取個主題">
+          <button id="delDay" class="small ghost">刪除這天</button>
+        </div>
+      </div>
+
+      <div class="stopsblock">
+        <ol class="stops" id="stops"></ol>
+        <button class="addstop" id="addStopBtn">＋ 新增地點</button>
+      </div>
+
+      <details class="panel" id="formPanel">
+        <summary id="formTitle">＋ 新增地點</summary>
+        <div class="form">
+          <label class="full">貼上 Google Maps 連結或座標
+            <textarea id="gInput" placeholder="https://www.google.com/maps/place/성산일출봉/@33.458,126.942,...  或  33.4581, 126.9426"></textarea>
+          </label>
+          <div class="full row"><button id="parseBtn">解析連結</button><span class="msg" id="parseMsg"></span></div>
+          <p class="help full">Google 短網址（maps.app.goo.gl）無法直接解析，請先在瀏覽器打開，再複製網址列的完整連結。</p>
+          <label>韓文名稱（NAVER 搜尋用）<input id="fKo" placeholder="성산일출봉"></label>
+          <label>中文名稱<input id="fZh" placeholder="城山日出峰"></label>
+          <label>緯度 lat<input id="fLat" inputmode="decimal" placeholder="33.4581"></label>
+          <label>經度 lng<input id="fLng" inputmode="decimal" placeholder="126.9426"></label>
+          <label>時間<input id="fTime" type="time"></label>
+          <label>放在第幾天<select id="fDay"></select></label>
+          <label class="full">備註<input id="fNote" placeholder="訂位、門票、營業時間…"></label>
+          <div class="full row"><button id="saveBtn" class="btn naver">加入行程</button><button id="cancelBtn" class="btn ghost" hidden>取消編輯</button><span class="msg" id="saveMsg"></span></div>
+        </div>
+      </details>
+
+      <details class="panel" id="dataPanel">
+        <summary>資料備份與使用說明</summary>
+        <div class="form">
+          <p class="help full">資料只存在這支手機的瀏覽器裡。換裝置或要貼進 Google Sheet 前，先在這裡複製。</p>
+          <div class="full row">
+            <button id="copyJson">複製 JSON 備份</button>
+            <button id="copyCsv">複製成 Sheet 表格</button>
+            <button id="clearSample" class="btn ghost">清空全部</button>
+          </div>
+          <label class="full">貼上 JSON 還原<textarea id="importBox"></textarea></label>
+          <div class="full row"><button id="importBtn">匯入</button><span class="msg" id="ioMsg"></span></div>
+          <p class="help full">「導航」和「用 NAVER App 導航」會直接打開 NAVER App 並帶入路線，交通方式跟「自訂路線」選的一樣。App 沒開的話，改按旁邊的「網頁版」。「NAVER 地圖」只搜尋地點，不帶路線。</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+
+<script>
+(function(){
+const KEY='jeju-trip-v1', APP='taihu.jeju.trip';
+const uid=()=>Math.random().toString(36).slice(2,9);
+const SAMPLE={sample:true,activeDay:0,days:[
+ {title:'抵達・濟州市',stops:[
+  {id:uid(),time:'11:30',ko:'제주국제공항',zh:'濟州國際機場',lat:33.5104,lng:126.4914,note:'取租車'},
+  {id:uid(),time:'13:00',ko:'용두암',zh:'龍頭岩',lat:33.5163,lng:126.5119,note:''},
+  {id:uid(),time:'15:00',ko:'동문재래시장',zh:'東門市場',lat:33.5115,lng:126.5262,note:'柑橘、橘子果汁'},
+  {id:uid(),time:'18:30',ko:'제주 흑돼지거리',zh:'黑豬肉街',lat:33.5147,lng:126.5236,note:'晚餐'}]},
+ {title:'東線・城山',stops:[
+  {id:uid(),time:'06:00',ko:'성산일출봉',zh:'城山日出峰',lat:33.4581,lng:126.9426,note:'看日出，查當天日出時間'},
+  {id:uid(),time:'09:30',ko:'성산항',zh:'城山港（往牛島）',lat:33.4741,lng:126.9346,note:'租車不能上牛島，搭渡輪'},
+  {id:uid(),time:'15:00',ko:'섭지코지',zh:'涉地可支',lat:33.4240,lng:126.9310,note:''}]},
+ {title:'南線・西歸浦',stops:[
+  {id:uid(),time:'10:00',ko:'중문대포해안주상절리대',zh:'柱狀節理帶',lat:33.2378,lng:126.4253,note:''},
+  {id:uid(),time:'13:30',ko:'서귀포매일올레시장',zh:'西歸浦每日偶來市場',lat:33.2500,lng:126.5636,note:'午餐'},
+  {id:uid(),time:'19:00',ko:'천지연폭포',zh:'天地淵瀑布',lat:33.2447,lng:126.5596,note:'夜間有開放'}]},
+ {title:'西線・涯月',stops:[
+  {id:uid(),time:'10:00',ko:'협재해수욕장',zh:'挾才海水浴場',lat:33.3940,lng:126.2397,note:''},
+  {id:uid(),time:'13:00',ko:'애월 카페거리',zh:'涯月咖啡街',lat:33.4625,lng:126.3094,note:''},
+  {id:uid(),time:'17:00',ko:'제주국제공항',zh:'濟州國際機場',lat:33.5104,lng:126.4914,note:'還車，預留 1 小時'}]}
+]};
+
+let S;
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.days))return d}}catch(e){}return JSON.parse(JSON.stringify(SAMPLE))}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+S=load(); if(!S.days.length)S.days=[{title:'',stops:[]}]; if(S.activeDay>=S.days.length)S.activeDay=0;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let editing=null; const openTray=new Set();
+
+/* ---- map projection: Jeju bbox ---- */
+const B={w:126.12,e:127.00,s:33.17,n:33.60};
+const W=720,H=400,P=18;
+const COS=Math.cos(33.4*Math.PI/180);
+const k=Math.min((W-2*P)/((B.e-B.w)*COS),(H-2*P)/(B.n-B.s));
+const sx=k*COS, OX=(W-(B.e-B.w)*sx)/2, OY=(H-(B.n-B.s)*k)/2;
+function xy(lat,lng){return [OX+(lng-B.w)*sx, OY+(B.n-lat)*k]}
+const COAST=[[33.516,126.53],[33.53,126.62],[33.557,126.76],[33.54,126.84],[33.50,126.91],[33.462,126.945],[33.43,126.93],[33.38,126.89],[33.32,126.84],[33.28,126.72],[33.24,126.58],[33.235,126.47],[33.23,126.40],[33.205,126.30],[33.215,126.25],[33.26,126.18],[33.32,126.16],[33.39,126.22],[33.44,126.27],[33.47,126.33],[33.49,126.42]];
+const UDO=[[33.525,126.945],[33.52,126.965],[33.495,126.97],[33.49,126.95],[33.505,126.935]];
+const poly=pts=>pts.map(p=>xy(p[0],p[1]).map(v=>v.toFixed(1)).join(',')).join(' ');
+const valid=s=>isFinite(s.lat)&&isFinite(s.lng)&&s.lat!==null&&s.lng!==null&&s.lat!=='';
+
+function drawMap(){
+  const day=S.days[S.activeDay];
+  let h=`<polygon points="${poly(COAST)}" fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.5" stroke-linejoin="round"/>`;
+  h+=`<polygon points="${poly(UDO)}" fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.2"/>`;
+  const [hx,hy]=xy(33.3617,126.5292);
+  h+=`<path d="M${hx-9},${hy+6} L${hx},${hy-8} L${hx+9},${hy+6} Z" fill="var(--land-edge)"/><text x="${hx}" y="${hy+20}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--f-body)">漢拏山 1947m</text>`;
+  [['濟州市',33.53,126.53],['西歸浦',33.215,126.56]].forEach(([t,a,b])=>{const[x,y]=xy(a,b);h+=`<text x="${x}" y="${y}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--f-body)">${t}</text>`});
+  S.days.forEach((d,i)=>{if(i===S.activeDay)return;d.stops.forEach(s=>{if(!valid(s))return;const[x,y]=xy(s.lat,s.lng);h+=`<circle cx="${x}" cy="${y}" r="4" fill="var(--muted)" opacity=".45"/>`})});
+  const pts=day.stops.filter(valid).map(s=>xy(s.lat,s.lng));
+  if(pts.length>1)h+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--sea)" stroke-width="2" stroke-dasharray="5 4"/>`;
+  day.stops.forEach((s,i)=>{if(!valid(s))return;const[x,y]=xy(s.lat,s.lng);
+    h+=`<g class="pin" data-pin="${s.id}"><title>${i+1}. ${esc(s.zh||s.ko)}</title><circle cx="${x}" cy="${y}" r="11" fill="var(--tang)" stroke="var(--surface)" stroke-width="2"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="var(--f-mono)" pointer-events="none">${i+1}</text></g>`});
+  $('map').innerHTML=h;
+  const others=S.days.reduce((a,d,i)=>a+(i===S.activeDay?0:d.stops.length),0);
+  $('legend').textContent=`橘點是 Day ${S.activeDay+1} 的路線，點一下跳到該站${others?`・灰點是其他天的 ${others} 個地點`:''}`;
+}
+
+/* ---- links ---- */
+function nmapRoute(mode,from,to){
+  const q=new URLSearchParams();
+  if(from&&valid(from)){q.set('slat',from.lat);q.set('slng',from.lng);q.set('sname',from.ko||from.zh||'출발')}
+  q.set('dlat',to.lat);q.set('dlng',to.lng);q.set('dname',to.ko||to.zh||'도착');q.set('appname',APP);
+  return `nmap://route/${mode}?${q.toString()}`;
+}
+function naverWebRoute(mode,from,to){
+  const q=new URLSearchParams({menu:'route',pathType:{car:0,public:1,walk:2,bicycle:3}[mode]??0,elng:to.lng,elat:to.lat,etext:to.ko||to.zh||''});
+  if(from&&valid(from)){q.set('slng',from.lng);q.set('slat',from.lat);q.set('stext',from.ko||from.zh||'')}
+  return `https://map.naver.com/index.nhn?${q.toString()}`;
+}
+const naverWeb=s=>`https://map.naver.com/p/search/${encodeURIComponent(s.ko||s.zh||`${s.lat},${s.lng}`)}`;
+const gLink=s=>valid(s)?`https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.ko||s.zh)}`;
+function haversine(a,b){const R=6371,r=x=>x*Math.PI/180;const d=Math.sin(r(b.lat-a.lat)/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(r(b.lng-a.lng)/2)**2;return 2*R*Math.asin(Math.sqrt(d))}
+
+/* ---- route planner ---- */
+const MODES={car:'開車',public:'大眾運輸',walk:'步行',bicycle:'單車'};
+function findStop(id){for(const d of S.days){const s=d.stops.find(x=>x.id===id);if(s)return s}return null}
+function renderPlanner(){
+  if(!S.plan)S.plan={from:'here',to:null,mode:'car'};
+  const opts=S.days.map((d,i)=>{const v=d.stops.filter(valid);return v.length?`<optgroup label="Day ${i+1}${d.title?'・'+esc(d.title):''}">${v.map(s=>`<option value="${s.id}">${esc(s.time?s.time+' ':'')}${esc(s.zh||s.ko)}</option>`).join('')}</optgroup>`:''}).join('');
+  $('pFrom').innerHTML=`<option value="here">目前位置（GPS）</option>`+opts;
+  $('pTo').innerHTML=opts||`<option value="">先新增有座標的地點</option>`;
+  if(S.plan.from!=='here'&&!findStop(S.plan.from))S.plan.from='here';
+  if(!findStop(S.plan.to)){const f=S.days[S.activeDay].stops.find(valid)||S.days.flatMap(d=>d.stops).find(valid);S.plan.to=f?f.id:''}
+  $('pFrom').value=S.plan.from; $('pTo').value=S.plan.to||'';
+  [...$('modes').children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===S.plan.mode));
+  const a=S.plan.from==='here'?null:findStop(S.plan.from), b=findStop(S.plan.to);
+  $('planDist').textContent=!b?'':a?(a.id===b.id?'起點和目的地相同':`直線約 ${haversine(a,b).toFixed(1)} km`):'從你現在的位置出發';
+  $('goWeb').href=b?naverWebRoute(S.plan.mode,a,b):'https://map.naver.com/';
+  $('goBtn').href=b?nmapRoute(S.plan.mode,a,b):'#';
+}
+$('pFrom').onchange=e=>{S.plan.from=e.target.value;save();renderPlanner()};
+$('pTo').onchange=e=>{S.plan.to=e.target.value;save();renderPlanner()};
+$('swapBtn').onclick=()=>{const f=S.plan.from,t=S.plan.to;if(!t)return;S.plan.from=t;S.plan.to=f==='here'?t:f;save();renderPlanner()};
+$('modes').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(!b)return;S.plan.mode=b.dataset.mode;save();render()});
+
+/* ---- render ---- */
+function render(){
+  $('sampleChip').hidden=!S.sample;
+  const total=S.days.reduce((a,d)=>a+d.stops.length,0);
+  $('tripSum').textContent=`${S.days.length} 天・${total} 個地點`;
+  $('tabs').innerHTML=S.days.map((d,i)=>`<button class="tab" role="tab" aria-selected="${i===S.activeDay}" data-day="${i}"><b>DAY ${i+1}</b><span>${esc(d.title||`${d.stops.length} 個地點`)}</span></button>`).join('')+`<button class="tab add" id="addDay" aria-label="新增一天">＋ 一天</button>`;
+  const day=S.days[S.activeDay];
+  $('dayEyebrow').textContent=`DAY ${S.activeDay+1} / ${S.days.length}・${day.stops.length} 個地點${day.stops[0]?.time?`・${day.stops[0].time} 出發`:''}`;
+  $('dayTitle').value=day.title||'';
+  $('delDay').hidden=S.days.length<2;
+  $('addStopBtn').textContent=`＋ 在 Day ${S.activeDay+1} 新增地點`;
+  $('fDay').innerHTML=S.days.map((d,i)=>`<option value="${i}" ${i===S.activeDay?'selected':''}>Day ${i+1}${d.title?'・'+esc(d.title):''}</option>`).join('');
+  drawMap();
+  renderPlanner();
+  if(!day.stops.length){$('stops').innerHTML=`<li class="empty">這天還沒有地點。按下方「新增地點」，貼上 Google Maps 連結就能加入。</li>`;return}
+  $('stops').innerHTML=day.stops.map((s,i)=>{
+    const prev=i>0?day.stops[i-1]:null; const ok=valid(s); const open=openTray.has(s.id);
+    const leg=prev&&ok&&valid(prev)?`<li class="legrow" aria-label="與上一站距離"><span class="leg">↓ 直線約 ${haversine(prev,s).toFixed(1)} km</span></li>`:(prev?`<li class="legrow"><span class="leg"></span></li>`:'');
+    return `${leg}<li class="stop">
+      <div class="mark"><div class="num">${i+1}</div>${s.time?`<span class="time">${esc(s.time)}</span>`:''}</div>
+      <article class="card" id="card-${s.id}">
+        <div class="cardtop">
+          <div class="names"><div class="ko" lang="ko">${esc(s.ko||s.zh||'未命名')}</div>${s.zh&&s.ko?`<div class="zh">${esc(s.zh)}</div>`:''}</div>
+          <button class="more" data-act="more" data-id="${s.id}" aria-expanded="${open}" aria-label="更多操作">⋯</button>
+        </div>
+        ${s.note?`<div class="note">${esc(s.note)}</div>`:''}
+        <div class="actions">
+          <a class="btn naver small" href="${esc(naverWeb(s))}" target="_blank" rel="noopener">NAVER 地圖</a>
+          ${ok?`<a class="btn small" href="${esc(nmapRoute(S.plan.mode,prev&&valid(prev)?prev:null,s))}">${prev&&valid(prev)?'從上一站導航':'導航到這裡'}</a><a class="btn small ghost" href="${esc(naverWebRoute(S.plan.mode,prev&&valid(prev)?prev:null,s))}" target="_blank" rel="noopener">網頁版</a>`:`<span class="coord">缺座標，只能用名稱搜尋</span>`}
+        </div>
+        <div class="tray" ${open?'':'hidden'}>
+          <div class="actions">
+            <a class="btn small ghost" href="${esc(gLink(s))}" target="_blank" rel="noopener">Google 地圖</a>
+            <button class="small ghost" data-act="copy" data-id="${s.id}">複製韓文名</button>
+            <button class="small ghost" data-act="up" data-id="${s.id}" ${i===0?'disabled':''} aria-label="上移">↑</button>
+            <button class="small ghost" data-act="down" data-id="${s.id}" ${i===day.stops.length-1?'disabled':''} aria-label="下移">↓</button>
+            <button class="small ghost" data-act="edit" data-id="${s.id}">編輯</button>
+            <button class="small ghost" data-act="del" data-id="${s.id}">刪除</button>
+          </div>
+          ${ok?`<div class="coord">${(+s.lat).toFixed(5)}, ${(+s.lng).toFixed(5)}</div>`:''}
+        </div>
+      </article></li>`}).join('');
+}
+
+/* ---- Google link parsing ---- */
+function parseGoogle(t){
+  t=(t||'').trim(); if(!t)return {err:'請先貼上連結或座標'};
+  if(/maps\.app\.goo\.gl|goo\.gl\/maps/.test(t))return {err:'這是短網址，請先用瀏覽器打開，再複製網址列的完整連結'};
+  let dec=t; try{dec=decodeURIComponent(t.replace(/\+/g,' '))}catch(e){}
+  let m, lat, lng;
+  if((m=dec.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/))){lat=m[1];lng=m[2]}
+  else if((m=dec.match(/[?&](?:q|query|ll|destination|center)=(-?\d+\.\d+),\s*(-?\d+\.\d+)/))){lat=m[1];lng=m[2]}
+  else if((m=dec.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/))){lat=m[1];lng=m[2]}
+  else if((m=dec.match(/^\s*(-?\d+\.\d+)\s*[, ]\s*(-?\d+\.\d+)\s*$/))){lat=m[1];lng=m[2]}
+  let name=''; const pm=dec.match(/\/place\/([^/@?]+)/); if(pm)name=pm[1].trim();
+  if(!lat&&!name)return {err:'找不到座標或地名，請確認是 Google Maps 地點連結'};
+  return {lat:lat?+lat:null,lng:lng?+lng:null,name};
+}
+const hasHangul=s=>/[가-힣]/.test(s);
+
+function fillForm(s){$('fKo').value=s.ko||'';$('fZh').value=s.zh||'';$('fLat').value=valid(s)?s.lat:'';$('fLng').value=valid(s)?s.lng:'';$('fTime').value=s.time||'';$('fNote').value=s.note||''}
+function resetForm(){editing=null;fillForm({});$('gInput').value='';$('formTitle').textContent='＋ 新增地點';$('saveBtn').textContent='加入行程';$('cancelBtn').hidden=true;$('parseMsg').textContent=''}
+function flash(el,txt,ok){el.textContent=txt;el.className='msg '+(ok?'ok':'err')}
+function openForm(){$('formPanel').open=true;$('formPanel').scrollIntoView({behavior:'smooth',block:'start'})}
+function hit(id){const c=$('card-'+id);if(!c)return;c.scrollIntoView({behavior:'smooth',block:'center'});c.classList.add('hit');setTimeout(()=>c.classList.remove('hit'),1600)}
+
+/* ---- events ---- */
+$('tabs').addEventListener('click',e=>{
+  if(e.target.closest('#addDay')){S.days.push({title:'',stops:[]});S.activeDay=S.days.length-1;save();render();$('dayTitle').focus();return}
+  const b=e.target.closest('[data-day]');if(!b)return;S.activeDay=+b.dataset.day;save();render()});
+$('dayTitle').addEventListener('input',e=>{const v=e.target.value,i=S.activeDay;S.days[i].title=v;save();
+  const t=$('tabs').children[i].querySelector('span');t.textContent=v||`${S.days[i].stops.length} 個地點`;
+  $('fDay').options[i].text=`Day ${i+1}${v?'・'+v:''}`});
+let delArm=false;
+$('delDay').onclick=()=>{const b=$('delDay');if(!delArm&&S.days[S.activeDay].stops.length){delArm=true;b.textContent='再按一次確認刪除';setTimeout(()=>{delArm=false;b.textContent='刪除這天'},3000);return}
+  delArm=false;b.textContent='刪除這天';S.days.splice(S.activeDay,1);S.activeDay=Math.max(0,S.activeDay-1);save();render()};
+$('addStopBtn').onclick=()=>{resetForm();$('fDay').value=S.activeDay;openForm();setTimeout(()=>$('gInput').focus({preventScroll:true}),300)};
+
+$('map').addEventListener('click',e=>{const g=e.target.closest('[data-pin]');if(g)hit(g.dataset.pin)});
+$('stops').addEventListener('mouseover',e=>{const c=e.target.closest('.card');document.querySelectorAll('.pin.hot').forEach(p=>p.classList.remove('hot'));if(c){const p=$('map').querySelector(`[data-pin="${c.id.slice(5)}"]`);if(p)p.classList.add('hot')}});
+$('stops').addEventListener('mouseleave',()=>document.querySelectorAll('.pin.hot').forEach(p=>p.classList.remove('hot')));
+
+$('parseBtn').onclick=()=>{const r=parseGoogle($('gInput').value);
+  if(r.err)return flash($('parseMsg'),r.err,false);
+  if(r.lat!==null){$('fLat').value=r.lat;$('fLng').value=r.lng}
+  if(r.name){if(hasHangul(r.name))$('fKo').value=r.name;else if(!$('fZh').value)$('fZh').value=r.name}
+  flash($('parseMsg'),r.lat!==null?`已取得座標${r.name?'與地名':''}${r.name&&!hasHangul(r.name)?'，記得補上韓文名稱':''}`:'只有地名，請補座標',r.lat!==null)};
+
+$('saveBtn').onclick=()=>{
+  const ko=$('fKo').value.trim(), zh=$('fZh').value.trim();
+  const lat=$('fLat').value.trim()===''?null:parseFloat($('fLat').value), lng=$('fLng').value.trim()===''?null:parseFloat($('fLng').value);
+  if(!ko&&!zh)return flash($('saveMsg'),'至少填一個名稱',false);
+  if((lat!==null&&!isFinite(lat))||(lng!==null&&!isFinite(lng)))return flash($('saveMsg'),'座標格式不對，例如 33.4581',false);
+  const target=+$('fDay').value;
+  const data={ko,zh,lat,lng,time:$('fTime').value,note:$('fNote').value.trim()};
+  const wasEdit=!!editing;
+  if(editing){for(const d of S.days){const i=d.stops.findIndex(x=>x.id===editing);if(i>-1){d.stops.splice(i,1);break}}}
+  const stop={id:editing||uid(),...data}; const arr=S.days[target].stops;
+  arr.push(stop); arr.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0);
+  S.activeDay=target; save(); flash($('saveMsg'),wasEdit?'已更新':'已加入',true); resetForm(); render(); hit(stop.id);
+};
+$('cancelBtn').onclick=()=>{resetForm();$('saveMsg').textContent=''};
+
+$('stops').addEventListener('click',async e=>{const b=e.target.closest('[data-act]');if(!b)return;
+  const day=S.days[S.activeDay], i=day.stops.findIndex(s=>s.id===b.dataset.id), s=day.stops[i];
+  const act=b.dataset.act;
+  if(act==='more'){const tray=b.closest('.card').querySelector('.tray');const o=tray.hidden;tray.hidden=!o;b.setAttribute('aria-expanded',o);o?openTray.add(s.id):openTray.delete(s.id);return}
+  if(act==='copy'){const t=s.ko||s.zh;try{await navigator.clipboard.writeText(t);b.textContent='已複製'}catch(err){b.textContent=t}setTimeout(()=>b.textContent='複製韓文名',1500);return}
+  if(act==='up'&&i>0){[day.stops[i-1],day.stops[i]]=[day.stops[i],day.stops[i-1]]}
+  if(act==='down'&&i<day.stops.length-1){[day.stops[i+1],day.stops[i]]=[day.stops[i],day.stops[i+1]]}
+  if(act==='del'){if(b.dataset.armed!=='1'){b.dataset.armed='1';b.textContent='確認刪除';setTimeout(()=>{b.dataset.armed='';b.textContent='刪除'},3000);return}day.stops.splice(i,1);openTray.delete(s.id)}
+  if(act==='edit'){editing=s.id;fillForm(s);$('fDay').value=S.activeDay;$('formTitle').textContent='編輯：'+(s.ko||s.zh);$('saveBtn').textContent='儲存修改';$('cancelBtn').hidden=false;openForm();return}
+  save();render()});
+
+async function copyText(t,okMsg){try{await navigator.clipboard.writeText(t);flash($('ioMsg'),okMsg,true)}catch(err){$('importBox').value=t;$('importBox').select();flash($('ioMsg'),'無法自動複製，已放進下方文字框，請手動複製',false)}}
+$('copyJson').onclick=()=>copyText(JSON.stringify({days:S.days},null,1),'已複製 JSON');
+$('copyCsv').onclick=()=>{const rows=[['day','day_title','time','name_ko','name_zh','lat','lng','note']];
+  S.days.forEach((d,i)=>d.stops.forEach(s=>rows.push([i+1,d.title||'',s.time||'',s.ko||'',s.zh||'',s.lat??'',s.lng??'',s.note||''])));
+  copyText(rows.map(r=>r.join('\t')).join('\n'),'已複製，直接貼到 Google Sheet A1 即可')};
+$('importBtn').onclick=()=>{try{const d=JSON.parse($('importBox').value);if(!Array.isArray(d.days))throw 0;
+  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
+  catch(err){flash($('ioMsg'),'JSON 格式不對，請貼上「複製 JSON 備份」的內容',false)}};
+let clrArm=false;
+$('clearSample').onclick=()=>{const b=$('clearSample');if(!clrArm){clrArm=true;b.textContent='再按一次確認清空';setTimeout(()=>{clrArm=false;b.textContent='清空全部'},3000);return}
+  clrArm=false;b.textContent='清空全部';S={days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
+
+/* first edit drops the sample badge */
+document.addEventListener('change',()=>{if(S.sample){S.sample=false;save();$('sampleChip').hidden=true}},true);
+
+render();
+})();
+</script>
+
+</body>
+</html>
