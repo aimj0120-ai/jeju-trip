@@ -76,11 +76,15 @@ button:disabled{opacity:.4;cursor:default}
 .daytitle::placeholder{color:var(--muted);opacity:.7}
 
 .mapblock{display:flex;flex-direction:column;gap:6px}
-.finder{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px}
-.finder-row{display:flex;gap:8px}
-.finder-row input{flex:1;min-width:0}
+.board>*,.side>*,.day>*,.mapblock>*{min-width:0;max-width:100%}
+html,body{overflow-x:hidden}
+.finder{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;width:100%}
+.finder-row{display:flex;gap:8px;min-width:0}
+.finder-row input{flex:1 1 0;width:0;min-width:0;-webkit-appearance:none;appearance:none}
 .finder-row .btn{flex:0 0 auto}
-#qPaste{padding:10px}
+.step{font-family:var(--f-mono);font-size:.72rem;font-weight:500;opacity:.8;margin-right:2px}
+#qPaste{padding:10px;width:100%}
+.mapbox{width:100%}
 #qMsg{color:var(--muted)}
 #qMsg.err{color:var(--tang)} #qMsg.ok{color:var(--naver)}
 .mapbox{background:var(--sea-soft);border-radius:14px;overflow:hidden;position:relative;isolation:isolate;z-index:0}
@@ -178,10 +182,10 @@ textarea{resize:vertical;min-height:60px}
         <div class="finder">
           <div class="finder-row">
             <input id="qName" type="search" placeholder="店名，例如 涯月 咖啡" aria-label="要找的店名" enterkeyhint="search" autocomplete="off">
-            <a id="qGo" class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=%EC%A0%9C%EC%A3%BC" target="_blank" rel="noopener">Google 搜尋</a>
+            <a id="qGo" class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=%EC%A0%9C%EC%A3%BC" target="_blank" rel="noopener"><span class="step">1</span>Google 搜尋</a>
           </div>
-          <button id="qPaste" class="btn naver">貼上 Google 連結，帶入地圖</button>
-          <span class="msg" id="qMsg">在 Google 地圖點選店家後複製連結，回來按上面的綠色按鈕。</span>
+          <button id="qPaste" class="btn naver"><span class="step">3</span>貼上店家網址，帶入地圖</button>
+          <span class="msg" id="qMsg"><b>2</b> 在 Google 地圖點進店家，複製<b>網址列</b>的網址（不要用「分享」），再回來按綠色按鈕。</span>
         </div>
         <div class="mapbox"><div id="map" aria-label="濟州島地圖，點任一處可加入行程"></div></div>
         <div class="legend" id="legend"></div>
@@ -342,9 +346,11 @@ function useLink(text){
   qFlash(`已找到${name?'「'+name+'」':'位置'}，在地圖上選第幾天後按「加入行程」。${name&&!hasHangul(name)?'店名不是韓文，之後可以在「編輯」補上韓文名稱。':''}`,true);
 }
 $('qPaste').onclick=async()=>{
-  let t='';
+  let t=null;
   try{t=await navigator.clipboard.readText()}catch(e){}
-  if(!t){qFlash('沒辦法讀取剪貼簿。請把連結直接貼到上面的店名欄位。',false);$('qName').focus();return}
+  if(t===null)return qFlash('沒讀到剪貼簿。按綠色按鈕後，iPhone 會跳出一個「貼上」小泡泡，要點它；或直接在上面欄位長按→貼上網址。',false);
+  if(!/google\.[^/]+\/maps|goo\.gl|maps\.app|^\s*-?\d+\.\d+\s*[, ]\s*-?\d+\.\d+\s*$/.test(t))
+    return qFlash('剪貼簿裡不是 Google 地圖網址。先按 ① Google 搜尋，點進店家頁面，複製網址列的網址，再按這個按鈕。',false);
   useLink(t);
 };
 $('qName').addEventListener('paste',e=>{const t=(e.clipboardData||window.clipboardData).getData('text');
