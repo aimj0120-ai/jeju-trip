@@ -76,6 +76,13 @@ button:disabled{opacity:.4;cursor:default}
 .daytitle::placeholder{color:var(--muted);opacity:.7}
 
 .mapblock{display:flex;flex-direction:column;gap:6px}
+.finder{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px}
+.finder-row{display:flex;gap:8px}
+.finder-row input{flex:1;min-width:0}
+.finder-row .btn{flex:0 0 auto}
+#qPaste{padding:10px}
+#qMsg{color:var(--muted)}
+#qMsg.err{color:var(--tang)} #qMsg.ok{color:var(--naver)}
 .mapbox{background:var(--sea-soft);border-radius:14px;overflow:hidden;position:relative;isolation:isolate;z-index:0}
 #map{height:min(52vh,440px);width:100%;background:var(--sea-soft);font-family:var(--f-body)}
 .lpin{display:grid!important;place-items:center;width:26px!important;height:26px!important;border-radius:50%;background:var(--tang);color:#fff;font:700 12px var(--f-mono);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);transition:transform .15s;cursor:pointer}
@@ -168,6 +175,14 @@ textarea{resize:vertical;min-height:60px}
   <div class="board">
     <div class="side">
       <div class="mapblock">
+        <div class="finder">
+          <div class="finder-row">
+            <input id="qName" type="search" placeholder="店名，例如 涯月 咖啡" aria-label="要找的店名" enterkeyhint="search" autocomplete="off">
+            <a id="qGo" class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=%EC%A0%9C%EC%A3%BC" target="_blank" rel="noopener">Google 搜尋</a>
+          </div>
+          <button id="qPaste" class="btn naver">貼上 Google 連結，帶入地圖</button>
+          <span class="msg" id="qMsg">在 Google 地圖點選店家後複製連結，回來按上面的綠色按鈕。</span>
+        </div>
         <div class="mapbox"><div id="map" aria-label="濟州島地圖，點任一處可加入行程"></div></div>
         <div class="legend" id="legend"></div>
       </div>
@@ -298,17 +313,42 @@ function drawMap(){
   $('legend').textContent=`點地圖任一處就能把那裡加進行程・橘點是 Day ${S.activeDay+1}，點一下跳到該站${others?`・灰點是其他天的 ${others} 個地點`:''}`;
 }
 
-map.on('click',e=>{
-  const {lat,lng}=e.latlng; pending={lat:+lat.toFixed(6),lng:+lng.toFixed(6)};
+map.on('click',e=>openAdd(e.latlng,''));
+function openAdd(latlng,name){
+  const {lat,lng}=latlng; pending={lat:+lat.toFixed(6),lng:+lng.toFixed(6)};
   const days=S.days.map((d,i)=>`<option value="${i}" ${i===S.activeDay?'selected':''}>Day ${i+1}${d.title?'・'+esc(d.title):''}</option>`).join('');
-  L.popup({closeButton:true,autoPanPadding:[20,20]}).setLatLng(e.latlng).setContent(
-    `<div class="addpop"><b>在這裡加地點</b>
-      <input id="apName" placeholder="店名（韓文或中文）" autocomplete="off">
+  L.popup({closeButton:true,autoPanPadding:[20,20]}).setLatLng(latlng).setContent(
+    `<div class="addpop"><b>${name?'加入這家店':'在這裡加地點'}</b>
+      <input id="apName" placeholder="店名（韓文或中文）" autocomplete="off" value="${esc(name)}">
       <div class="row"><select id="apDay" aria-label="加到第幾天">${days}</select><input id="apTime" type="time" aria-label="時間"></div>
       <div class="row"><button id="apAdd" class="btn naver small">加入行程</button><button id="apMore" class="small ghost">填更多資料</button></div>
       <span class="coord">${pending.lat.toFixed(5)}, ${pending.lng.toFixed(5)}</span></div>`).openOn(map);
-  setTimeout(()=>{const n=$('apName');if(n&&matchMedia('(hover:hover)').matches)n.focus()},50);
-});
+  setTimeout(()=>{const n=$('apName');if(n&&!name&&matchMedia('(hover:hover)').matches)n.focus()},50);
+}
+
+/* ---- finder: search on Google Maps, paste the link back ---- */
+function gSearchUrl(q){q=q.trim();if(q&&!/濟州|济州|제주|jeju/i.test(q))q+=' 제주';return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q||'제주')}`}
+function qFlash(t,ok){const m=$('qMsg');m.textContent=t;m.className='msg '+(ok===true?'ok':ok===false?'err':'')}
+$('qName').addEventListener('input',e=>{$('qGo').href=gSearchUrl(e.target.value)});
+$('qName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('qGo').click()}});
+function useLink(text){
+  const r=parseGoogle(text);
+  if(r.err)return qFlash(r.err,false);
+  if(r.lat===null)return qFlash('連結裡只有店名、沒有座標。請在 Google 地圖點進店家頁面後再複製一次。',false);
+  const name=r.name||$('qName').value.trim();
+  map.setView([r.lat,r.lng],Math.max(map.getZoom(),15));
+  $('map').scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>openAdd(L.latLng(r.lat,r.lng),name),250);
+  qFlash(`已找到${name?'「'+name+'」':'位置'}，在地圖上選第幾天後按「加入行程」。${name&&!hasHangul(name)?'店名不是韓文，之後可以在「編輯」補上韓文名稱。':''}`,true);
+}
+$('qPaste').onclick=async()=>{
+  let t='';
+  try{t=await navigator.clipboard.readText()}catch(e){}
+  if(!t){qFlash('沒辦法讀取剪貼簿。請把連結直接貼到上面的店名欄位。',false);$('qName').focus();return}
+  useLink(t);
+};
+$('qName').addEventListener('paste',e=>{const t=(e.clipboardData||window.clipboardData).getData('text');
+  if(/google\.[^/]+\/maps|goo\.gl|maps\.app|^\s*-?\d+\.\d+\s*,/.test(t)){e.preventDefault();useLink(t)}});
 function popAdd(){
   const n=$('apName'), name=n.value.trim();
   if(!name){n.classList.add('bad');n.placeholder='先填店名再加入';n.focus();return}
