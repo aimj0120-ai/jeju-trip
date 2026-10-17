@@ -331,7 +331,7 @@ function openAdd(latlng,name){
 }
 
 /* ---- finder: search on Google Maps, paste the link back ---- */
-function gSearchUrl(q){q=q.trim();if(q&&!/濟州|济州|제주|jeju/i.test(q))q+=' 제주';return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q||'제주')}`}
+function gSearchUrl(q){q=q.trim();if(q&&!/濟州|济州|제주|jeju/i.test(q))q+=' 제주';return `https://www.google.com/maps/search/${encodeURIComponent(q||'제주')}`}
 function qFlash(t,ok){const m=$('qMsg');m.textContent=t;m.className='msg '+(ok===true?'ok':ok===false?'err':'')}
 $('qName').addEventListener('input',e=>{$('qGo').href=gSearchUrl(e.target.value)});
 $('qName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('qGo').click()}});
@@ -457,12 +457,25 @@ function render(){
 }
 
 /* ---- Google link parsing ---- */
+/* Open Location Code (Plus Code) → centre lat/lng; Google place URLs carry one as !20s<code> */
+function olcDecode(code){
+  const A='23456789CFGHJMPQRVWX', c=code.toUpperCase().replace(/[+ ]/g,'');
+  if(c.length<10)return null;
+  let lat=-90,lng=-180,res=20;
+  for(let i=0;i<10;i+=2){const a=A.indexOf(c[i]),b=A.indexOf(c[i+1]);if(a<0||b<0)return null;lat+=a*res;lng+=b*res;if(i<8)res/=20}
+  let hl=res,wl=res;
+  for(let i=10;i<c.length;i++){const d=A.indexOf(c[i]);if(d<0)return null;hl/=5;wl/=4;lat+=Math.floor(d/4)*hl;lng+=(d%4)*wl}
+  return {lat:+(lat+hl/2).toFixed(6),lng:+(lng+wl/2).toFixed(6)};
+}
 function parseGoogle(t){
   t=(t||'').trim(); if(!t)return {err:'請先貼上連結或座標'};
   if(/maps\.app\.goo\.gl|goo\.gl\/maps/.test(t))return {err:'這是短網址，請先用瀏覽器打開，再複製網址列的完整連結'};
   let dec=t; try{dec=decodeURIComponent(t.replace(/\+/g,' '))}catch(e){}
   let m, lat, lng;
+  let pc;
   if((m=dec.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/))){lat=m[1];lng=m[2]}
+  else if((m=dec.match(/!20s([23456789CFGHJMPQRVWX]{8}[+ ][23456789CFGHJMPQRVWX]{2,})/i))&&(pc=olcDecode(m[1]))){lat=pc.lat;lng=pc.lng}
+  else if(/\/maps\/search\b/.test(dec)&&!/[?&](?:q|query)=-?\d+\.\d+,/.test(dec))return {err:'這是「搜尋結果」的網址，還沒有店家位置。請在 Google 地圖點一下店名或地圖上的紅色圖釘，等網址變成「…/maps/place/…」再複製。'};
   else if((m=dec.match(/[?&](?:q|query|ll|destination|center)=(-?\d+\.\d+),\s*(-?\d+\.\d+)/))){lat=m[1];lng=m[2]}
   else if((m=dec.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/))){lat=m[1];lng=m[2]}
   else if((m=dec.match(/^\s*(-?\d+\.\d+)\s*[, ]\s*(-?\d+\.\d+)\s*$/))){lat=m[1];lng=m[2]}
