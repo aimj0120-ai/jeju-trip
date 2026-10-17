@@ -10,6 +10,8 @@
 <title>濟州行程板</title>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&family=IBM+Plex+Sans+KR:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 /* Layout: phone = one column (day head → map → timeline → add → route → data); ≥980px = sticky map+route on the left, day timeline on the right */
 :root{
@@ -74,12 +76,20 @@ button:disabled{opacity:.4;cursor:default}
 .daytitle::placeholder{color:var(--muted);opacity:.7}
 
 .mapblock{display:flex;flex-direction:column;gap:6px}
-.mapbox{background:var(--sea-soft);border-radius:14px;overflow:hidden;position:relative}
-.mapbox svg{display:block;width:100%;height:auto}
-.mapbox .pin{cursor:pointer}
-.mapbox .pin circle{transition:r .15s}
-.mapbox .pin.hot circle{r:15}
-.maplabel{position:absolute;left:12px;bottom:8px;font-size:.7rem;color:var(--sea);letter-spacing:.08em}
+.mapbox{background:var(--sea-soft);border-radius:14px;overflow:hidden;position:relative;isolation:isolate;z-index:0}
+#map{height:min(52vh,440px);width:100%;background:var(--sea-soft);font-family:var(--f-body)}
+.lpin{display:grid!important;place-items:center;width:26px!important;height:26px!important;border-radius:50%;background:var(--tang);color:#fff;font:700 12px var(--f-mono);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);transition:transform .15s;cursor:pointer}
+.lpin.hot{transform:scale(1.35);z-index:1000!important}
+@media (prefers-color-scheme:dark){.leaflet-tile-pane{filter:invert(.92) hue-rotate(180deg) brightness(.9) contrast(.9)}}
+.leaflet-popup-content-wrapper{border-radius:12px;background:var(--surface);color:var(--ink)}
+.leaflet-popup-tip{background:var(--surface)}
+.leaflet-popup-content{margin:12px 14px;font-size:.88rem;line-height:1.4}
+.addpop{display:flex;flex-direction:column;gap:8px;width:220px;max-width:62vw}
+.addpop b{font-size:.95rem}
+.addpop input,.addpop select{font-size:.9rem;padding:6px 8px}
+.addpop input.bad{border-color:var(--tang);box-shadow:0 0 0 2px var(--tang-soft)}
+.addpop .row{flex-wrap:nowrap}
+.addpop .row>*{flex:1;min-width:0}
 .legend{font-size:.78rem;color:var(--muted)}
 
 /* timeline */
@@ -142,6 +152,7 @@ textarea{resize:vertical;min-height:60px}
   .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px)}
   .day{display:flex;flex-direction:column;gap:16px}
   .tab{max-width:13rem}
+  #map{height:min(58vh,560px)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -157,10 +168,7 @@ textarea{resize:vertical;min-height:60px}
   <div class="board">
     <div class="side">
       <div class="mapblock">
-        <div class="mapbox">
-          <svg id="map" viewBox="0 0 720 400" role="img" aria-label="濟州島行程點位"></svg>
-          <span class="maplabel">濟州島 · 示意圖，非導航用</span>
-        </div>
+        <div class="mapbox"><div id="map" aria-label="濟州島地圖，點任一處可加入行程"></div></div>
         <div class="legend" id="legend"></div>
       </div>
 
@@ -202,7 +210,7 @@ textarea{resize:vertical;min-height:60px}
             <textarea id="gInput" placeholder="https://www.google.com/maps/place/성산일출봉/@33.458,126.942,...  或  33.4581, 126.9426"></textarea>
           </label>
           <div class="full row"><button id="parseBtn">解析連結</button><span class="msg" id="parseMsg"></span></div>
-          <p class="help full">Google 短網址（maps.app.goo.gl）無法直接解析，請先在瀏覽器打開，再複製網址列的完整連結。</p>
+          <p class="help full">Google 短網址（maps.app.goo.gl）無法直接解析，請先在瀏覽器打開，再複製網址列的完整連結。也可以直接點上方地圖的位置來加地點。</p>
           <label>韓文名稱（NAVER 搜尋用）<input id="fKo" placeholder="성산일출봉"></label>
           <label>中文名稱<input id="fZh" placeholder="城山日出峰"></label>
           <label>緯度 lat<input id="fLat" inputmode="decimal" placeholder="33.4581"></label>
@@ -265,34 +273,60 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let editing=null; const openTray=new Set();
 
-/* ---- map projection: Jeju bbox ---- */
-const B={w:126.12,e:127.00,s:33.17,n:33.60};
-const W=720,H=400,P=18;
-const COS=Math.cos(33.4*Math.PI/180);
-const k=Math.min((W-2*P)/((B.e-B.w)*COS),(H-2*P)/(B.n-B.s));
-const sx=k*COS, OX=(W-(B.e-B.w)*sx)/2, OY=(H-(B.n-B.s)*k)/2;
-function xy(lat,lng){return [OX+(lng-B.w)*sx, OY+(B.n-lat)*k]}
-const COAST=[[33.516,126.53],[33.53,126.62],[33.557,126.76],[33.54,126.84],[33.50,126.91],[33.462,126.945],[33.43,126.93],[33.38,126.89],[33.32,126.84],[33.28,126.72],[33.24,126.58],[33.235,126.47],[33.23,126.40],[33.205,126.30],[33.215,126.25],[33.26,126.18],[33.32,126.16],[33.39,126.22],[33.44,126.27],[33.47,126.33],[33.49,126.42]];
-const UDO=[[33.525,126.945],[33.52,126.965],[33.495,126.97],[33.49,126.95],[33.505,126.935]];
-const poly=pts=>pts.map(p=>xy(p[0],p[1]).map(v=>v.toFixed(1)).join(',')).join(' ');
 const valid=s=>isFinite(s.lat)&&isFinite(s.lng)&&s.lat!==null&&s.lng!==null&&s.lat!=='';
+
+/* ---- interactive map (Leaflet + CARTO tiles) ---- */
+const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const map=L.map('map',{zoomControl:true}).setView([33.38,126.55],10);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(map);
+const layer=L.layerGroup().addTo(map);
+let pins={}, fittedDay=-1, pending=null;
 
 function drawMap(){
   const day=S.days[S.activeDay];
-  let h=`<polygon points="${poly(COAST)}" fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.5" stroke-linejoin="round"/>`;
-  h+=`<polygon points="${poly(UDO)}" fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.2"/>`;
-  const [hx,hy]=xy(33.3617,126.5292);
-  h+=`<path d="M${hx-9},${hy+6} L${hx},${hy-8} L${hx+9},${hy+6} Z" fill="var(--land-edge)"/><text x="${hx}" y="${hy+20}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--f-body)">漢拏山 1947m</text>`;
-  [['濟州市',33.53,126.53],['西歸浦',33.215,126.56]].forEach(([t,a,b])=>{const[x,y]=xy(a,b);h+=`<text x="${x}" y="${y}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--f-body)">${t}</text>`});
-  S.days.forEach((d,i)=>{if(i===S.activeDay)return;d.stops.forEach(s=>{if(!valid(s))return;const[x,y]=xy(s.lat,s.lng);h+=`<circle cx="${x}" cy="${y}" r="4" fill="var(--muted)" opacity=".45"/>`})});
-  const pts=day.stops.filter(valid).map(s=>xy(s.lat,s.lng));
-  if(pts.length>1)h+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--sea)" stroke-width="2" stroke-dasharray="5 4"/>`;
-  day.stops.forEach((s,i)=>{if(!valid(s))return;const[x,y]=xy(s.lat,s.lng);
-    h+=`<g class="pin" data-pin="${s.id}"><title>${i+1}. ${esc(s.zh||s.ko)}</title><circle cx="${x}" cy="${y}" r="11" fill="var(--tang)" stroke="var(--surface)" stroke-width="2"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="var(--f-mono)" pointer-events="none">${i+1}</text></g>`});
-  $('map').innerHTML=h;
+  layer.clearLayers(); pins={};
+  S.days.forEach((d,i)=>{if(i===S.activeDay)return;d.stops.forEach(s=>{if(!valid(s))return;
+    L.circleMarker([s.lat,s.lng],{radius:4,stroke:false,fillColor:tok('--muted'),fillOpacity:.55}).bindTooltip(`Day ${i+1}・${esc(s.zh||s.ko)}`).addTo(layer)})});
+  const pts=day.stops.filter(valid).map(s=>[+s.lat,+s.lng]);
+  if(pts.length>1)L.polyline(pts,{color:tok('--sea'),weight:2.5,dashArray:'6 5'}).addTo(layer);
+  day.stops.forEach((s,i)=>{if(!valid(s))return;
+    pins[s.id]=L.marker([s.lat,s.lng],{icon:L.divIcon({className:'lpin',html:String(i+1),iconSize:[26,26],iconAnchor:[13,13]}),title:`${i+1}. ${s.zh||s.ko}`}).on('click',()=>hit(s.id)).addTo(layer)});
+  if(fittedDay!==S.activeDay){fittedDay=S.activeDay;
+    if(pts.length>1)map.fitBounds(pts,{padding:[36,36],maxZoom:14});else if(pts.length)map.setView(pts[0],13);else map.setView([33.38,126.55],10)}
   const others=S.days.reduce((a,d,i)=>a+(i===S.activeDay?0:d.stops.length),0);
-  $('legend').textContent=`橘點是 Day ${S.activeDay+1} 的路線，點一下跳到該站${others?`・灰點是其他天的 ${others} 個地點`:''}`;
+  $('legend').textContent=`點地圖任一處就能把那裡加進行程・橘點是 Day ${S.activeDay+1}，點一下跳到該站${others?`・灰點是其他天的 ${others} 個地點`:''}`;
 }
+
+map.on('click',e=>{
+  const {lat,lng}=e.latlng; pending={lat:+lat.toFixed(6),lng:+lng.toFixed(6)};
+  const days=S.days.map((d,i)=>`<option value="${i}" ${i===S.activeDay?'selected':''}>Day ${i+1}${d.title?'・'+esc(d.title):''}</option>`).join('');
+  L.popup({closeButton:true,autoPanPadding:[20,20]}).setLatLng(e.latlng).setContent(
+    `<div class="addpop"><b>在這裡加地點</b>
+      <input id="apName" placeholder="店名（韓文或中文）" autocomplete="off">
+      <div class="row"><select id="apDay" aria-label="加到第幾天">${days}</select><input id="apTime" type="time" aria-label="時間"></div>
+      <div class="row"><button id="apAdd" class="btn naver small">加入行程</button><button id="apMore" class="small ghost">填更多資料</button></div>
+      <span class="coord">${pending.lat.toFixed(5)}, ${pending.lng.toFixed(5)}</span></div>`).openOn(map);
+  setTimeout(()=>{const n=$('apName');if(n&&matchMedia('(hover:hover)').matches)n.focus()},50);
+});
+function popAdd(){
+  const n=$('apName'), name=n.value.trim();
+  if(!name){n.classList.add('bad');n.placeholder='先填店名再加入';n.focus();return}
+  const target=+$('apDay').value, ko=hasHangul(name);
+  const stop={id:uid(),ko:ko?name:'',zh:ko?'':name,lat:pending.lat,lng:pending.lng,time:$('apTime').value,note:''};
+  const arr=S.days[target].stops; arr.push(stop);
+  arr.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0);
+  S.activeDay=target; S.sample=false; save(); map.closePopup(); render(); hit(stop.id);
+}
+function popMore(){
+  const name=$('apName').value.trim(), ko=hasHangul(name);
+  resetForm(); fillForm({ko:ko?name:'',zh:ko?'':name,lat:pending.lat,lng:pending.lng,time:$('apTime').value});
+  $('fDay').value=$('apDay').value; map.closePopup(); openForm();
+}
+map.on('popupopen',e=>{const el=e.popup.getElement(); if(!el.querySelector('#apAdd'))return;
+  el.querySelector('#apAdd').onclick=popAdd; el.querySelector('#apMore').onclick=popMore;
+  el.querySelector('#apName').onkeydown=k=>{if(k.key==='Enter'){k.preventDefault();popAdd()}};
+  el.querySelector('#apName').oninput=k=>k.target.classList.remove('bad')});
 
 /* ---- links ---- */
 function nmapRoute(mode,from,to){
@@ -410,9 +444,9 @@ $('delDay').onclick=()=>{const b=$('delDay');if(!delArm&&S.days[S.activeDay].sto
   delArm=false;b.textContent='刪除這天';S.days.splice(S.activeDay,1);S.activeDay=Math.max(0,S.activeDay-1);save();render()};
 $('addStopBtn').onclick=()=>{resetForm();$('fDay').value=S.activeDay;openForm();setTimeout(()=>$('gInput').focus({preventScroll:true}),300)};
 
-$('map').addEventListener('click',e=>{const g=e.target.closest('[data-pin]');if(g)hit(g.dataset.pin)});
-$('stops').addEventListener('mouseover',e=>{const c=e.target.closest('.card');document.querySelectorAll('.pin.hot').forEach(p=>p.classList.remove('hot'));if(c){const p=$('map').querySelector(`[data-pin="${c.id.slice(5)}"]`);if(p)p.classList.add('hot')}});
-$('stops').addEventListener('mouseleave',()=>document.querySelectorAll('.pin.hot').forEach(p=>p.classList.remove('hot')));
+const unhot=()=>document.querySelectorAll('.lpin.hot').forEach(p=>p.classList.remove('hot'));
+$('stops').addEventListener('mouseover',e=>{const c=e.target.closest('.card');unhot();const m=c&&pins[c.id.slice(5)];if(m&&m.getElement())m.getElement().classList.add('hot')});
+$('stops').addEventListener('mouseleave',unhot);
 
 $('parseBtn').onclick=()=>{const r=parseGoogle($('gInput').value);
   if(r.err)return flash($('parseMsg'),r.err,false);
