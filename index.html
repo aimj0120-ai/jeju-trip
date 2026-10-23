@@ -124,6 +124,20 @@ ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .more[aria-expanded="true"]{background:var(--bg);border-color:var(--line)}
 .note{font-size:.84rem;color:var(--ink);background:var(--tang-soft);border-radius:6px;padding:4px 8px;align-self:flex-start;max-width:100%}
 .actions{display:flex;flex-wrap:wrap;gap:6px}
+.rev{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.84rem}
+.rev summary{cursor:pointer;display:flex;align-items:center;gap:8px;flex-wrap:wrap;list-style:none}
+.rev summary::-webkit-details-marker{display:none}
+.rev summary::after{content:"看評論 ▾";margin-left:auto;font-size:.74rem;color:var(--muted)}
+.rev[open] summary::after{content:"收起 ▴"}
+.revchip{font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:99px;background:var(--sea-soft);color:var(--sea)}
+.rev.mixed .revchip{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.rev.bad{border-color:var(--tang)}
+.rev.bad .revchip{background:var(--tang);color:#fff}
+.revsrc{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.revbody{padding-top:6px;display:flex;flex-direction:column;gap:2px}
+.revbody b{font-size:.76rem;color:var(--muted);margin-top:4px}
+.revbody ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:2px}
+.revbody ul.neg li::marker{color:var(--tang)}
 .contact{margin:0;display:flex;flex-direction:column;gap:4px}
 .contact>div{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:8px;align-items:center}
 .contact dt{font-size:.74rem;color:var(--muted)}
@@ -336,6 +350,24 @@ const CONTACT={
  '애월 카페거리':['','제주시 애월읍 애월리 2499-1 (주차장)'],
  '한담해안산책로':['','제주시 애월읍 애월리 2489-3'],
  '맥파이 브루어리 탭룸':['064-721-0227','제주시 동회천1길 23']};
+/* review digest from Kakao Map (rating + ~40 latest/recommended reviews per place, read 2026-10-24) */
+const REVIEWS={
+ '오드랑베이커리':{r:'4.3',n:702,lv:'good',good:['招牌 마농바게트（大蒜奶油法棍）幾乎人人推，買一條就夠','인절미빵（黃豆粉麻糬麵包）、먹물 크림치즈빵（墨魚起司）、어니언빵（洋蔥麵包）也常被點名','隔天吃用氣炸鍋回烤，大蒜香更明顯'],bad:['不少人覺得大蒜麵包太甜、太重口','鹽麵包等其他品項普通，價格偏高','店內座位少、觀光客多很吵；門口只停得下 2–3 台車']},
+ '함덕해수욕장':{r:'4.5',n:653,lv:'good',good:['爬旁邊的 서우봉（犀牛峰）看整片沙灘最美','海邊咖啡廳、小吃很多，델문도（Delmundo）有人推薦'],bad:['很商業化、人多不安靜','海草多時有腥味']},
+ '스누피가든':{r:'4.5',n:670,lv:'good',good:['戶外庭園比室內更好看，集章活動大人也玩得很開心','咖啡廳的檸檬汁、沙拉、冰淇淋評價好','紀念品選擇多；成人門票 ₩19,000'],bad:['票價偏貴','團客多，熱門拍照點要排隊','有幾則說員工服務態度差']},
+ '정방폭포':{r:'4.5',n:352,lv:'good',good:['可以走到瀑布正前方，水花很大很震撼','門票 ₩2,000、停車免費','入口附近有海女現撈海鮮可以吃'],bad:['通往瀑布是亂石路，非常滑，一定穿運動鞋','階梯多；停車場旁的小正房瀑布不推']},
+ '천지연폭포':{r:'4.4',n:344,lv:'good',good:['平路約 550 m，長輩也好走','門票 ₩2,000；晚上開到 22:00，夜間人少','入口有禮品店'],bad:['步道很短，有人覺得普通','團客多、拍照搶位']},
+ '서귀포매일올레시장':{r:'3.5',n:589,lv:'bad',good:['常被推薦：흑돼지김치말이（黑豬泡菜捲）、흑돼지강정（黑豬肉炸雞風味）、화덕만두（窯烤餃子）','伴手禮、小物店多，部分有 1+1；有人說生魚片比東門市場便宜'],bad:['負評集中在小吃攤：難吃又貴，尤其噴火秀攤位','很觀光化、團客多，人車混行','有人比價：同款伴手禮比東門市場貴 ₩4,000','建議挑排隊在地人多、老闆年紀較長的老店']},
+ '중문대포해안주상절리대':{r:'3.9',n:258,lv:'mixed',good:['景色壯觀，路線短，20–30 分鐘就能看完','漢拏峰冰淇淋 ₩5,000、廁所旁的熱狗和現榨果汁有人推'],bad:['門票 ₩2,000 和停車 ₩2,000 分開收，被抱怨很多','售票口只有一個，團客多時要排很久；人很擠']},
+ '이중섭거리':{r:'4.0',n:82,lv:'mixed',good:['小物、伴手禮店多（例如 꼬마해녀 숨비샵）','可順路看李仲燮故居，和偶來市場相連'],bad:['不少店面已空，有人覺得沒什麼看頭','李仲燮美術館曾休館整修，出發前確認是否開放','停車位少']},
+ '성산일출봉':{r:'4.7',n:419,lv:'good',good:['一定要買票走付費路線登頂，約 20 分鐘，景色值得','門票 ₩5,000；帶水、運動鞋、太陽眼鏡','下山往停車場時右手邊的海景也很美'],bad:['階梯陡、幾乎沒遮蔭','步道窄、人多；廁所髒、停車場小']},
+ '제주해녀박물관':{r:'4.3',n:91,lv:'good',good:['到櫃台問導覽解說，評論一致說聽解說好看很多','門票約 ₩1,100、停車免費','樓上展望台看得到海'],bad:['展館比較舊','紀念品店沒什麼好買','17:00 準時停止售票，晚 3 分鐘也進不去']},
+ '런던베이글뮤지엄 제주점':{r:'—',n:0,lv:'bad',good:['쪽파 프레첼 베이글（青蔥椒鹽貝果）最常被推','감자 치즈 베이글（馬鈴薯起司）、버섯 수프（蘑菇湯）也受歡迎','點完到隔壁棟海景座位吃；可用 CatchTable 預約外帶，開門時段排隊最少'],bad:['大量負評：店正對面的停車場一進場就收 ₩5,000，請找附近免費停車場','排隊久、價格貴（5 個貝果＋3 抹醬約 ₩42,000）','下午很多口味賣完；女廁只有 2 間','Kakao 沒顯示總評分，取樣評論多為 2023–2024 年']},
+ '만장굴':{r:'4.0',n:288,lv:'good',good:['熔岩洞很壯觀，往返約 2 km、30–60 分鐘','門票 ₩4,000；帶外套（洞內 11–15°C）和雨傘或帽子（會滴水）','導覽解說最後一場約 14:20'],bad:['洞內很暗，部分地磚鬆動，要看路','走到底景色重複，有人嫌長','洞內沒訊號、沒廁所；約 17:00 停止入場']},
+ '9.81파크':{r:'3.8',n:375,lv:'mixed',good:['在 NAVER 買早鳥票，一早去人少可多跑幾趟','3 號賽道排最久，建議第一趟或最後一趟跑','要先裝 App，賽車影片會存在 App 裡'],bad:['價格貴，一趟只有 1.5–2 分鐘','員工說明草率、有推銷，指示牌少','會做酒測，前一晚喝酒可能被擋']},
+ '애월 카페거리':{r:'2.7',n:57,lv:'bad',good:['海景好；評論點名 카페 봄날（Cafe 봄날）景觀很美','直接接漢潭海岸步道'],bad:['負評多：貴、人多、咖啡普通','停車難又貴（約 21 分鐘 ₩5,000）','不少店已經關門，跟網路照片落差大']},
+ '한담해안산책로':{r:'4.6',n:145,lv:'good',good:['平坦 1.2 km，海景很美，傍晚夕陽最好看','在 랜디스도넛（Randy\'s Donuts）消費可免費停 1 小時'],bad:['停車位少又收費（約 30 分鐘 ₩4,000）','廁所少常排隊；下午 3 點半後逆光']},
+ '맥파이 브루어리 탭룸':{r:'4.4',n:65,lv:'good',good:['포터（Porter 黑啤）被推最多，酸啤 맥파이 고스트、IPA 也受好評','薄脆紐約披薩（페퍼로니 ₩21,000）、薯條配蒜苔青醬 ₩12,000','可在 NAVER 預約釀酒廠導覽＋試飲'],bad:['價格不便宜','披薩很薄很脆，喜歡厚起司的人會失望','12:00 準時開門，提早到要在外面等']}};
 S=load(); if(!S.days.length)S.days=[{title:'',stops:[]}]; if(S.activeDay>=S.days.length)S.activeDay=0;
 S.days.forEach(d=>d.stops.forEach(s=>{const c=CONTACT[s.ko];if(c){if(!s.tel&&c[0])s.tel=c[0];if(!s.addr)s.addr=c[1]}}));
 save();
@@ -489,6 +521,12 @@ $('pTo').onchange=e=>{S.plan.to=e.target.value;save();renderPlanner()};
 $('swapBtn').onclick=()=>{const f=S.plan.from,t=S.plan.to;if(!t)return;S.plan.from=t;S.plan.to=f==='here'?t:f;save();renderPlanner()};
 $('modes').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(!b)return;S.plan.mode=b.dataset.mode;save();render()});
 
+const LV={good:'好評為主',mixed:'褒貶不一',bad:'負評較多'};
+function revHtml(s){const v=REVIEWS[s.ko];if(!v)return '';
+  return `<details class="rev ${v.lv}"><summary><span class="revchip">${LV[v.lv]}</span><span class="revsrc">Kakao 地圖 ${v.n?`★${v.r}・${v.n} 則`:'無總評分'}</span></summary>
+    <div class="revbody"><b>推薦</b><ul>${v.good.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>
+    <b>負評重點</b><ul class="neg">${v.bad.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div></details>`}
+
 /* ---- render ---- */
 function render(){
   $('sampleChip').hidden=!S.sample;
@@ -517,6 +555,7 @@ function render(){
           <button class="more" data-act="more" data-id="${s.id}" aria-expanded="${open}" aria-label="更多操作">⋯</button>
         </div>
         ${s.note?`<div class="note">${esc(s.note)}</div>`:''}
+        ${revHtml(s)}
         ${s.tel||s.addr?`<dl class="contact">
           ${s.tel?`<div><dt>電話</dt><dd><a href="tel:${esc(s.tel.replace(/[^\d+]/g,''))}">${esc(s.tel)}</a></dd><button class="small ghost" data-act="cp" data-v="${esc(s.tel)}">複製</button></div>`:''}
           ${s.addr?`<div><dt>地址</dt><dd lang="ko">${esc(s.addr)}</dd><button class="small ghost" data-act="cp" data-v="${esc(s.addr)}">複製</button></div>`:''}
