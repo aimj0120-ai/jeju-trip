@@ -124,6 +124,12 @@ ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .more[aria-expanded="true"]{background:var(--bg);border-color:var(--line)}
 .note{font-size:.84rem;color:var(--ink);background:var(--tang-soft);border-radius:6px;padding:4px 8px;align-self:flex-start;max-width:100%}
 .actions{display:flex;flex-wrap:wrap;gap:6px}
+.contact{margin:0;display:flex;flex-direction:column;gap:4px}
+.contact>div{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:8px;align-items:center}
+.contact dt{font-size:.74rem;color:var(--muted)}
+.contact dd{margin:0;font-family:var(--f-mono);font-size:.86rem;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.contact dd[lang="ko"]{font-family:var(--f-ko);font-size:.84rem}
+.contact a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
 .tray{border-top:1px dashed var(--line);padding-top:8px;display:flex;flex-direction:column;gap:6px}
 .coord{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .legrow{min-height:30px}
@@ -237,6 +243,8 @@ textarea{resize:vertical;min-height:60px}
           <label>經度 lng<input id="fLng" inputmode="decimal" placeholder="126.9426"></label>
           <label>時間<input id="fTime" type="time"></label>
           <label>放在第幾天<select id="fDay"></select></label>
+          <label>電話（車用導航可搜）<input id="fTel" inputmode="tel" placeholder="064-805-1118"></label>
+          <label>韓文地址<input id="fAddr" placeholder="제주시 구좌읍 금백조로 930"></label>
           <label class="full">備註<input id="fNote" placeholder="訂位、門票、營業時間…"></label>
           <div class="full row"><button id="saveBtn" class="btn naver">加入行程</button><button id="cancelBtn" class="btn ghost" hidden>取消編輯</button><span class="msg" id="saveMsg"></span></div>
         </div>
@@ -309,7 +317,28 @@ function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r
   try{localStorage.setItem(KEY+'-backup',r)}catch(e){} /* keep the old board, then switch to the real trip */
 }}}catch(e){}return JSON.parse(JSON.stringify(TRIP))}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-S=load(); if(!S.days.length)S.days=[{title:'',stops:[]}]; if(S.activeDay>=S.days.length)S.activeDay=0; save();
+/* phone + road address from Kakao Map (checked 2026-10-24); filled into stops that don't have them yet */
+const CONTACT={
+ '제주국제공항':['1661-2626','제주시 공항로 2'],
+ '오드랑베이커리':['064-784-5404','제주시 조천읍 조함해안로 552-3'],
+ '함덕해수욕장':['064-728-3989','제주시 조천읍 조함해안로 525'],
+ '스누피가든':['064-805-1118','제주시 구좌읍 금백조로 930'],
+ '정방폭포':['064-733-1530','서귀포시 동홍동 277 (주차장)'],
+ '천지연폭포':['064-760-6303','서귀포시 남성중로 2-15'],
+ '서귀포매일올레시장':['064-762-1949','서귀포시 중앙로62번길 18'],
+ '중문대포해안주상절리대':['064-738-1521','서귀포시 이어도로 36-30'],
+ '이중섭거리':['','서귀포시 이중섭로 4-1'],
+ '성산일출봉':['064-783-0959','서귀포시 성산읍 일출로 284-6 (주차장)'],
+ '제주해녀박물관':['064-782-9898','제주시 구좌읍 해녀박물관길 26'],
+ '런던베이글뮤지엄 제주점':['','제주시 구좌읍 동복로 85'],
+ '만장굴':['064-710-7903','제주시 구좌읍 만장굴길 182'],
+ '9.81파크':['1833-9810','제주시 애월읍 천덕로 880-24'],
+ '애월 카페거리':['','제주시 애월읍 애월리 2499-1 (주차장)'],
+ '한담해안산책로':['','제주시 애월읍 애월리 2489-3'],
+ '맥파이 브루어리 탭룸':['064-721-0227','제주시 동회천1길 23']};
+S=load(); if(!S.days.length)S.days=[{title:'',stops:[]}]; if(S.activeDay>=S.days.length)S.activeDay=0;
+S.days.forEach(d=>d.stops.forEach(s=>{const c=CONTACT[s.ko];if(c){if(!s.tel&&c[0])s.tel=c[0];if(!s.addr)s.addr=c[1]}}));
+save();
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let editing=null; const openTray=new Set();
@@ -488,6 +517,10 @@ function render(){
           <button class="more" data-act="more" data-id="${s.id}" aria-expanded="${open}" aria-label="更多操作">⋯</button>
         </div>
         ${s.note?`<div class="note">${esc(s.note)}</div>`:''}
+        ${s.tel||s.addr?`<dl class="contact">
+          ${s.tel?`<div><dt>電話</dt><dd><a href="tel:${esc(s.tel.replace(/[^\d+]/g,''))}">${esc(s.tel)}</a></dd><button class="small ghost" data-act="cp" data-v="${esc(s.tel)}">複製</button></div>`:''}
+          ${s.addr?`<div><dt>地址</dt><dd lang="ko">${esc(s.addr)}</dd><button class="small ghost" data-act="cp" data-v="${esc(s.addr)}">複製</button></div>`:''}
+        </dl>`:''}
         <div class="actions">
           <a class="btn naver small" href="${esc(naverWeb(s))}" target="_blank" rel="noopener">NAVER 地圖</a>
           ${ok?`<a class="btn small" href="${esc(nmapRoute(S.plan.mode,prev&&valid(prev)?prev:null,s))}">${prev&&valid(prev)?'從上一站導航':'導航到這裡'}</a><a class="btn small ghost" href="${esc(naverWebRoute(S.plan.mode,prev&&valid(prev)?prev:null,s))}" target="_blank" rel="noopener">網頁版</a>`:`<span class="coord">缺座標，只能用名稱搜尋</span>`}
@@ -535,7 +568,7 @@ function parseGoogle(t){
 }
 const hasHangul=s=>/[가-힣]/.test(s);
 
-function fillForm(s){$('fKo').value=s.ko||'';$('fZh').value=s.zh||'';$('fLat').value=valid(s)?s.lat:'';$('fLng').value=valid(s)?s.lng:'';$('fTime').value=s.time||'';$('fNote').value=s.note||''}
+function fillForm(s){$('fKo').value=s.ko||'';$('fZh').value=s.zh||'';$('fLat').value=valid(s)?s.lat:'';$('fLng').value=valid(s)?s.lng:'';$('fTime').value=s.time||'';$('fNote').value=s.note||'';$('fTel').value=s.tel||'';$('fAddr').value=s.addr||''}
 function resetForm(){editing=null;fillForm({});$('gInput').value='';$('formTitle').textContent='＋ 新增地點';$('saveBtn').textContent='加入行程';$('cancelBtn').hidden=true;$('parseMsg').textContent=''}
 function flash(el,txt,ok){el.textContent=txt;el.className='msg '+(ok?'ok':'err')}
 function openForm(){$('formPanel').open=true;$('formPanel').scrollIntoView({behavior:'smooth',block:'start'})}
@@ -569,7 +602,7 @@ $('saveBtn').onclick=()=>{
   if(!ko&&!zh)return flash($('saveMsg'),'至少填一個名稱',false);
   if((lat!==null&&!isFinite(lat))||(lng!==null&&!isFinite(lng)))return flash($('saveMsg'),'座標格式不對，例如 33.4581',false);
   const target=+$('fDay').value;
-  const data={ko,zh,lat,lng,time:$('fTime').value,note:$('fNote').value.trim()};
+  const data={ko,zh,lat,lng,time:$('fTime').value,note:$('fNote').value.trim(),tel:$('fTel').value.trim(),addr:$('fAddr').value.trim()};
   const wasEdit=!!editing;
   if(editing){for(const d of S.days){const i=d.stops.findIndex(x=>x.id===editing);if(i>-1){d.stops.splice(i,1);break}}}
   const stop={id:editing||uid(),...data}; const arr=S.days[target].stops;
@@ -582,6 +615,7 @@ $('stops').addEventListener('click',async e=>{const b=e.target.closest('[data-ac
   const day=S.days[S.activeDay], i=day.stops.findIndex(s=>s.id===b.dataset.id), s=day.stops[i];
   const act=b.dataset.act;
   if(act==='more'){const tray=b.closest('.card').querySelector('.tray');const o=tray.hidden;tray.hidden=!o;b.setAttribute('aria-expanded',o);o?openTray.add(s.id):openTray.delete(s.id);return}
+  if(act==='cp'){try{await navigator.clipboard.writeText(b.dataset.v);b.textContent='已複製'}catch(err){b.textContent='請長按左邊文字'}setTimeout(()=>b.textContent='複製',1500);return}
   if(act==='copy'){const t=s.ko||s.zh;try{await navigator.clipboard.writeText(t);b.textContent='已複製'}catch(err){b.textContent=t}setTimeout(()=>b.textContent='複製韓文名',1500);return}
   if(act==='up'&&i>0){[day.stops[i-1],day.stops[i]]=[day.stops[i],day.stops[i-1]]}
   if(act==='down'&&i<day.stops.length-1){[day.stops[i+1],day.stops[i]]=[day.stops[i],day.stops[i+1]]}
