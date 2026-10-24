@@ -138,6 +138,10 @@ ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .revbody b{font-size:.76rem;color:var(--muted);margin-top:4px}
 .revbody ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:2px}
 .revbody ul.neg li::marker{color:var(--tang)}
+.reads{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;font-size:.8rem}
+.reads span{font-size:.74rem;color:var(--muted)}
+.reads a{color:var(--sea);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--sea-soft)}
+.reads a.yt{color:var(--tang);text-decoration-color:var(--tang-soft)}
 .park{background:var(--sea-soft);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:.84rem}
 .park-head{display:flex;gap:8px;align-items:flex-start}
 .pchip{flex:0 0 auto;width:22px;height:22px;border-radius:5px;background:var(--sea);color:#fff;display:grid;place-items:center;font:700 .8rem var(--f-mono)}
@@ -394,6 +398,24 @@ const PARK={
  '애월 카페거리':{...HANDAM,walk:360,tip:'停這裡就能走路串起咖啡街和漢潭步道，不用移車。附近民營停車場評論幾乎都是 1 星：카카오T 애월카페거리주차장、애월카페거리3주차장一進場就收 ₩5,000；한담산책로 민영주차장、한담주차장停 5–8 分鐘就收 ₩4,000；한담노을주차장每 10 分鐘 ₩1,000。免費場滿了，就到有附設停車場的咖啡廳消費，或在 Randy\'s Donuts 消費可免費停 1 小時。'},
  '한담해안산책로':{...HANDAM,walk:80,tip:'和涯月咖啡街共用同一個停車場，散步完再開車。'},
  '맥파이 브루어리 탭룸':{ko:'맥파이 브루어리 탭룸',zh:'Magpie 店家停車位',lat:33.50465,lng:126.61338,addr:'제주시 동회천1길 23',fee:'店家附設，評論對停車有好評',walk:0,tip:'要喝酒就別開車：把車停在住宿處，改搭計程車來回。'}};
+/* intro articles found by web search (2026-10-24) + a YouTube search for videos */
+const LINKS={
+ '오드랑베이커리':{yt:'濟州 Audrant 大蒜麵包',a:[['Trip.com 旅客分享','https://nz.trip.com/moments/poi-audrant-bakery-147901313'],['Wanderlog（英文）','https://wanderlog.com/place/details/1313065']]},
+ '함덕해수욕장':{yt:'濟州 咸德海水浴場 犀牛峰',a:[['咸德・犀牛峰攻略','https://www.trvlogue.com/zh-Hant/jeju-hamdeok-seoubong-guide'],['K-Trip Tips 景點介紹','https://www.ktriptips.com/cht/tourspot/1105411']]},
+ '스누피가든':{yt:'濟州 史努比庭園 Snoopy Garden',a:[['美麗佳人：史努比庭園','https://www.marieclaire.com.tw/lifestyle/travel/73767/snoopy-garden'],['食尚玩家介紹','https://supertaste.tvbs.com.tw/travel/340390']]},
+ '정방폭포':{yt:'濟州 正房瀑布',a:[['濟州自駕 10 大必訪景點','https://www.funliday.com/posts/?p=11837'],['Wikipedia（英文）','https://en.wikipedia.org/wiki/Jeongbang_Waterfall']]},
+ '천지연폭포':{yt:'濟州 天地淵瀑布 夜景',a:[['天地淵瀑布攻略','https://www.trvlogue.com/zh-Hant/jeju-cheonjiyeon-waterfall-guide']]},
+ '서귀포매일올레시장':{yt:'西歸浦 偶來市場 美食',a:[['偶來市場必吃清單','https://www.trvlogue.com/zh-Hant/jeju-olle-market-food'],['偶來市場逛街攻略','https://www.trvlogue.com/zh-Hant/jeju-seogwipo-olle-market-guide']]},
+ '중문대포해안주상절리대':{yt:'濟州 柱狀節理帶',a:[['樂吃購：大浦柱狀節理帶','https://www.funtime.com.tw/blog/?p=154476']]},
+ '이중섭거리':{yt:'西歸浦 李仲燮街',a:[]},
+ '성산일출봉':{yt:'濟州 城山日出峰 登頂',a:[['城山徒步攻略 2026','https://www.trvlogue.com/zh-Hant/jeju-seongsan-walking-guide-2026']]},
+ '제주해녀박물관':{yt:'濟州 海女博物館',a:[['天下雜誌：濟州海女','https://www.cw.com.tw/article/5097891'],['公視新聞：海女文化','https://news.pts.org.tw/article/594048']]},
+ '런던베이글뮤지엄 제주점':{yt:'倫敦貝果 濟州',a:[['Creatrip 介紹（英文）','https://creatrip.com/en/blog/13777'],['Agoda 旅遊指南（英文）','https://www.agoda.com/travel-guides/south-korea/jeju-island/exploring-the-delightful-london-bagel-museum-in-jeju-a-unique-culinary-journey']]},
+ '만장굴':{yt:'濟州 萬丈窟',a:[['K-Trip Tips：萬丈窟','https://www.ktriptips.com/cht/tourspot/332601']]},
+ '9.81파크':{yt:'濟州 9.81 Park 賽車',a:[['Creatrip：9.81 公園','https://creatrip.com/zh-TW/spot/15293'],['K-Trip Tips 介紹','https://www.ktriptips.com/cht/leisure/2950112']]},
+ '애월 카페거리':{yt:'濟州 涯月 咖啡廳',a:[['濟州西部景點整理','https://uptogo.com.tw/%e6%97%85%e9%81%8a/%e6%bf%9f%e5%b7%9e%e5%b3%b6%e8%a5%bf%e9%83%a8%e6%99%af%e9%bb%9e%ef%bc%9f/']]},
+ '한담해안산책로':{yt:'濟州 漢潭海岸散步路',a:[['Trip.com 旅客分享','https://tw.trip.com/moments/theme/poi-handam-coastal-walk-62013611-guides-993135']]},
+ '맥파이 브루어리 탭룸':{yt:'Magpie Brewing Jeju',a:[['CNN：Magpie 的故事（英文）','https://amp.cnn.com/cnn/travel/article/south-korea-craft-beer-magpie-brewing'],['Korea Times：Ghost Gose 獲獎（英文）','https://www.koreatimes.co.kr/southkorea/globalcommunity/20191001/magpies-ghost-gose-named-asias-best-beer']]}};
 S=load(); if(!S.days.length)S.days=[{title:'',stops:[]}]; if(S.activeDay>=S.days.length)S.activeDay=0;
 S.days.forEach(d=>d.stops.forEach(s=>{const c=CONTACT[s.ko];if(c){if(!s.tel&&c[0])s.tel=c[0];if(!s.addr)s.addr=c[1]}}));
 save();
@@ -553,6 +575,9 @@ function revHtml(s){const v=REVIEWS[s.ko];if(!v)return '';
     <div class="revbody"><b>推薦</b><ul>${v.good.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>
     <b>負評重點</b><ul class="neg">${v.bad.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div></details>`}
 
+function linkHtml(s){const v=LINKS[s.ko];if(!v)return '';
+  const yt=`https://www.youtube.com/results?search_query=${encodeURIComponent(v.yt)}`;
+  return `<div class="reads"><span>看介紹</span>${v.a.map(([t,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>`).join('')}<a class="yt" href="${esc(yt)}" target="_blank" rel="noopener">▶ YouTube 影片</a></div>`}
 function parkHtml(s){const p=PARK[s.ko];if(!p)return '';
   const walk=p.walk?`步行約 ${Math.max(1,Math.round(p.walk/70))} 分鐘（${p.walk} m）`:'就在旁邊';
   return `<div class="park"><div class="park-head"><span class="pchip">P</span><div><b>${esc(p.zh)}</b><div class="pmeta"><span>${esc(p.fee)}</span><span>${walk}</span></div></div></div>
@@ -587,6 +612,7 @@ function render(){
           <button class="more" data-act="more" data-id="${s.id}" aria-expanded="${open}" aria-label="更多操作">⋯</button>
         </div>
         ${s.note?`<div class="note">${esc(s.note)}</div>`:''}
+        ${linkHtml(s)}
         ${revHtml(s)}
         ${parkHtml(s)}
         ${s.tel||s.addr?`<dl class="contact">
