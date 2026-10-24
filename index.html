@@ -148,6 +148,21 @@ ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .park-head b{font-size:.88rem}
 .pmeta{display:flex;flex-wrap:wrap;gap:2px 10px;color:var(--sea);font-size:.78rem}
 .park p{margin:0;color:var(--ink);font-size:.8rem}
+.near{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.84rem}
+.near summary{cursor:pointer;display:flex;align-items:center;gap:8px;list-style:none;font-weight:600}
+.near summary::-webkit-details-marker{display:none}
+.near summary::after{content:"展開 ▾";margin-left:auto;font-size:.74rem;font-weight:400;color:var(--muted)}
+.near[open] summary::after{content:"收起 ▴"}
+.near-src{margin:8px 0 0;font-size:.74rem;color:var(--muted)}
+.near h4{margin:12px 0 4px;font-size:.8rem;color:var(--sea)}
+.near-item{display:flex;flex-direction:column;gap:3px;min-width:0;padding:8px 0;border-top:1px solid var(--line)}
+.near h4+.near-item{border-top:0}
+.near-name{min-width:0;overflow-wrap:anywhere}
+.near-name small{font-size:.76rem;color:var(--muted);margin-left:6px}
+.near-meta{font-size:.78rem;color:var(--sea)}
+.near-note{margin:0;min-width:0;overflow-wrap:anywhere;font-size:.8rem;color:var(--ink)}
+.near-hrs{font-size:.76rem;color:var(--muted)}
+.near-item .actions{flex-wrap:wrap;margin-top:2px}
 .contact{margin:0;display:flex;flex-direction:column;gap:4px}
 .contact>div{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:8px;align-items:center}
 .contact dt{font-size:.74rem;color:var(--muted)}
@@ -405,6 +420,29 @@ const PARK={
  '애월 카페거리':{...HANDAM,walk:360,tip:'停這裡就能走路串起咖啡街和漢潭步道，不用移車。附近民營停車場評論幾乎都是 1 星：카카오T 애월카페거리주차장、애월카페거리3주차장一進場就收 ₩5,000；한담산책로 민영주차장、한담주차장停 5–8 分鐘就收 ₩4,000；한담노을주차장每 10 分鐘 ₩1,000。免費場滿了，就到有附設停車場的咖啡廳消費，或在 Randy\'s Donuts 消費可免費停 1 小時。'},
  '한담해안산책로':{...HANDAM,walk:80,tip:'和涯月咖啡街共用同一個停車場，散步完再開車。'},
  '맥파이 브루어리 탭룸':{ko:'맥파이 브루어리 탭룸',zh:'Magpie 店家停車位',lat:33.50465,lng:126.61338,addr:'제주시 동회천1길 23',fee:'店家附設，評論對停車有好評',walk:0,tip:'要喝酒就別開車：把車停在住宿處，改搭計程車來回。'}};
+/* places around the hotel: Kakao Map (2026-10-24); m = walking distance from the hotel */
+const NEARBY=[
+ {g:'便利商店',items:[
+  {zh:'CU（飯店同棟 1 樓）',ko:'CU 더퍼스트호텔점',m:0,tel:'064-766-0051',lat:33.24742257,lng:126.56682268,note:'就在飯店樓下'},
+  {zh:'7-Eleven 西歸浦中央店',ko:'세븐일레븐 서귀포중앙점',m:135,tel:'',lat:33.24832098,lng:126.56615939,note:'最近的 7-Eleven'},
+  {zh:'CU 西歸正房店',ko:'CU 서귀정방점',m:175,tel:'064-762-4163',lat:33.24765438,lng:126.56866611,note:'往正房瀑布方向的 CU'}]},
+ {g:'餐廳',items:[
+  {zh:'黑豬肉烤肉',ko:'먹고정',m:410,tel:'064-732-3658',lat:33.24723952,lng:126.56243912,rate:'★4.7（448）',note:'招牌 흑돼지근고기（黑豬厚切 500 g ₩60,000），炭火初烤、店員幫烤；配 열무국수',hrs:'12:00–24:00'},
+  {zh:'黑豬肉烤肉',ko:'흑돼지BBQ',m:670,tel:'064-762-1277',lat:33.24682758,lng:126.55965879,rate:'★4.5（632）',note:'套餐 2 人 ₩55,000 起，送韓牛生拌牛肉，沾 멜젓和 청어알；附近有公營停車場',hrs:'16:30–23:00'},
+  {zh:'黑豬特殊部位',ko:'영시흑돼지',m:450,tel:'064-763-9336',lat:33.25097028,lng:126.56495517,rate:'★4.7（52）',note:'볼따귀살（豬頰肉）、턱살人氣最高，小菜評價好',hrs:'10:00–20:00，晚上要早點去'},
+  {zh:'生魚片居酒屋',ko:'모루쿠다 서귀포점',m:130,tel:'0503-7154-6902',lat:33.24828146,lng:126.56620251,rate:'★4.5（297）',note:'고등어회（鯖魚生魚片 ₩42,000）、딱새우회、해산물라면',hrs:'12:00–23:00'},
+  {zh:'白帶魚',ko:'올레왕갈치 서귀포올레시장점',m:400,tel:'064-732-2022',lat:33.24851388,lng:126.56279761,rate:'★4.4（134）',note:'갈치조림（燉白帶魚，2 人 ₩45,000），也有 3–4 人套餐',hrs:'10:00–22:00'},
+  {zh:'白帶魚湯・鮑魚',ko:'삼무뚝배기갈치',m:510,tel:'064-733-2360',lat:33.24269496,lng:126.56723871,rate:'★4.5（119）',note:'30 年老店，갈치국（白帶魚湯 ₩16,000）、전복뚝배기',hrs:'08:00–21:00，早餐也可以'},
+  {zh:'黑豬湯飯',ko:'팔팔88국밥',m:610,tel:'064-733-8879',lat:33.25005716,lng:126.56117387,rate:'★4.8（105）',note:'흑돼지국밥 ₩10,000、순대국，早餐好選擇',hrs:'09:00 開'},
+  {zh:'濟州骨頭湯',ko:'태평식당',m:134,tel:'0502-5551-1976',lat:33.24653229,lng:126.56801278,rate:'★4.8（27）',note:'접짝뼈해장국 ₩10,000（濟州豬骨湯）',hrs:'10:00–21:30，早午餐近'},
+  {zh:'豬肉湯麵',ko:'올래장터국수',m:500,tel:'064-762-9104',lat:33.24994576,lng:126.56256728,rate:'★4.6（96）',note:'奶奶一個人煮，고기국수 ₩12,000 肉很多，要等一下',hrs:'週日休'},
+  {zh:'炸豆皮紫菜飯捲（外帶）',ko:'오는정김밥',m:270,tel:'064-762-8927',lat:33.24959557,lng:126.56762106,rate:'★3.2（1011）',note:'只能外帶、要先打電話預約，評價兩極；可當 11/19 早上路上吃'}]},
+ {g:'精釀啤酒・酒吧',items:[
+  {zh:'濟州在地精釀 brewpub',ko:'제주약수터 본점',m:485,tel:'064-805-6572',lat:33.24775163,lng:126.56166612,rate:'★4.6（231）',note:'可免費試喝，340 ml ₩9,000；外國客多、氣氛好；有人嫌貴',hrs:'17:00–24:00'},
+  {zh:'同品牌外帶店',ko:'제주약수터 올레시장점',m:430,tel:'064-901-6632',lat:33.24901957,lng:126.56276076,rate:'★4.6（110）',note:'可試喝 3 杯、4 種 sampler，適合買回飯店喝',hrs:'14:00–22:00'},
+  {zh:'精釀啤酒＋西式下酒菜',ko:'제리스펍 제주서귀포점',m:540,tel:'064-732-4696',lat:33.24315152,lng:126.56372133,rate:'★4.9（116）',note:'最新 20 則全 5 星；스파이시홍합、코티지파이、豬排',hrs:'18:00–02:00'},
+  {zh:'啤酒屋（非精釀）',ko:'발랄한맥주',m:550,tel:'',lat:33.24336593,lng:126.56315802,rate:'★4.8（18）',note:'한라봉生啤、烤明太魚乾，營業到很晚',hrs:'18:00–04:00'},
+  {zh:'創意居酒屋（非精釀）',ko:'마루아라',m:280,tel:'064-763-1364',lat:33.24671911,lng:126.56393109,rate:'★5.0（100）',note:'在李仲燮街，生馬肉、鮭魚，下酒菜好吃'}]}];
 /* intro articles found by web search (2026-10-24) + a YouTube search for videos */
 const LINKS={
  '오드랑베이커리':{yt:'濟州 Audrant 大蒜麵包',a:[['Trip.com 旅客分享','https://nz.trip.com/moments/poi-audrant-bakery-147901313'],['Wanderlog（英文）','https://wanderlog.com/place/details/1313065']]},
@@ -610,6 +648,17 @@ function parkHtml(s){const p=PARK[s.ko];if(!p)return '';
   return `<div class="park"><div class="park-head"><span class="pchip">P</span><div><b>${esc(p.zh)}</b><div class="pmeta"><span>${esc(p.fee)}</span><span>${walk}</span></div></div></div>
     ${p.tip?`<p>${esc(p.tip)}</p>`:''}
     <div class="actions"><a class="btn small" href="${esc(nmapRoute('car',null,p))}">導航到停車場</a><button class="small ghost" data-act="cp" data-v="${esc(p.addr)}">複製停車場地址</button></div></div>`}
+function nearHtml(s){if(s.ko!=='더퍼스트70호텔')return '';
+  const hotel={lat:SGP[0],lng:SGP[1],ko:'더퍼스트70호텔'};
+  const item=p=>{const min=Math.max(1,Math.round(p.m/70));const tel=p.tel?p.tel.replace(/[^\d]/g,''):'';
+    return `<div class="near-item"><div class="near-name"><b>${esc(p.zh)}</b><small lang="ko">${esc(p.ko)}</small></div>
+      <div class="near-meta">步行約 ${min} 分（${p.m} m）${p.rate?`・Kakao ${esc(p.rate)}`:''}</div>
+      <p class="near-note">${esc(p.note)}</p>
+      ${p.hrs?`<div class="near-hrs">營業時間：${esc(p.hrs)}</div>`:''}
+      <div class="actions">${tel?`<a class="btn small" href="tel:${esc(tel)}">${esc(p.tel)}</a><button class="small ghost" data-act="cp" data-v="${esc(p.tel)}">複製電話</button>`:''}<a class="btn small" href="${esc(nmapRoute('walk',hotel,p))}">步行導航</a></div></div>`};
+  return `<details class="near"><summary>飯店周邊（步行 10 分鐘內）</summary>
+    <p class="near-src">資料來源：Kakao 地圖（2026/10）。營業時間可能變動，出發前再確認。</p>
+    ${NEARBY.map(g=>`<h4>${esc(g.g)}</h4>${g.items.map(item).join('')}`).join('')}</details>`}
 
 /* ---- render ---- */
 function render(){
@@ -642,6 +691,7 @@ function render(){
         ${linkHtml(s)}
         ${revHtml(s)}
         ${parkHtml(s)}
+        ${nearHtml(s)}
         ${s.tel||s.addr?`<dl class="contact">
           ${s.tel?`<div><dt>電話</dt><dd><a href="tel:${esc(s.tel.replace(/[^\d+]/g,''))}">${esc(s.tel)}</a></dd><button class="small ghost" data-act="cp" data-v="${esc(s.tel)}">複製</button></div>`:''}
           ${s.addr?`<div><dt>地址</dt><dd lang="ko">${esc(s.addr)}</dd><button class="small ghost" data-act="cp" data-v="${esc(s.addr)}">複製</button></div>`:''}
