@@ -163,6 +163,9 @@ ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .near-note{margin:0;min-width:0;overflow-wrap:anywhere;font-size:.8rem;color:var(--ink)}
 .near-hrs{font-size:.76rem;color:var(--muted)}
 .near-item .actions{flex-wrap:wrap;margin-top:2px}
+.near-links{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem}
+.near-links a{color:var(--sea);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--sea-soft)}
+.near-links a+a{color:var(--naver);text-decoration-color:var(--naver)}
 .contact{margin:0;display:flex;flex-direction:column;gap:4px}
 .contact>div{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:8px;align-items:center}
 .contact dt{font-size:.74rem;color:var(--muted)}
@@ -648,6 +651,11 @@ function parkHtml(s){const p=PARK[s.ko];if(!p)return '';
   return `<div class="park"><div class="park-head"><span class="pchip">P</span><div><b>${esc(p.zh)}</b><div class="pmeta"><span>${esc(p.fee)}</span><span>${walk}</span></div></div></div>
     ${p.tip?`<p>${esc(p.tip)}</p>`:''}
     <div class="actions"><a class="btn small" href="${esc(nmapRoute('car',null,p))}">導航到停車場</a><button class="small ghost" data-act="cp" data-v="${esc(p.addr)}">複製停車場地址</button></div></div>`}
+/* Kakao Map place ids for the restaurants and bars, for "店家頁" links */
+const KAKAO_ID={'먹고정':460451756,'흑돼지BBQ':25448888,'영시흑돼지':893660765,'모루쿠다 서귀포점':1626708928,'올레왕갈치 서귀포올레시장점':1056381412,'삼무뚝배기갈치':11313882,'팔팔88국밥':1734736917,'태평식당':1282274558,'올래장터국수':1261679648,'오는정김밥':8453998,'제주약수터 본점':1510813713,'제주약수터 올레시장점':1819831036,'제리스펍 제주서귀포점':1312144459,'발랄한맥주':664290097,'마루아라':188602100};
+const placeLinks=p=>{const id=KAKAO_ID[p.ko];if(!id)return '';
+  const nv=`https://map.naver.com/p/search/${encodeURIComponent(p.ko.includes('서귀포')?p.ko:p.ko+' 서귀포')}`;
+  return `<div class="near-links"><a href="https://place.map.kakao.com/${id}" target="_blank" rel="noopener">Kakao 店家頁</a><a href="${esc(nv)}" target="_blank" rel="noopener">NAVER 地圖</a></div>`};
 function nearHtml(s){if(s.ko!=='더퍼스트70호텔')return '';
   const hotel={lat:SGP[0],lng:SGP[1],ko:'더퍼스트70호텔'};
   const item=p=>{const min=Math.max(1,Math.round(p.m/70));const tel=p.tel?p.tel.replace(/[^\d]/g,''):'';
@@ -655,6 +663,7 @@ function nearHtml(s){if(s.ko!=='더퍼스트70호텔')return '';
       <div class="near-meta">步行約 ${min} 分（${p.m} m）${p.rate?`・Kakao ${esc(p.rate)}`:''}</div>
       <p class="near-note">${esc(p.note)}</p>
       ${p.hrs?`<div class="near-hrs">營業時間：${esc(p.hrs)}</div>`:''}
+      ${placeLinks(p)}
       <div class="actions">${tel?`<a class="btn small" href="tel:${esc(tel)}">${esc(p.tel)}</a><button class="small ghost" data-act="cp" data-v="${esc(p.tel)}">複製電話</button>`:''}<a class="btn small" href="${esc(nmapRoute('walk',hotel,p))}">步行導航</a></div></div>`};
   return `<details class="near"><summary>飯店周邊（步行 10 分鐘內）</summary>
     <p class="near-src">資料來源：Kakao 地圖（2026/10）。營業時間可能變動，出發前再確認。</p>
