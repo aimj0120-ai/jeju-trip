@@ -300,25 +300,26 @@ const uid=()=>Math.random().toString(36).slice(2,9);
 /* 2026/11/17–11/21 trip; stays are placeholders until hotels are booked */
 const TRIP_ID='jeju-2026-11';
 const st=(time,ko,zh,lat,lng,note)=>({id:uid(),time,ko,zh,lat,lng,note});
-const SGP=[33.2496,126.5620], JJN=[33.4876,126.4920]; /* 西歸浦市區 / 濟州市北部（新濟州）暫定點 */
+const SGP=[33.24725,126.56685], JJN=[33.4876,126.4920]; /* The First70 Hotel（西歸浦）/ 濟州市北部（新濟州）暫定點 */
+const HOTEL_NOTE='11/17–11/19 住 2 晚｜入住後把車停好，晚上可以走路去偶來市場（約 400 m）';
 const MONEYBOX=()=>st('12:15','머니박스 제주지점','Money Box 濟州店（換錢）',33.48595,126.48248,'取車後先來換韓元，帶台幣千元鈔｜停留約 15 分鐘｜週一～六 10:00–21:00、週日 10:00–18:00');
-const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox'],days:[
+const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp'],days:[
  {title:'11/17（二）抵達・咸德・史努比',stops:[
   st('10:00','제주국제공항','濟州國際機場',33.5071,126.4916,'入境、領行李｜11:30 租車、確認導航與車況'),
   MONEYBOX(),
   st('12:55','오드랑베이커리','Audrant Bakery',33.542088,126.671547,'停留 30–45 分｜大蒜麵包、蛋塔、咖啡當午餐｜約 07:00–22:00'),
   st('13:30','함덕해수욕장','咸德海水浴場',33.5432,126.6699,'停留 30–45 分｜看海、吃麵包；海風強，帶防風外套'),
   st('14:45','스누피가든','Snoopy Garden',33.4447,126.7797,'停留 2–2.5 小時｜冬季 09:00–18:00，17:00 截止入場'),
-  st('18:30','서귀포 숙소','西歸浦住宿（待訂）',SGP[0],SGP[1],'第 1 晚｜晚餐：黑豬肉烤肉、豬肉湯麵或海鮮鍋｜訂好飯店後請改成飯店位置')]},
+  st('18:30','더퍼스트70호텔','The First70 Hotel（第 1 晚）',SGP[0],SGP[1],HOTEL_NOTE+'｜晚餐：黑豬肉烤肉、豬肉湯麵或海鮮鍋')]},
  {title:'11/18（三）西歸浦瀑布與海岸',stops:[
   st('09:00','정방폭포','正房瀑布',33.2449,126.5715,'約 1 小時｜約 09:00–17:20｜階梯濕滑，穿防滑鞋'),
   st('10:20','천지연폭포','天地淵瀑布',33.2469,126.5545,'約 1 小時｜晚間有開放，最後入場以當日公告為準'),
   st('11:40','서귀포매일올레시장','西歸浦每日偶來市場',33.2502,126.5636,'約 1.5 小時｜午餐：分食橘子、炸物、黑豬肉小吃'),
   st('14:00','중문대포해안주상절리대','中文大浦柱狀節理帶',33.2378,126.4253,'約 1 小時｜風浪大或下雨就改去咖啡廳'),
   st('15:30','이중섭거리','李仲燮文化街',33.244887,126.564453,'約 1 小時｜小店、咖啡廳、藝術街區'),
-  st('18:00','서귀포 숙소','西歸浦住宿（待訂）',SGP[0],SGP[1],'第 2 晚｜晚餐：鮑魚石鍋飯、海鮮鍋、黑豬肉')]},
+  st('18:00','더퍼스트70호텔','The First70 Hotel（第 2 晚）',SGP[0],SGP[1],'晚餐：鮑魚石鍋飯、海鮮鍋、黑豬肉｜走路就能到偶來市場、李仲燮街')]},
  {title:'11/19（四）城山・海女・萬丈窟',stops:[
-  st('07:15','서귀포 숙소','西歸浦住宿（退房出發）',SGP[0],SGP[1],'早點出發，今天開車時間最長'),
+  st('07:15','더퍼스트70호텔','The First70 Hotel（退房出發）',SGP[0],SGP[1],'早點出發，今天開車時間最長'),
   st('08:30','성산일출봉','城山日出峰',33.4589,126.9408,'約 1.5–1.75 小時｜06:00–18:00，閉園前 1 小時停售｜每月第一個週一休'),
   st('10:45','제주해녀박물관','海女博物館',33.5221,126.8635,'約 1 小時｜09:00–18:00，17:00 最後入場｜週一休'),
   st('12:00','런던베이글뮤지엄 제주점','倫敦貝果博物館',33.553587,126.715609,'1–1.5 小時，午餐｜約 08:00–18:00｜出發前確認排隊與臨時休店'),
@@ -347,6 +348,7 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 const CONTACT={
  '제주국제공항':['1661-2626','제주시 공항로 2'],
  '머니박스 제주지점':['064-743-8887','제주시 원노형4길 1'],
+ '더퍼스트70호텔':['064-766-0000','서귀포시 명동로 46'],
  '오드랑베이커리':['064-784-5404','제주시 조천읍 조함해안로 552-3'],
  '함덕해수욕장':['064-728-3989','제주시 조천읍 조함해안로 525'],
  '스누피가든':['064-805-1118','제주시 구좌읍 금백조로 930'],
@@ -385,6 +387,7 @@ const REVIEWS={
 const HAMDEOK={ko:'함덕국민학교옛터 공영주차장',zh:'咸德舊國小公營停車場',lat:33.54232,lng:126.66843,addr:'제주시 조천읍 함덕리 1004-3',fee:'免費'};
 const HANDAM={ko:'한담공원 무료주차장',zh:'漢潭公園免費停車場',lat:33.45960,lng:126.31104,addr:'제주시 애월읍 애월리 2459-1',fee:'免費'};
 const PARK={
+ '더퍼스트70호텔':{ko:'더퍼스트70호텔',zh:'飯店停車場（地下 1 樓、2 樓）',lat:33.24725,lng:126.56685,addr:'서귀포시 명동로 46',fee:'住客免費',walk:0,tip:'評論說飯店停車位偏窄。滿了就停旁邊的「정방동공영주차장」（서귀동 403-6，約 90 m），20:00–隔天 09:00 免費。這筆停車資料來自同地址舊名「제주노블피아호텔」的 Kakao 頁面，入住時請向櫃台確認。'},
  '머니박스 제주지점':{ko:'노형제2공영주차장',zh:'老衡第 2 公營停車場',lat:33.48729,lng:126.47980,addr:'제주시 월랑로2길 1',fee:'公營（沒查到收費資訊）',walk:290,tip:'換錢只要十幾分鐘，停最近的公營停車場走過去。'},
  '오드랑베이커리':{...HAMDEOK,walk:290,tip:'Audrant 和咸德海水浴場相距約 150 m，停這裡一次就能走路逛完兩站，不用移車。店門口只有 2–3 格。'},
  '함덕해수욕장':{...HAMDEOK,walk:170,tip:'和 Audrant 共用同一個停車場，直接走過來。'},
@@ -432,6 +435,14 @@ if(S.tripId===TRIP_ID&&!S.patches.includes('moneybox')){
     d.stops.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0);
   }
   S.patches.push('moneybox');
+}
+/* one-time patch: the Seogwipo stay placeholder becomes The First70 Hotel */
+if(S.tripId===TRIP_ID&&!S.patches.includes('hotel-sgp')){
+  S.days.forEach(d=>d.stops.forEach(s=>{if(s.ko!=='서귀포 숙소')return;
+    s.ko='더퍼스트70호텔'; s.lat=SGP[0]; s.lng=SGP[1]; s.tel=''; s.addr='';
+    s.zh=(s.zh||'').includes('退房')?'The First70 Hotel（退房出發）':(s.note||'').includes('第 2 晚')?'The First70 Hotel（第 2 晚）':'The First70 Hotel（第 1 晚）';
+    s.note=(s.note||'').replace('｜訂好飯店後請改成飯店位置','').replace('第 1 晚｜',HOTEL_NOTE+'｜').replace('第 2 晚｜','')}));
+  S.patches.push('hotel-sgp');
 }
 S.days.forEach(d=>d.stops.forEach(s=>{const c=CONTACT[s.ko];if(c){if(!s.tel&&c[0])s.tel=c[0];if(!s.addr)s.addr=c[1]}}));
 save();
@@ -743,11 +754,11 @@ $('copyCsv').onclick=()=>{const rows=[['day','day_title','time','name_ko','name_
   S.days.forEach((d,i)=>d.stops.forEach(s=>rows.push([i+1,d.title||'',s.time||'',s.ko||'',s.zh||'',s.lat??'',s.lng??'',s.note||''])));
   copyText(rows.map(r=>r.join('\t')).join('\n'),'已複製，直接貼到 Google Sheet A1 即可')};
 $('importBtn').onclick=()=>{try{const d=JSON.parse($('importBox').value);if(!Array.isArray(d.days))throw 0;
-  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
+  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
   catch(err){flash($('ioMsg'),'JSON 格式不對，請貼上「複製 JSON 備份」的內容',false)}};
 let clrArm=false;
 $('clearSample').onclick=()=>{const b=$('clearSample');if(!clrArm){clrArm=true;b.textContent='再按一次確認清空';setTimeout(()=>{clrArm=false;b.textContent='清空全部'},3000);return}
-  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
+  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
 
 /* first edit drops the sample badge */
 document.addEventListener('change',()=>{if(S.sample){S.sample=false;save();$('sampleChip').hidden=true}},true);
