@@ -165,7 +165,8 @@ ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .near-item .actions{flex-wrap:wrap;margin-top:2px}
 .near-links{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem}
 .near-links a{color:var(--sea);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--sea-soft)}
-.near-links a+a{color:var(--naver);text-decoration-color:var(--naver)}
+.near-links a.zh{color:var(--tang);font-weight:700;text-decoration-color:var(--tang-soft)}
+.near-links a.nv{color:var(--naver);text-decoration-color:var(--naver)}
 .contact{margin:0;display:flex;flex-direction:column;gap:4px}
 .contact>div{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:8px;align-items:center}
 .contact dt{font-size:.74rem;color:var(--muted)}
@@ -655,7 +656,9 @@ function parkHtml(s){const p=PARK[s.ko];if(!p)return '';
 const KAKAO_ID={'먹고정':460451756,'흑돼지BBQ':25448888,'영시흑돼지':893660765,'모루쿠다 서귀포점':1626708928,'올레왕갈치 서귀포올레시장점':1056381412,'삼무뚝배기갈치':11313882,'팔팔88국밥':1734736917,'태평식당':1282274558,'올래장터국수':1261679648,'오는정김밥':8453998,'제주약수터 본점':1510813713,'제주약수터 올레시장점':1819831036,'제리스펍 제주서귀포점':1312144459,'발랄한맥주':664290097,'마루아라':188602100};
 const placeLinks=p=>{const id=KAKAO_ID[p.ko];if(!id)return '';
   const nv=`https://map.naver.com/p/search/${encodeURIComponent(p.ko.includes('서귀포')?p.ko:p.ko+' 서귀포')}`;
-  return `<div class="near-links"><a href="https://place.map.kakao.com/${id}" target="_blank" rel="noopener">Kakao 店家頁</a><a href="${esc(nv)}" target="_blank" rel="noopener">NAVER 地圖</a></div>`};
+  /* Kakao and NAVER block Google's translate proxy, so the Chinese view is Google Maps in zh-TW (it offers review translation) */
+  const gm=`https://www.google.com/maps/search/${encodeURIComponent(p.ko.includes('서귀포')?p.ko:p.ko+' 서귀포')}?hl=zh-TW`;
+  return `<div class="near-links"><a class="zh" href="${esc(gm)}" target="_blank" rel="noopener">Google 地圖（中文）</a><a href="https://place.map.kakao.com/${id}" target="_blank" rel="noopener">Kakao（韓文）</a><a class="nv" href="${esc(nv)}" target="_blank" rel="noopener">NAVER（韓文）</a></div>`};
 function nearHtml(s){if(s.ko!=='더퍼스트70호텔')return '';
   const hotel={lat:SGP[0],lng:SGP[1],ko:'더퍼스트70호텔'};
   const item=p=>{const min=Math.max(1,Math.round(p.m/70));const tel=p.tel?p.tel.replace(/[^\d]/g,''):'';
