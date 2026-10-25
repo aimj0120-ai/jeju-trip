@@ -149,6 +149,7 @@ button:disabled{opacity:.4;cursor:default}
 
 .mapblock{display:flex;flex-direction:column;gap:6px}
 .board>*,.side>*,.day>*,.mapblock>*{min-width:0;max-width:100%}
+.day>.dayhead{max-width:none} /* the pinned header bleeds to both screen edges */
 html,body{overflow-x:clip}
 .finder{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--blobby);padding:12px;width:100%;background-image:radial-gradient(circle at 0 100%,var(--blob-b) 0 40px,transparent 41px)}
 .finder-row{display:flex;gap:8px;min-width:0}
@@ -733,7 +734,9 @@ const valid=s=>isFinite(s.lat)&&isFinite(s.lng)&&s.lat!==null&&s.lng!==null&&s.l
 
 /* ---- interactive map (Leaflet + CARTO tiles) ---- */
 const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const map=L.map('map',{zoomControl:true}).setView([33.38,126.55],10);
+/* on phones one finger scrolls the page; the map moves and zooms with two fingers */
+const TOUCH=matchMedia('(pointer:coarse)').matches;
+const map=L.map('map',{zoomControl:true,dragging:!TOUCH,touchZoom:true}).setView([33.38,126.55],10);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
   {maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(map);
 const layer=L.layerGroup().addTo(map);
@@ -751,7 +754,7 @@ function drawMap(){
   if(fittedDay!==S.activeDay){fittedDay=S.activeDay;
     if(pts.length>1)map.fitBounds(pts,{padding:[36,36],maxZoom:14});else if(pts.length)map.setView(pts[0],13);else map.setView([33.38,126.55],10)}
   const others=S.days.reduce((a,d,i)=>a+(i===S.activeDay?0:d.stops.length),0);
-  $('legend').textContent=`點地圖任一處就能把那裡加進行程・橘點是 Day ${S.activeDay+1}，點一下跳到該站${others?`・灰點是其他天的 ${others} 個地點`:''}`;
+  $('legend').textContent=`${TOUCH?'用兩指移動、縮放地圖・':''}點地圖任一處就能把那裡加進行程・橘點是 Day ${S.activeDay+1}，點一下跳到該站${others?`・灰點是其他天的 ${others} 個地點`:''}`;
 }
 
 map.on('click',e=>openAdd(e.latlng,''));
