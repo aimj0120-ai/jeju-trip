@@ -134,7 +134,12 @@ button:disabled{opacity:.4;cursor:default}
 .side,.day{display:contents}
 .dayhead{order:1}.mapblock{order:2}.stopsblock{order:3}.planner{order:5}#formPanel{order:4}#dataPanel{order:6}
 
-.dayhead{display:flex;flex-direction:column;gap:2px}
+/* the day's date line + title stay pinned under the road strip while scrolling */
+.dayhead{display:flex;flex-direction:column;gap:2px;position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--stripH,140px));z-index:4;background:var(--bg);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:8px max(16px,env(safe-area-inset-left,0px)) 8px;border-bottom:1.5px solid var(--line)}
+.eyerow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.eyerow .eyebrow{flex:1;min-width:0}
+.eyerow #delDay{flex:0 0 auto;padding:3px 10px;font-size:.74rem}
+@media (max-width:520px){.dayhead .daytitle{font-size:1.06rem}}
 .eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.08em;color:var(--sea);font-variant-numeric:tabular-nums}
 .titlerow{display:flex;align-items:center;gap:8px}
 .daytitle{flex:1;min-width:0;font-family:var(--f-display);font-weight:700;font-size:1.45rem;color:var(--ink);background:transparent;border:0;border-bottom:2px dashed transparent;border-radius:0;padding:2px 0}
@@ -144,7 +149,7 @@ button:disabled{opacity:.4;cursor:default}
 
 .mapblock{display:flex;flex-direction:column;gap:6px}
 .board>*,.side>*,.day>*,.mapblock>*{min-width:0;max-width:100%}
-html,body{overflow-x:hidden}
+html,body{overflow-x:clip}
 .finder{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--blobby);padding:12px;width:100%;background-image:radial-gradient(circle at 0 100%,var(--blob-b) 0 40px,transparent 41px)}
 .finder-row{display:flex;gap:8px;min-width:0}
 .finder-row input{flex:1 1 0;width:0;min-width:0;-webkit-appearance:none;appearance:none}
@@ -289,7 +294,8 @@ textarea{resize:vertical;min-height:60px}
 @media (min-width:980px){
   .wrap{gap:18px}
   .board{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:start}
-  .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 176px)}
+  .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--stripH,160px) + 16px)}
+  .dayhead{margin-inline:0;padding-inline:0}
   .day{display:flex;flex-direction:column;gap:16px}
   .tab{max-width:13rem}
   #map{height:min(58vh,560px)}
@@ -458,10 +464,12 @@ textarea{resize:vertical;min-height:60px}
 
     <div class="day">
       <div class="dayhead">
-        <span class="eyebrow" id="dayEyebrow"></span>
+        <div class="eyerow">
+          <span class="eyebrow" id="dayEyebrow"></span>
+          <button id="delDay" class="small ghost">刪除這天</button>
+        </div>
         <div class="titlerow">
           <input id="dayTitle" class="daytitle" aria-label="這一天的標題" placeholder="幫這天取個主題">
-          <button id="delDay" class="small ghost">刪除這天</button>
         </div>
       </div>
 
@@ -975,6 +983,10 @@ function startPals(){
   /* restart the CSS facing/legs loops so they stay in sync with the walks */
   car.querySelectorAll('.palflip').forEach(f=>{f.style.animation='none';void f.offsetWidth;f.style.animation=''});
 }
+/* keep the pinned day header right under the (variable-height) road strip */
+const setStripH=()=>{const st=document.querySelector('.strip');if(st)document.documentElement.style.setProperty('--stripH',st.offsetHeight+'px')};
+setStripH(); addEventListener('resize',setStripH);
+if(window.ResizeObserver)new ResizeObserver(setStripH).observe(document.querySelector('.strip'));
 addEventListener('resize',()=>placeCar(true,true));
 if(window.ResizeObserver)new ResizeObserver(()=>placeCar(true,true)).observe($('tabs'));
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>placeCar(true,true));
