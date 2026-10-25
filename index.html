@@ -164,6 +164,8 @@ ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .card.hit{border-color:var(--tang);box-shadow:0 0 0 3px var(--tang-soft)}
 .cardtop{display:flex;align-items:flex-start;gap:8px}
 .names{flex:1;min-width:0}
+.sicon{flex:0 0 auto;width:42px;height:42px;border-radius:46% 54% 50% 50%/55% 45% 55% 45%;background:var(--sand);display:grid;place-items:center}
+.sicon svg{width:32px;height:32px;display:block}
 .ko{font-family:var(--f-ko);font-weight:600;font-size:1.12rem;line-height:1.3;overflow-wrap:anywhere}
 .zh{color:var(--muted);font-size:.88rem}
 .more{flex:0 0 auto;width:34px;height:34px;padding:0;border-radius:50%;border-color:transparent;background:transparent;color:var(--muted);font-size:1.1rem;letter-spacing:.05em}
@@ -312,11 +314,11 @@ textarea{resize:vertical;min-height:60px}
           <rect x="68" y="32" width="26" height="22" rx="7" class="c-glass"/>
           <!-- black-and-tan shiba -->
           <polygon points="30,39 32,23 38,33" style="fill:#2e2d33"/><polygon points="48,39 46,23 40,33" style="fill:#2e2d33"/>
-          <polygon points="32,36 32.6,27.5 36,33" style="fill:#c98746"/><polygon points="46,36 45.4,27.5 42,33" style="fill:#c98746"/>
+          <polygon points="32,36 32.6,27.5 36,33" style="fill:#f6f3ec"/><polygon points="46,36 45.4,27.5 42,33" style="fill:#f6f3ec"/>
           <ellipse cx="39" cy="42" rx="10.5" ry="9.5" style="fill:#2e2d33"/>
-          <ellipse cx="32.5" cy="45.5" rx="3.6" ry="3" style="fill:#c98746"/><ellipse cx="45.5" cy="45.5" rx="3.6" ry="3" style="fill:#c98746"/>
+          <ellipse cx="32.5" cy="45.5" rx="3.6" ry="3" style="fill:#f6f3ec"/><ellipse cx="45.5" cy="45.5" rx="3.6" ry="3" style="fill:#f6f3ec"/>
           <ellipse cx="39" cy="46.5" rx="5.2" ry="4" style="fill:#f7ecd9"/>
-          <circle cx="35" cy="37" r="1.4" style="fill:#c98746"/><circle cx="43" cy="37" r="1.4" style="fill:#c98746"/>
+          <circle cx="35" cy="37" r="1.4" style="fill:#f6f3ec"/><circle cx="43" cy="37" r="1.4" style="fill:#f6f3ec"/>
           <circle cx="35" cy="40.5" r="1.5" style="fill:#0f0f12"/><circle cx="43" cy="40.5" r="1.5" style="fill:#0f0f12"/>
           <circle cx="35.4" cy="40" r=".5" style="fill:#fff"/><circle cx="43.4" cy="40" r=".5" style="fill:#fff"/>
           <ellipse cx="39" cy="44.6" rx="2.2" ry="1.5" style="fill:#0f0f12"/>
@@ -822,6 +824,30 @@ function revHtml(s){const v=REVIEWS[s.ko];if(!v)return '';
 function linkHtml(s){const v=LINKS[s.ko];if(!v)return '';
   const yt=`https://www.youtube.com/results?search_query=${encodeURIComponent(v.yt)}`;
   return `<div class="reads"><span>看介紹</span>${v.a.map(([t,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>`).join('')}<a class="yt" href="${esc(yt)}" target="_blank" rel="noopener">▶ YouTube 影片</a></div>`}
+/* flat illustration icons per stop (32×32), in the same palette as the header art */
+const ICON={
+ plane:'<path d="M3 17l26-9-6 9 6 9-26-9z" fill="#2b78a8"/><path d="M12 17l-4-8 4 1 5 7-5 7-4 1z" fill="#6bb5e0"/><circle cx="25" cy="17" r="1.6" fill="#fff"/>',
+ money:'<circle cx="16" cy="16" r="12" fill="#e9b53b"/><circle cx="16" cy="16" r="9" fill="#f5cf62"/><path d="M10.5 11l2.5 10 3-7 3 7 2.5-10M9.5 15h13M9.5 18h13" fill="none" stroke="#9a6a10" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+ bread:'<path d="M4 21c0-6 8-11 19-11 4 0 6 2 6 4 0 6-9 10-19 10-4 0-6-1-6-3z" fill="#d99a4e"/><path d="M9 15l3 4M14 13l3 4M19 12l3 4" stroke="#f6dfb4" stroke-width="2" stroke-linecap="round"/><ellipse cx="9" cy="9" rx="3" ry="3.4" fill="#fff"/><path d="M9 6v-2" stroke="#4f8f3f" stroke-width="1.6" stroke-linecap="round"/>',
+ beach:'<path d="M3 26q6-4 13 0t13 0v4H3z" fill="#6bb5e0"/><path d="M16 9v15" stroke="#7a5a3a" stroke-width="1.8"/><path d="M4 12a12 9 0 0 1 24 0z" fill="#e5698a"/><path d="M10 12a6 9 0 0 1 12 0z" fill="#f8d9d2"/>',
+ flower:'<path d="M16 30V16" stroke="#4f8f3f" stroke-width="2"/><path d="M16 24c-5 0-7-3-7-5 4 0 7 2 7 5z" fill="#8cc274"/><g fill="#f5cf62"><circle cx="16" cy="7" r="4"/><circle cx="22" cy="11" r="4"/><circle cx="20" cy="17" r="4"/><circle cx="12" cy="17" r="4"/><circle cx="10" cy="11" r="4"/></g><circle cx="16" cy="12.5" r="3.4" fill="#d2600a"/>',
+ bed:'<rect x="3" y="10" width="4" height="17" rx="1.5" fill="#7a5a3a"/><rect x="7" y="17" width="22" height="7" rx="2" fill="#2b78a8"/><rect x="8" y="13" width="7" height="5" rx="2.5" fill="#fff"/><path d="M15 17q7-5 14 0z" fill="#6bb5e0"/><rect x="27" y="22" width="2.5" height="5" fill="#7a5a3a"/>',
+ fall:'<path d="M5 5h22v5H5z" fill="#45444b"/><path d="M9 10h14v14H9z" fill="#6bb5e0"/><path d="M12 10v13M16 10v14M20 10v13" stroke="#dcecf6" stroke-width="1.6"/><ellipse cx="16" cy="26" rx="12" ry="3.5" fill="#2b78a8"/><path d="M5 5v20M27 5v20" stroke="#4f8f3f" stroke-width="3"/>',
+ market:'<path d="M4 13h24l-2-7H6z" fill="#d44a3b"/><path d="M8 6l-1 7M13 6v7M19 6v7M24 6l1 7" stroke="#fff" stroke-width="2"/><rect x="6" y="13" width="20" height="14" fill="#f2e4c1"/><circle cx="12" cy="21" r="3.6" fill="#f39246"/><circle cx="20" cy="21" r="3.6" fill="#f39246"/><path d="M12 17.4l1.5-1.6M20 17.4l1.5-1.6" stroke="#4f8f3f" stroke-width="1.6" stroke-linecap="round"/>',
+ columns:'<path d="M3 26q7-3 13 0t13 0v4H3z" fill="#6bb5e0"/><g fill="#45444b"><path d="M5 26V12l3-2 3 2v14z"/><path d="M12 26V8l3-2 3 2v18z"/><path d="M19 26V11l3-2 3 2v15z"/></g><g fill="#6f6e75"><path d="M5 12l3-2 3 2-3 2z"/><path d="M12 8l3-2 3 2-3 2z"/><path d="M19 11l3-2 3 2-3 2z"/></g>',
+ palette:'<path d="M16 4C8 4 3 9 3 15c0 6 5 11 11 11 2 0 3-1 3-3 0-2 1-3 3-3h3c4 0 6-3 6-6 0-6-6-10-13-10z" fill="#fff" stroke="#c98746" stroke-width="1.4"/><circle cx="10" cy="13" r="2.4" fill="#d44a3b"/><circle cx="15" cy="9" r="2.4" fill="#2b78a8"/><circle cx="21" cy="10" r="2.4" fill="#4f8f3f"/><circle cx="24" cy="15" r="2.4" fill="#f5cf62"/><circle cx="12" cy="20" r="2.4" fill="#e5698a"/>',
+ peak:'<circle cx="24" cy="8" r="4" fill="#f39246"/><path d="M2 27l8-13h12l8 13z" fill="#4f8f3f"/><path d="M10 14q6 4 12 0" fill="#3a6e2f"/><path d="M2 27q7-3 14 0t14 0v3H2z" fill="#6bb5e0"/>',
+ diver:'<path d="M2 24q7-4 14 0t14 0v6H2z" fill="#6bb5e0"/><path d="M8 18l10-6 6 2-9 7z" fill="#26252b"/><circle cx="7" cy="16" r="4" fill="#26252b"/><rect x="4" y="14" width="6" height="3" rx="1.5" fill="#dcecf6"/><path d="M24 14l5-3-1 6z" fill="#f39246"/><circle cx="20" cy="24" r="3" fill="#f39246"/><path d="M20 21v-4" stroke="#45444b" stroke-width="1.4"/>',
+ bagel:'<ellipse cx="16" cy="17" rx="13" ry="10" fill="#c98746"/><ellipse cx="16" cy="16" rx="12" ry="8.6" fill="#e0a865"/><ellipse cx="16" cy="16" rx="4.4" ry="2.8" fill="#f2e4c1"/><g fill="#fff"><circle cx="9" cy="12" r=".9"/><circle cx="13" cy="10" r=".9"/><circle cx="20" cy="11" r=".9"/><circle cx="24" cy="15" r=".9"/><circle cx="21" cy="20" r=".9"/><circle cx="10" cy="20" r=".9"/></g>',
+ cave:'<path d="M2 28V18C2 9 9 4 16 4s14 5 14 14v10z" fill="#6f6e75"/><path d="M8 28v-8c0-5 4-8 8-8s8 3 8 8v8z" fill="#26252b"/><path d="M11 12l1 4 1-4M19 12l1 3 1-3" fill="#6f6e75"/><circle cx="16" cy="22" r="1.6" fill="#f5cf62"/>',
+ kart:'<path d="M6 5v13" stroke="#45444b" stroke-width="1.6"/><path d="M6 5h7l-2 3 2 3H6z" fill="#d44a3b"/><path d="M4 22l3-5h12l6 2 3 3z" fill="#f39246"/><circle cx="15" cy="15" r="3" fill="#2b78a8"/><circle cx="9" cy="24" r="3.4" fill="#26252b"/><circle cx="23" cy="24" r="3.4" fill="#26252b"/>',
+ coffee:'<path d="M6 12h17v8a7 7 0 0 1-7 7h-3a7 7 0 0 1-7-7z" fill="#fff" stroke="#45444b" stroke-width="1.6"/><path d="M23 14h2a3 3 0 0 1 0 6h-2" fill="none" stroke="#45444b" stroke-width="1.6"/><ellipse cx="14.5" cy="12.5" rx="8" ry="1.8" fill="#7a5a3a"/><path d="M11 4q2 2 0 4M16 3q2 2 0 4" stroke="#d3c6a2" stroke-width="1.6" fill="none" stroke-linecap="round"/>',
+ walk:'<path d="M2 25q7-4 14 0t14 0v5H2z" fill="#6bb5e0"/><path d="M3 21q13-5 26-3" stroke="#d3c6a2" stroke-width="3" fill="none" stroke-linecap="round"/><g fill="#45444b"><ellipse cx="10" cy="11" rx="2.2" ry="3.2"/><ellipse cx="16" cy="7" rx="2.2" ry="3.2"/><ellipse cx="22" cy="11" rx="2.2" ry="3.2"/></g>',
+ beer:'<rect x="6" y="9" width="15" height="19" rx="3" fill="#f5cf62"/><path d="M21 12h3a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-3" fill="none" stroke="#c98746" stroke-width="2.4"/><path d="M5 10c0-4 3-6 6-5 2-3 7-3 8 0 3 0 4 3 2 5z" fill="#fff"/><path d="M10 15v9M14 15v9M18 15v9" stroke="#e9b53b" stroke-width="1.4"/>',
+ car:'<path d="M4 21l3-8h18l3 8z" fill="#d2600a"/><rect x="3" y="20" width="26" height="6" rx="2" fill="#f39246"/><path d="M9 14h6v6H8zM17 14h6l1 6h-7z" fill="#dcecf6"/><circle cx="9" cy="26" r="3" fill="#26252b"/><circle cx="23" cy="26" r="3" fill="#26252b"/>',
+ pin:'<path d="M16 29s-9-9-9-15a9 9 0 0 1 18 0c0 6-9 15-9 15z" fill="#d2600a"/><circle cx="16" cy="14" r="3.6" fill="#fff"/>'};
+const ICON_OF={'제주국제공항':'plane','머니박스 제주지점':'money','오드랑베이커리':'bread','함덕해수욕장':'beach','스누피가든':'flower','더퍼스트70호텔':'bed','제주노블레스관광호텔':'bed','정방폭포':'fall','천지연폭포':'fall','서귀포매일올레시장':'market','중문대포해안주상절리대':'columns','이중섭거리':'palette','성산일출봉':'peak','제주해녀박물관':'diver','런던베이글뮤지엄 제주점':'bagel','만장굴':'cave','9.81파크':'kart','애월 카페거리':'coffee','한담해안산책로':'walk','맥파이 브루어리 탭룸':'beer','렌터카 반납':'car'};
+const stopIcon=s=>`<svg viewBox="0 0 32 32">${ICON[ICON_OF[s.ko]||'pin']}</svg>`;
 function parkHtml(s){const p=PARK[s.ko];if(!p)return '';
   const walk=p.walk?`步行約 ${Math.max(1,Math.round(p.walk/70))} 分鐘（${p.walk} m）`:'就在旁邊';
   return `<div class="park"><div class="park-head"><span class="pchip">P</span><div><b>${esc(p.zh)}</b><div class="pmeta"><span>${esc(p.fee)}</span><span>${walk}</span></div></div></div>
@@ -894,6 +920,7 @@ function render(){
       <div class="mark"><div class="num">${i+1}</div>${s.time?`<span class="time">${esc(s.time)}</span>`:''}</div>
       <article class="card" id="card-${s.id}">
         <div class="cardtop">
+          <span class="sicon" aria-hidden="true">${stopIcon(s)}</span>
           <div class="names"><div class="ko" lang="ko">${esc(s.ko||s.zh||'未命名')}</div>${s.zh&&s.ko?`<div class="zh">${esc(s.zh)}</div>`:''}</div>
           <button class="more" data-act="more" data-id="${s.id}" aria-expanded="${open}" aria-label="更多操作">⋯</button>
         </div>
