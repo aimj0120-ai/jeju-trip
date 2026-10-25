@@ -6,60 +6,104 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="濟州行程">
-<meta name="theme-color" content="#eef0ee">
+<meta name="theme-color" content="#fbf6ea">
 <title>濟州行程板</title>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&family=IBM+Plex+Sans+KR:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Sans+KR:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-/* Layout: phone = one column (day head → map → timeline → add → route → data); ≥980px = sticky map+route on the left, day timeline on the right */
+/* Layout: phone = one column (day head → map → timeline → add → route → data); ≥980px = sticky map+route on the left, day timeline on the right.
+   Look: flat "JEJU" illustration sheet — cream paper, pastel blobs, tangerine / sea blue / leaf green / basalt grey. */
 :root{
-  --bg:#eef0ee; --surface:#ffffff; --ink:#1d2421; --muted:#5f6b66; --line:#d5dbd8;
-  --basalt:#3a403d; --sea:#2f7f86; --sea-soft:#d6ebec; --tang:#e6781e; --tang-soft:#fbe6d3;
-  --naver:#03a94f; --land:#dfe4dc; --land-edge:#9aa59c; --shade:rgba(29,36,33,.10);
+  --bg:#fbf6ea; --surface:#fffdf8; --ink:#2c2a27; --muted:#6a655b; --line:#e6dcc3;
+  --basalt:#45444b; --sea:#2b78a8; --sea-soft:#d9ebf6; --tang:#d2600a; --tang-soft:#fde5cb; --on-tang:#ffffff; --on-sea:#ffffff;
+  --naver:#03a94f; --land:#e4e8d8; --land-edge:#a3aa98; --shade:rgba(44,42,39,.10);
+  --leaf:#4f8f3f; --leaf-soft:#dcebc9; --red:#d44a3b; --red-soft:#f8d9d2; --pink:#e5698a; --sand:#f2e4c1; --trail:#d3c6a2;
+  --blob-a:#dcecf6; --blob-b:#e3efd0; --blob-c:#f8e6c4;
+  --road:#6c7270; --roadline:#fff6dc; --car:#f0872a; --car-glass:#cfe7f3; --rock:#4a4850; --rock2:#37353d;
   --f-body:"Noto Sans TC",system-ui,sans-serif;
-  --f-display:"Noto Serif TC","Noto Sans TC",serif;
+  --f-display:"Chiron GoRound TC","Noto Sans TC",system-ui,sans-serif;
   --f-ko:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --blobby:22px 28px 24px 30px / 26px 22px 28px 24px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#141816; --surface:#1d2320; --ink:#e7ece9; --muted:#9aa7a1; --line:#2f3733;
-  --basalt:#c9d1cc; --sea:#5fb7bd; --sea-soft:#1c3638; --tang:#f39246; --tang-soft:#3a2716;
-  --naver:#2fcf74; --land:#28302c; --land-edge:#4c5751; --shade:rgba(0,0,0,.45); color-scheme:dark}}
+  --bg:#1a1916; --surface:#242220; --ink:#f0eadc; --muted:#a8a193; --line:#3b3830;
+  --basalt:#d0cdc6; --sea:#6bb5e0; --sea-soft:#1d3342; --tang:#f39246; --tang-soft:#3d2916; --on-tang:#2a1606; --on-sea:#10222e;
+  --naver:#2fcf74; --land:#2a2e26; --land-edge:#555c50; --shade:rgba(0,0,0,.45);
+  --leaf:#8cc274; --leaf-soft:#27331f; --red:#ef7769; --red-soft:#43211c; --pink:#f08aa4; --sand:#3a3220; --trail:#4c4636;
+  --blob-a:#1d2b35; --blob-b:#222b1c; --blob-c:#33291a;
+  --road:#3d413f; --roadline:#cfc7b3; --car:#f39246; --car-glass:#3f7390; --rock:#4a4753; --rock2:#37343e; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#141816; --surface:#1d2320; --ink:#e7ece9; --muted:#9aa7a1; --line:#2f3733;
-  --basalt:#c9d1cc; --sea:#5fb7bd; --sea-soft:#1c3638; --tang:#f39246; --tang-soft:#3a2716;
-  --naver:#2fcf74; --land:#28302c; --land-edge:#4c5751; --shade:rgba(0,0,0,.45); color-scheme:dark}
+  --bg:#1a1916; --surface:#242220; --ink:#f0eadc; --muted:#a8a193; --line:#3b3830;
+  --basalt:#d0cdc6; --sea:#6bb5e0; --sea-soft:#1d3342; --tang:#f39246; --tang-soft:#3d2916; --on-tang:#2a1606; --on-sea:#10222e;
+  --naver:#2fcf74; --land:#2a2e26; --land-edge:#555c50; --shade:rgba(0,0,0,.45);
+  --leaf:#8cc274; --leaf-soft:#27331f; --red:#ef7769; --red-soft:#43211c; --pink:#f08aa4; --sand:#3a3220; --trail:#4c4636;
+  --blob-a:#1d2b35; --blob-b:#222b1c; --blob-c:#33291a;
+  --road:#3d413f; --roadline:#cfc7b3; --car:#f39246; --car-glass:#3f7390; --rock:#4a4753; --rock2:#37343e; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
-.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 120px;display:flex;flex-direction:column;gap:14px}
+body{background-color:var(--bg);
+  background-image:radial-gradient(ellipse 280px 190px at calc(100% + 30px) 150px,var(--blob-a),transparent 72%),
+    radial-gradient(ellipse 240px 180px at -50px 520px,var(--blob-b),transparent 72%),
+    radial-gradient(ellipse 300px 200px at calc(100% + 20px) 1200px,var(--blob-c),transparent 72%),
+    radial-gradient(ellipse 260px 200px at -40px 1900px,var(--blob-a),transparent 72%);
+  background-repeat:no-repeat;
+  color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 36px;display:flex;flex-direction:column;gap:14px}
 
 /* header */
-header{display:flex;align-items:flex-end;justify-content:space-between;gap:10px 16px;flex-wrap:wrap}
-h1{font-family:var(--f-display);font-weight:900;font-size:1.9rem;line-height:1.15;margin:0;letter-spacing:.02em;text-wrap:balance}
-h1 small{display:block;font-family:var(--f-ko);font-weight:500;font-size:.78rem;color:var(--muted);letter-spacing:.1em;margin-bottom:2px}
-.summary{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.84rem;color:var(--muted);font-variant-numeric:tabular-nums}
-.chip{display:inline-block;font-size:.72rem;padding:2px 8px;border-radius:99px;background:var(--tang-soft);color:var(--tang);font-weight:700;letter-spacing:.04em}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px 14px}
+.hleft{min-width:0;display:flex;flex-direction:column;gap:4px}
+.jeju{display:flex;align-items:flex-end;gap:1px;font-family:var(--f-display);font-weight:700;font-size:2.7rem;line-height:1;letter-spacing:.01em;user-select:none}
+.jeju span{display:inline-block}
+.jeju .j1{color:var(--tang);transform:rotate(-5deg)}
+.jeju .e{color:var(--leaf);transform:translateY(-2px) rotate(3deg)}
+.jeju .j2{color:var(--sea);transform:translateY(1px) rotate(-3deg)}
+.jeju .u{color:var(--pink);transform:rotate(4deg)}
+.jeju svg{width:20px;height:18px;align-self:flex-start;margin-left:3px;fill:none;stroke:var(--tang);stroke-width:3;stroke-linecap:round}
+h1{font-family:var(--f-display);font-weight:700;font-size:1.55rem;line-height:1.2;margin:0;letter-spacing:.04em;text-wrap:balance}
+h1 small{display:block;font-family:var(--f-ko);font-weight:500;font-size:.76rem;color:var(--muted);letter-spacing:.1em;margin-bottom:1px}
+.hdeco{flex:0 0 auto;width:min(150px,38vw);height:auto}
+.hdeco .stroke{fill:none;stroke:var(--sea);stroke-width:2;stroke-linecap:round}
+.summary{display:flex;align-items:center;gap:6px 8px;flex-wrap:wrap;font-size:.84rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip{display:inline-block;font-size:.72rem;padding:2px 10px;border-radius:99px;background:var(--tang-soft);color:var(--tang);font-weight:700;letter-spacing:.04em}
 
-/* controls */
-button,.btn{font:inherit;font-size:.86rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:7px 11px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;line-height:1.2}
+/* controls: round pill buttons */
+button,.btn{font:inherit;font-size:.86rem;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:7px 14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:4px;line-height:1.2;transition:transform .12s,border-color .15s}
 button:hover,.btn:hover{border-color:var(--muted)}
+button:active,.btn:active{transform:translateY(1px)}
 button:disabled{opacity:.4;cursor:default}
 :focus-visible{outline:2px solid var(--sea);outline-offset:2px}
 .btn.naver{background:var(--naver);border-color:var(--naver);color:#fff;font-weight:700}
 .ghost{background:transparent!important}
-.small{font-size:.78rem;padding:5px 9px}
+.small{font-size:.78rem;padding:5px 11px}
 
-/* day strip */
-.strip{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:8px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
-.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex:0 0 auto;flex-direction:column;align-items:flex-start;gap:0;border-radius:10px;padding:6px 12px;max-width:10.5rem;text-align:left}
-.tab b{font-family:var(--f-mono);font-size:.74rem;font-weight:500;letter-spacing:.06em;color:var(--muted)}
+/* road + car day strip: the road, the car and the tabs share one horizontal scroller, so the car stays above its tab */
+.strip{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding:6px max(16px,env(safe-area-inset-left,0px)) 8px;border-bottom:1.5px solid var(--line)}
+.roadscroll{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;overscroll-behavior-x:contain}
+.roadscroll::-webkit-scrollbar{display:none}
+.roadbox{--carW:104px;--carH:calc(var(--carW)*.75);position:relative;width:max-content;min-width:100%;padding-top:calc(var(--carH) + 14px)}
+.road{position:absolute;left:0;right:0;top:calc(var(--carH) - 15px);width:100%;height:28px;display:block}
+.road .asphalt{fill:var(--road)} .road .grass{fill:var(--leaf-soft)} .road .dash{fill:var(--roadline)}
+.road .lf{fill:var(--leaf)} .road .tg{fill:var(--tang)}
+.car{position:absolute;left:0;top:0;width:var(--carW);height:var(--carH);z-index:2;pointer-events:none;will-change:transform;transition:transform .6s cubic-bezier(.45,.05,.25,1.12)}
+.carflip{width:100%;height:100%;transition:transform .25s}
+.car[data-dir="l"] .carflip{transform:scaleX(-1)}
+.car svg{display:block;width:100%;height:100%;overflow:visible}
+.car .c-car{fill:var(--car)} .car .c-glass{fill:var(--car-glass)} .car .c-trim{fill:var(--rock2)}
+.car .wheel{transform-box:fill-box;transform-origin:center}
+.car.driving .carbody{animation:carbob .22s ease-in-out infinite alternate}
+.car.driving .wheel{animation:wheelspin .35s linear infinite}
+@keyframes carbob{from{transform:translateY(0)}to{transform:translateY(-1.8px)}}
+@keyframes wheelspin{to{transform:rotate(360deg)}}
+.tabs{display:flex;gap:6px;width:max-content;min-width:100%}
+.tab{flex:0 0 auto;flex-direction:column;align-items:flex-start;gap:0;border-radius:99px;border-width:2px;padding:5px 15px 6px;max-width:10.5rem;text-align:left}
+.tab b{font-family:var(--f-mono);font-size:.72rem;font-weight:500;letter-spacing:.06em;color:var(--muted)}
 .tab span{font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.tab[aria-selected="true"]{background:var(--basalt);border-color:var(--basalt);color:var(--bg)}
-.tab[aria-selected="true"] b{color:var(--bg);opacity:.75}
+.tab[aria-selected="true"]{background:var(--tang);border-color:var(--tang);color:var(--on-tang);box-shadow:0 3px 0 var(--shade)}
+.tab[aria-selected="true"] b{color:var(--on-tang);opacity:.8}
+.tab[aria-selected="true"] span{font-weight:700}
 .tab.add{color:var(--muted);border-style:dashed;justify-content:center;align-items:center}
 
 /* board */
@@ -70,15 +114,15 @@ button:disabled{opacity:.4;cursor:default}
 .dayhead{display:flex;flex-direction:column;gap:2px}
 .eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.08em;color:var(--sea);font-variant-numeric:tabular-nums}
 .titlerow{display:flex;align-items:center;gap:8px}
-.daytitle{flex:1;min-width:0;font-family:var(--f-display);font-weight:700;font-size:1.45rem;color:var(--ink);background:transparent;border:0;border-bottom:1px dashed transparent;border-radius:0;padding:2px 0}
-.daytitle:hover{border-bottom-color:var(--line)}
+.daytitle{flex:1;min-width:0;font-family:var(--f-display);font-weight:700;font-size:1.45rem;color:var(--ink);background:transparent;border:0;border-bottom:2px dashed transparent;border-radius:0;padding:2px 0}
+.daytitle:hover{border-bottom-color:var(--trail)}
 .daytitle:focus{outline:none;border-bottom-color:var(--sea)}
 .daytitle::placeholder{color:var(--muted);opacity:.7}
 
 .mapblock{display:flex;flex-direction:column;gap:6px}
 .board>*,.side>*,.day>*,.mapblock>*{min-width:0;max-width:100%}
 html,body{overflow-x:hidden}
-.finder{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;width:100%}
+.finder{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--blobby);padding:12px;width:100%;background-image:radial-gradient(circle at 0 100%,var(--blob-b) 0 40px,transparent 41px)}
 .finder-row{display:flex;gap:8px;min-width:0}
 .finder-row input{flex:1 1 0;width:0;min-width:0;-webkit-appearance:none;appearance:none}
 .finder-row .btn{flex:0 0 auto}
@@ -87,17 +131,17 @@ html,body{overflow-x:hidden}
 .mapbox{width:100%}
 #qMsg{color:var(--muted)}
 #qMsg.err{color:var(--tang)} #qMsg.ok{color:var(--naver)}
-.mapbox{background:var(--sea-soft);border-radius:14px;overflow:hidden;position:relative;isolation:isolate;z-index:0}
+.mapbox{background:var(--sea-soft);border:3px solid var(--surface);box-shadow:0 0 0 1.5px var(--line);border-radius:30px 24px 32px 26px / 26px 30px 24px 32px;overflow:hidden;position:relative;isolation:isolate;z-index:0}
 #map{height:min(52vh,440px);width:100%;background:var(--sea-soft);font-family:var(--f-body)}
-.lpin{display:grid!important;place-items:center;width:26px!important;height:26px!important;border-radius:50%;background:var(--tang);color:#fff;font:700 12px var(--f-mono);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);transition:transform .15s;cursor:pointer}
+.lpin{display:grid!important;place-items:center;width:26px!important;height:26px!important;border-radius:50%;background:var(--tang);color:var(--on-tang);font:700 12px var(--f-mono);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);transition:transform .15s;cursor:pointer}
 .lpin.hot{transform:scale(1.35);z-index:1000!important}
 @media (prefers-color-scheme:dark){.leaflet-tile-pane{filter:invert(.92) hue-rotate(180deg) brightness(.9) contrast(.9)}}
-.leaflet-popup-content-wrapper{border-radius:12px;background:var(--surface);color:var(--ink)}
+.leaflet-popup-content-wrapper{border-radius:16px;background:var(--surface);color:var(--ink)}
 .leaflet-popup-tip{background:var(--surface)}
 .leaflet-popup-content{margin:12px 14px;font-size:.88rem;line-height:1.4}
 .addpop{display:flex;flex-direction:column;gap:8px;width:220px;max-width:62vw}
 .addpop b{font-size:.95rem}
-.addpop input,.addpop select{font-size:.9rem;padding:6px 8px}
+.addpop input,.addpop select{font-size:.9rem;padding:6px 10px}
 .addpop input.bad{border-color:var(--tang);box-shadow:0 0 0 2px var(--tang-soft)}
 .addpop .row{flex-wrap:nowrap}
 .addpop .row>*{flex:1;min-width:0}
@@ -107,55 +151,57 @@ html,body{overflow-x:hidden}
 .stopsblock{display:flex;flex-direction:column;gap:10px}
 ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .stop,.legrow{display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:0 12px;position:relative}
-.stop::before,.legrow::before{content:"";position:absolute;left:1.6rem;top:0;bottom:0;border-left:2px dashed var(--line)}
+.stop::before,.legrow::before{content:"";position:absolute;left:1.6rem;top:0;bottom:0;border-left:2.5px dashed var(--trail)}
 .stop:first-child::before{top:18px}
 .stop:last-child::before{bottom:auto;height:18px}
 .stop:only-child::before{display:none}
 .mark{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;z-index:1}
-.num{width:34px;height:34px;border-radius:50%;background:var(--tang);color:#fff;display:grid;place-items:center;font-weight:700;font-family:var(--f-mono);box-shadow:0 0 0 3px var(--bg)}
-.time{font-family:var(--f-mono);font-size:.78rem;color:var(--ink);font-variant-numeric:tabular-nums;background:var(--bg);padding:0 2px}
-.card{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;transition:box-shadow .2s,border-color .2s}
+.num{width:34px;height:34px;border-radius:50%;background:var(--tang);color:var(--on-tang);display:grid;place-items:center;font-weight:700;font-family:var(--f-mono);box-shadow:0 0 0 3px var(--bg)}
+.time{font-family:var(--f-mono);font-size:.78rem;color:var(--ink);font-variant-numeric:tabular-nums;background:var(--bg);padding:0 2px;border-radius:6px}
+.card{--cb:var(--blob-c);position:relative;min-width:0;background:radial-gradient(circle at 100% 0,var(--cb) 0 38px,transparent 39px) no-repeat,var(--surface);border:1.5px solid var(--line);border-radius:20px 26px 22px 28px / 24px 20px 26px 22px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;box-shadow:0 2px 0 var(--line);transition:box-shadow .2s,border-color .2s}
+.stop:nth-child(6n+3) .card{--cb:var(--blob-a)}
+.stop:nth-child(6n+5) .card{--cb:var(--blob-b)}
 .card.hit{border-color:var(--tang);box-shadow:0 0 0 3px var(--tang-soft)}
 .cardtop{display:flex;align-items:flex-start;gap:8px}
 .names{flex:1;min-width:0}
 .ko{font-family:var(--f-ko);font-weight:600;font-size:1.12rem;line-height:1.3;overflow-wrap:anywhere}
 .zh{color:var(--muted);font-size:.88rem}
-.more{flex:0 0 auto;width:32px;height:32px;padding:0;border-color:transparent;background:transparent;color:var(--muted);font-size:1.1rem;letter-spacing:.05em}
+.more{flex:0 0 auto;width:34px;height:34px;padding:0;border-radius:50%;border-color:transparent;background:transparent;color:var(--muted);font-size:1.1rem;letter-spacing:.05em}
 .more[aria-expanded="true"]{background:var(--bg);border-color:var(--line)}
-.note{font-size:.84rem;color:var(--ink);background:var(--tang-soft);border-radius:6px;padding:4px 8px;align-self:flex-start;max-width:100%}
+.note{font-size:.84rem;color:var(--ink);background:var(--tang-soft);border-radius:14px 14px 14px 5px;padding:5px 11px;align-self:flex-start;max-width:100%}
 .actions{display:flex;flex-wrap:wrap;gap:6px}
-.rev{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.84rem}
+.rev{border:1.5px solid var(--line);border-radius:16px;padding:7px 12px;font-size:.84rem}
 .rev summary{cursor:pointer;display:flex;align-items:center;gap:8px;flex-wrap:wrap;list-style:none}
 .rev summary::-webkit-details-marker{display:none}
 .rev summary::after{content:"看評論 ▾";margin-left:auto;font-size:.74rem;color:var(--muted)}
 .rev[open] summary::after{content:"收起 ▴"}
-.revchip{font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:99px;background:var(--sea-soft);color:var(--sea)}
+.revchip{font-size:.72rem;font-weight:700;padding:1px 9px;border-radius:99px;background:var(--leaf-soft);color:var(--leaf)}
 .rev.mixed .revchip{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
-.rev.bad{border-color:var(--tang)}
-.rev.bad .revchip{background:var(--tang);color:#fff}
+.rev.bad{border-color:var(--red)}
+.rev.bad .revchip{background:var(--red);color:#fff}
 .revsrc{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .revbody{padding-top:6px;display:flex;flex-direction:column;gap:2px}
 .revbody b{font-size:.76rem;color:var(--muted);margin-top:4px}
 .revbody ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:2px}
-.revbody ul.neg li::marker{color:var(--tang)}
+.revbody ul.neg li::marker{color:var(--red)}
 .reads{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;font-size:.8rem}
 .reads span{font-size:.74rem;color:var(--muted)}
 .reads a{color:var(--sea);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--sea-soft)}
-.reads a.yt{color:var(--tang);text-decoration-color:var(--tang-soft)}
-.park{background:var(--sea-soft);border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:.84rem}
+.reads a.yt{color:var(--red);text-decoration-color:var(--red-soft)}
+.park{background:var(--sea-soft);border-radius:18px;padding:9px 12px;display:flex;flex-direction:column;gap:6px;font-size:.84rem}
 .park-head{display:flex;gap:8px;align-items:flex-start}
-.pchip{flex:0 0 auto;width:22px;height:22px;border-radius:5px;background:var(--sea);color:#fff;display:grid;place-items:center;font:700 .8rem var(--f-mono)}
+.pchip{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--sea);color:var(--on-sea);display:grid;place-items:center;font:700 .8rem var(--f-mono)}
 .park-head b{font-size:.88rem}
 .pmeta{display:flex;flex-wrap:wrap;gap:2px 10px;color:var(--sea);font-size:.78rem}
 .park p{margin:0;color:var(--ink);font-size:.8rem}
-.near{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.84rem}
+.near{border:1.5px solid var(--line);border-radius:16px;padding:7px 12px;font-size:.84rem}
 .near summary{cursor:pointer;display:flex;align-items:center;gap:8px;list-style:none;font-weight:600}
 .near summary::-webkit-details-marker{display:none}
 .near summary::after{content:"展開 ▾";margin-left:auto;font-size:.74rem;font-weight:400;color:var(--muted)}
 .near[open] summary::after{content:"收起 ▴"}
 .near-src{margin:8px 0 0;font-size:.74rem;color:var(--muted)}
-.near h4{margin:12px 0 4px;font-size:.8rem;color:var(--sea)}
-.near-item{display:flex;flex-direction:column;gap:3px;min-width:0;padding:8px 0;border-top:1px solid var(--line)}
+.near h4{margin:12px 0 4px;font-size:.8rem;color:var(--leaf)}
+.near-item{display:flex;flex-direction:column;gap:3px;min-width:0;padding:8px 0;border-top:1px dashed var(--line)}
 .near h4+.near-item{border-top:0}
 .near-name{min-width:0;overflow-wrap:anywhere}
 .near-name small{font-size:.76rem;color:var(--muted);margin-left:6px}
@@ -165,7 +211,7 @@ ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .near-item .actions{flex-wrap:wrap;margin-top:2px}
 .near-links{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.8rem}
 .near-links a{color:var(--sea);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--sea-soft)}
-.near-links a.zh{color:var(--tang);font-weight:700;text-decoration-color:var(--tang-soft)}
+.near-links a.zh{color:var(--red);font-weight:700;text-decoration-color:var(--red-soft)}
 .near-links a.nv{color:var(--naver);text-decoration-color:var(--naver)}
 .contact{margin:0;display:flex;flex-direction:column;gap:4px}
 .contact>div{display:grid;grid-template-columns:2.4em minmax(0,1fr) auto;gap:8px;align-items:center}
@@ -173,58 +219,156 @@ ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .contact dd{margin:0;font-family:var(--f-mono);font-size:.86rem;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
 .contact dd[lang="ko"]{font-family:var(--f-ko);font-size:.84rem}
 .contact a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
-.tray{border-top:1px dashed var(--line);padding-top:8px;display:flex;flex-direction:column;gap:6px}
+.tray{border-top:2px dashed var(--line);padding-top:8px;display:flex;flex-direction:column;gap:6px}
 .coord{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .legrow{min-height:30px}
 .leg{grid-column:2;align-self:center;font-size:.78rem;color:var(--sea);font-variant-numeric:tabular-nums;padding-block:6px}
 .leg b{font-weight:700}
-.addstop{border-style:dashed;color:var(--muted);padding:12px;width:100%;background:transparent}
-.empty{padding:22px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;list-style:none}
+.addstop{border-style:dashed;border-width:2px;color:var(--muted);padding:12px;width:100%;background:transparent}
+.empty{padding:22px;text-align:center;color:var(--muted);border:2px dashed var(--line);border-radius:var(--blobby);list-style:none}
 
 /* panels */
-.planner,details.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px}
-details.panel{padding:12px 14px}
+.planner,details.panel{background:radial-gradient(circle at 100% 0,var(--blob-a) 0 44px,transparent 45px) no-repeat,var(--surface);border:1.5px solid var(--line);border-radius:var(--blobby);box-shadow:0 2px 0 var(--line)}
+details.panel{padding:12px 16px}
+#formPanel{background:radial-gradient(circle at 100% 0,var(--blob-b) 0 44px,transparent 45px) no-repeat,var(--surface)}
+#dataPanel{background:radial-gradient(circle at 100% 0,var(--blob-c) 0 44px,transparent 45px) no-repeat,var(--surface)}
 details.panel summary{cursor:pointer;font-weight:700}
-.planner{padding:14px;display:flex;flex-direction:column;gap:10px}
+.planner{padding:16px;display:flex;flex-direction:column;gap:10px}
 .plan-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
-.plan-head b{font-family:var(--f-display);font-size:1.05rem}
+.plan-head b{font-family:var(--f-display);font-size:1.1rem}
 .plan-pair{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:stretch}
 .plan-pair .stack{display:flex;flex-direction:column;gap:8px;min-width:0}
-.swap{padding:0 12px;font-size:1.1rem}
+.swap{padding:0 14px;font-size:1.1rem}
 .modes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .modes button{padding:8px 4px}
-.modes button[aria-pressed="true"]{background:var(--sea);border-color:var(--sea);color:#fff;font-weight:700}
+.modes button[aria-pressed="true"]{background:var(--sea);border-color:var(--sea);color:var(--on-sea);font-weight:700}
 .go{font-size:1rem;padding:11px}
 .form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .form .full{grid-column:1/-1}
 label{display:flex;flex-direction:column;gap:3px;font-size:.78rem;color:var(--muted);min-width:0}
-input,textarea,select{font:inherit;font-size:.95rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+input,textarea,select{font:inherit;font-size:.95rem;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:8px 12px;width:100%}
 textarea{resize:vertical;min-height:60px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .msg{font-size:.82rem;min-height:1.2em}
 .msg.ok{color:var(--naver)} .msg.err{color:var(--tang)}
 .help{font-size:.82rem;color:var(--muted);margin:0}
-.help code{font-family:var(--f-mono);font-size:.76rem;background:var(--bg);padding:1px 4px;border-radius:4px;word-break:break-all}
+.help code{font-family:var(--f-mono);font-size:.76rem;background:var(--bg);padding:1px 4px;border-radius:6px;word-break:break-all}
 
-@media (max-width:440px){.form{grid-template-columns:1fr}}
+/* footer: basalt rocks and leaves */
+.foot{display:block;line-height:0;overflow:hidden}
+.foot svg{display:block;width:100%;height:clamp(72px,13vw,124px)}
+.foot .rk{fill:var(--rock)} .foot .rk2{fill:var(--rock2)} .foot .lf{fill:var(--leaf)} .foot .lf2{fill:var(--leaf);opacity:.55}
+
+@media (max-width:520px){.roadbox{--carW:80px}}
+@media (max-width:440px){.form{grid-template-columns:1fr}.tab{padding:4px 12px 5px}}
 @media (min-width:980px){
   .wrap{gap:18px}
   .board{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:start}
-  .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px)}
+  .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 176px)}
   .day{display:flex;flex-direction:column;gap:16px}
   .tab{max-width:13rem}
   #map{height:min(58vh,560px)}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 
 <div class="wrap">
   <header>
-    <h1><small lang="ko">제주 여행 일정</small>濟州行程板</h1>
-    <div class="summary"><span id="tripSum"></span><span class="chip" id="sampleChip">範例行程・可直接修改</span></div>
+    <div class="hleft">
+      <div class="jeju" aria-hidden="true"><span class="j1">J</span><span class="e">E</span><span class="j2">J</span><span class="u">U</span><svg viewBox="0 0 20 18"><path d="M3 15 L5 8"/><path d="M9 11 L12 3"/><path d="M15 12 L19 7"/></svg></div>
+      <h1><small lang="ko">제주 여행 일정</small>濟州行程板</h1>
+      <div class="summary"><span id="tripSum"></span><span class="chip" id="sampleChip">範例行程・可直接修改</span></div>
+    </div>
+    <svg class="hdeco" viewBox="0 0 160 100" aria-hidden="true" focusable="false">
+      <path d="M6 56 Q2 30 32 24 Q58 14 84 26 Q110 28 106 56 Q102 90 58 90 Q12 90 6 56Z" style="fill:var(--sea-soft)"/>
+      <path d="M12 30 Q22 24 32 30 M70 80 Q80 74 90 80" class="stroke"/>
+      <path d="M18 66 Q20 54 38 56 Q52 50 66 57 Q82 58 78 69 Q56 80 32 77 Q16 77 18 66Z" style="fill:var(--leaf)"/>
+      <path d="M34 60 L50 36 L66 60Z" style="fill:#3d7a3a"/>
+      <path d="M44 45 L50 36 L56 45 L52.5 43 L50 46 L47.5 43Z" style="fill:#fff"/>
+      <g transform="translate(88 12) scale(.92)">
+        <path d="M2 76 L2 36 Q2 16 24 16 Q46 16 46 36 L46 76Z" style="fill:#5a5862"/>
+        <path d="M-3 32 Q-3 4 24 4 Q51 4 51 32 Q24 23 -3 32Z" style="fill:#3b3a41"/>
+        <ellipse cx="15" cy="40" rx="4" ry="2.6" style="fill:#1f1e24"/><ellipse cx="33" cy="40" rx="4" ry="2.6" style="fill:#1f1e24"/>
+        <path d="M20 46 Q24 42 28 46 Q28 54 24 54 Q20 54 20 46Z" style="fill:#47454d"/>
+        <path d="M16 60 Q24 65 32 60" style="fill:none;stroke:#1f1e24;stroke-width:2;stroke-linecap:round"/>
+        <ellipse cx="17" cy="70" rx="6" ry="4" style="fill:#6c6a75"/><ellipse cx="31" cy="70" rx="6" ry="4" style="fill:#6c6a75"/>
+        <circle cx="8" cy="52" r="1.4" style="fill:#47454d"/><circle cx="40" cy="56" r="1.4" style="fill:#47454d"/><circle cx="36" cy="26" r="1.2" style="fill:#2c2b31"/>
+      </g>
+      <circle cx="143" cy="80" r="11" style="fill:#f58a1f"/>
+      <ellipse cx="139" cy="75" rx="3.4" ry="2" style="fill:#fff;opacity:.35"/>
+      <path d="M143 69 Q148 62 156 65 Q151 72 143 69Z" style="fill:var(--leaf)"/>
+      <circle cx="129" cy="91" r="6.5" style="fill:#f7a748"/>
+      <path d="M129 85 Q131 81 135 82 Q133 86 129 85Z" style="fill:var(--leaf)"/>
+    </svg>
   </header>
 
-  <div class="strip"><nav class="tabs" id="tabs" role="tablist" aria-label="行程天數"></nav></div>
+  <div class="strip"><div class="roadscroll" id="roadScroll"><div class="roadbox" id="roadBox">
+    <div class="car" id="car">
+      <div class="carflip"><svg viewBox="0 0 120 90" role="img" aria-label="載著黑柴、黃柴和灰鸚鵡的小車">
+        <ellipse cx="60" cy="87.5" rx="52" ry="2.6" style="fill:#000;opacity:.16"/>
+        <g class="carbody">
+          <path d="M14 54 Q16 26 40 26 L82 26 Q100 26 106 54Z" class="c-car"/>
+          <rect x="26" y="32" width="26" height="22" rx="7" class="c-glass"/>
+          <rect x="68" y="32" width="26" height="22" rx="7" class="c-glass"/>
+          <!-- black-and-tan shiba -->
+          <polygon points="30,39 32,23 38,33" style="fill:#2e2d33"/><polygon points="48,39 46,23 40,33" style="fill:#2e2d33"/>
+          <polygon points="32,36 32.6,27.5 36,33" style="fill:#c98746"/><polygon points="46,36 45.4,27.5 42,33" style="fill:#c98746"/>
+          <ellipse cx="39" cy="42" rx="10.5" ry="9.5" style="fill:#2e2d33"/>
+          <ellipse cx="32.5" cy="45.5" rx="3.6" ry="3" style="fill:#c98746"/><ellipse cx="45.5" cy="45.5" rx="3.6" ry="3" style="fill:#c98746"/>
+          <ellipse cx="39" cy="46.5" rx="5.2" ry="4" style="fill:#f7ecd9"/>
+          <circle cx="35" cy="37" r="1.4" style="fill:#c98746"/><circle cx="43" cy="37" r="1.4" style="fill:#c98746"/>
+          <circle cx="35" cy="40.5" r="1.5" style="fill:#0f0f12"/><circle cx="43" cy="40.5" r="1.5" style="fill:#0f0f12"/>
+          <circle cx="35.4" cy="40" r=".5" style="fill:#fff"/><circle cx="43.4" cy="40" r=".5" style="fill:#fff"/>
+          <ellipse cx="39" cy="44.6" rx="2.2" ry="1.5" style="fill:#0f0f12"/>
+          <ellipse cx="39" cy="50.2" rx="1.6" ry="2" style="fill:#f08aa0"/>
+          <!-- red / yellow shiba -->
+          <polygon points="72,39 74,23 80,33" style="fill:#e8993d"/><polygon points="90,39 88,23 82,33" style="fill:#e8993d"/>
+          <polygon points="74,36 74.6,27.5 78,33" style="fill:#f7ecd9"/><polygon points="88,36 87.4,27.5 84,33" style="fill:#f7ecd9"/>
+          <ellipse cx="81" cy="42" rx="10.5" ry="9.5" style="fill:#e8993d"/>
+          <ellipse cx="75" cy="45.5" rx="4.4" ry="3.8" style="fill:#fbeedb"/><ellipse cx="87" cy="45.5" rx="4.4" ry="3.8" style="fill:#fbeedb"/>
+          <ellipse cx="81" cy="46.5" rx="5.2" ry="4" style="fill:#fbeedb"/>
+          <circle cx="77" cy="37" r="1.4" style="fill:#fbeedb"/><circle cx="85" cy="37" r="1.4" style="fill:#fbeedb"/>
+          <circle cx="77" cy="40.5" r="1.5" style="fill:#2a1c12"/><circle cx="85" cy="40.5" r="1.5" style="fill:#2a1c12"/>
+          <circle cx="77.4" cy="40" r=".5" style="fill:#fff"/><circle cx="85.4" cy="40" r=".5" style="fill:#fff"/>
+          <ellipse cx="81" cy="44.6" rx="2.2" ry="1.5" style="fill:#0f0f12"/>
+          <ellipse cx="81" cy="50.2" rx="1.6" ry="2" style="fill:#f08aa0"/>
+          <!-- grey parrot on the roof -->
+          <path d="M56 20 L50 35 L56 32 L59 35 L62 24Z" style="fill:#d6392f"/>
+          <rect x="56" y="24.5" width="2.2" height="2.5" rx="1" style="fill:#e0a24a"/><rect x="61.5" y="24.5" width="2.2" height="2.5" rx="1" style="fill:#e0a24a"/>
+          <ellipse cx="60" cy="16" rx="7.5" ry="10.5" style="fill:#8c9199"/>
+          <ellipse cx="62.5" cy="18" rx="4.5" ry="7" style="fill:#a7acb4"/>
+          <ellipse cx="57" cy="18" rx="3.8" ry="8" style="fill:#6f747c"/>
+          <circle cx="62" cy="7.5" r="6" style="fill:#9aa0a8"/>
+          <ellipse cx="64.5" cy="8" rx="3.8" ry="3.6" style="fill:#f4f4f1"/>
+          <circle cx="65.4" cy="7.2" r="1.1" style="fill:#111"/>
+          <path d="M67 5.5 Q74 6 72.5 12 Q71 9.5 67 10Z" style="fill:#1d1d20"/>
+          <!-- lower body -->
+          <rect x="4" y="52" width="112" height="27" rx="11" class="c-car"/>
+          <path d="M10 63 H110" style="fill:none;stroke:#000;stroke-opacity:.12;stroke-width:1.6"/>
+          <rect x="58" y="57" width="9" height="2.6" rx="1.3" style="fill:#fff3dc"/>
+          <ellipse cx="111.5" cy="60" rx="3.6" ry="5" style="fill:#ffe27a"/>
+          <rect x="5.5" y="57" width="3.2" height="7" rx="1.6" style="fill:#d94b3b"/>
+        </g>
+        <circle cx="30" cy="78" r="12" class="c-trim"/><circle cx="92" cy="78" r="12" class="c-trim"/>
+        <g class="wheel"><circle cx="30" cy="78" r="10" style="fill:#2b2a30"/><circle cx="30" cy="78" r="4.6" style="fill:#d8d3c4"/><path d="M30 71.5 V84.5 M23.5 78 H36.5" style="stroke:#8d887b;stroke-width:1.4"/></g>
+        <g class="wheel"><circle cx="92" cy="78" r="10" style="fill:#2b2a30"/><circle cx="92" cy="78" r="4.6" style="fill:#d8d3c4"/><path d="M92 71.5 V84.5 M85.5 78 H98.5" style="stroke:#8d887b;stroke-width:1.4"/></g>
+      </svg></div>
+    </div>
+    <svg class="road" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern id="roadDash" width="28" height="3" patternUnits="userSpaceOnUse"><rect width="15" height="3" rx="1.5" class="dash"/></pattern>
+        <pattern id="roadSide" width="76" height="10" patternUnits="userSpaceOnUse">
+          <path d="M6 10 Q3 4 11 1 Q14 7 6 10Z" class="lf"/><circle cx="30" cy="6.5" r="3" class="tg"/><path d="M30 3.8 Q33 1 35 2.4 Q33 4.6 30 3.8Z" class="lf"/>
+          <path d="M48 10 Q46 5 52 2 Q54 8 48 10Z" class="lf"/><circle cx="66" cy="7.5" r="2.2" class="tg"/>
+        </pattern>
+      </defs>
+      <rect y="19" width="100%" height="9" class="grass"/>
+      <rect y="18" width="100%" height="10" fill="url(#roadSide)"/>
+      <rect y="2" width="100%" height="17" rx="3" class="asphalt"/>
+      <rect y="9.5" width="100%" height="3" fill="url(#roadDash)"/>
+    </svg>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="行程天數"></nav>
+  </div></div></div>
 
   <div class="board">
     <div class="side">
@@ -311,6 +455,24 @@ textarea{resize:vertical;min-height:60px}
   </div>
 </div>
 
+<footer class="foot" aria-hidden="true">
+  <svg viewBox="0 0 1200 140" preserveAspectRatio="xMidYMax slice" focusable="false">
+    <defs><path id="fLeaf" d="M0 0 Q-10 -15 0 -34 Q10 -15 0 0Z"/></defs>
+    <use href="#fLeaf" class="lf2" transform="translate(70 112) rotate(-28)"/><use href="#fLeaf" class="lf" transform="translate(86 112) rotate(8)"/>
+    <use href="#fLeaf" class="lf2" transform="translate(410 118) rotate(-14) scale(.9)"/><use href="#fLeaf" class="lf" transform="translate(426 118) rotate(22) scale(1.1)"/><use href="#fLeaf" class="lf2" transform="translate(440 120) rotate(40) scale(.8)"/>
+    <use href="#fLeaf" class="lf" transform="translate(760 100) rotate(-20) scale(1.2)"/><use href="#fLeaf" class="lf2" transform="translate(780 102) rotate(15)"/>
+    <use href="#fLeaf" class="lf" transform="translate(1010 112) rotate(-10) scale(1.1)"/><use href="#fLeaf" class="lf2" transform="translate(1030 114) rotate(30)"/>
+    <path class="rk" d="M-20 140 L-20 92 Q20 52 82 68 Q132 80 172 112 Q204 100 244 140Z"/>
+    <path class="rk2" d="M196 140 Q230 100 300 104 Q362 110 384 140Z"/>
+    <path class="rk" d="M360 140 Q392 114 462 118 Q516 122 548 140Z"/>
+    <path class="rk2" d="M520 140 Q560 100 640 104 Q700 108 726 140Z"/>
+    <path class="rk" d="M690 140 Q730 84 812 86 Q890 92 930 140Z"/>
+    <path class="rk2" d="M900 140 Q940 104 1010 108 Q1072 112 1100 140Z"/>
+    <path class="rk" d="M1040 140 Q1090 70 1150 72 Q1200 76 1230 100 L1230 140Z"/>
+    <circle cx="70" cy="100" r="4" class="rk2"/><circle cx="104" cy="120" r="3" class="rk2"/><circle cx="780" cy="112" r="4.5" class="rk2"/><circle cx="1140" cy="104" r="4" class="rk2"/><circle cx="610" cy="124" r="3" class="rk"/>
+    <use href="#fLeaf" class="lf" transform="translate(560 116) rotate(-34) scale(.9)"/><use href="#fLeaf" class="lf2" transform="translate(1180 94) rotate(26)"/>
+  </svg>
+</footer>
 
 <script>
 (function(){
@@ -685,12 +847,35 @@ function nearHtml(s){if(s.ko!=='더퍼스트70호텔')return '';
     <p class="near-src">資料來源：Kakao 地圖（2026/10）。營業時間可能變動，出發前再確認。</p>
     ${NEARBY.map(g=>`<h4>${esc(g.g)}</h4>${g.items.map(item).join('')}`).join('')}</details>`}
 
+/* ---- road + car: the car sits on the road above the selected day tab and drives there when the day changes ---- */
+let carX=null, carDay=-1, carTimer=0;
+function placeCar(instant,onlyIfMoved){
+  const car=$('car'), box=$('roadBox'), sc=$('roadScroll'), sel=$('tabs').querySelector('[aria-selected="true"]');
+  if(!car||!sel)return;
+  const mid=sel.offsetLeft+sel.offsetWidth/2;
+  const x=Math.max(0,Math.min(mid-car.offsetWidth/2,box.offsetWidth-car.offsetWidth));
+  if(onlyIfMoved&&carX!==null&&Math.abs(x-carX)<1.5)return;
+  const left=Math.max(0,Math.min(mid-sc.clientWidth/2,sc.scrollWidth-sc.clientWidth));
+  const still=instant||carX===null||matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(still){car.style.transition='none';car.style.transform=`translateX(${x}px)`;void car.offsetWidth;car.style.transition='';sc.scrollLeft=left}
+  else{
+    if(Math.abs(x-carX)>1){car.dataset.dir=x<carX?'l':'r';car.classList.add('driving');clearTimeout(carTimer);carTimer=setTimeout(()=>car.classList.remove('driving'),700)}
+    car.style.transform=`translateX(${x}px)`;
+    if(S.activeDay!==carDay)sc.scrollTo({left,behavior:'smooth'});
+  }
+  carX=x; carDay=S.activeDay;
+}
+addEventListener('resize',()=>placeCar(true,true));
+if(window.ResizeObserver)new ResizeObserver(()=>placeCar(true,true)).observe($('tabs'));
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>placeCar(true,true));
+
 /* ---- render ---- */
 function render(){
   $('sampleChip').hidden=!S.sample;
   const total=S.days.reduce((a,d)=>a+d.stops.length,0);
   $('tripSum').textContent=`${S.days.length} 天・${total} 個地點`;
   $('tabs').innerHTML=S.days.map((d,i)=>`<button class="tab" role="tab" aria-selected="${i===S.activeDay}" data-day="${i}"><b>DAY ${i+1}</b><span>${esc(d.title||`${d.stops.length} 個地點`)}</span></button>`).join('')+`<button class="tab add" id="addDay" aria-label="新增一天">＋ 一天</button>`;
+  placeCar();
   const day=S.days[S.activeDay];
   const tot=dayDrive(day);
   $('dayEyebrow').textContent=`DAY ${S.activeDay+1} / ${S.days.length}・${day.stops.length} 個地點${day.stops[0]?.time?`・${day.stops[0].time} 出發`:''}${tot?`・開車合計約 ${fmtDur(tot)}`:''}`;
