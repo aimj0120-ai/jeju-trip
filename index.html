@@ -104,21 +104,19 @@ button:disabled{opacity:.4;cursor:default}
 .car.aboard .pal{opacity:0}
 .car.aboard .pal,.car.aboard .pal *{animation:none!important}
 .pal-b,.pal-y{width:calc(var(--carW)*.36);height:calc(var(--carW)*.27);top:calc(var(--carH) + 3px - var(--carW)*.27)}
-.pal-b{left:calc(var(--carW)*.145);--to:calc(-1*(var(--carW)*.145 + var(--wl,0px)*.8));animation:walk 9s ease-in-out infinite}
+.pal-b{left:calc(var(--carW)*.145)}
 .pal-b .palflip{animation:faceLR 9s linear infinite}
-.pal-y{left:calc(var(--carW)*.495);--to:calc(var(--carW)*.145 + var(--wr,0px)*.8);animation:walk 11s ease-in-out -1s infinite}
+.pal-y{left:calc(var(--carW)*.495)}
 .pal-y .palflip{animation:faceRL 11s linear -1s infinite}
 .pal .legs1{animation:stepA .32s steps(1) infinite}
 .pal .legs2{animation:stepA .32s steps(1) -.16s infinite}
-.pal-p{width:calc(var(--carW)*.22);height:calc(var(--carW)*.16);left:calc(var(--carW)*.06);animation:fly 6s ease-in-out infinite}
+.pal-p{width:calc(var(--carW)*.22);height:calc(var(--carW)*.16);left:calc(var(--carW)*.06)}
 .pal-p .palflip{animation:faceRL 6s linear infinite}
 .pal-p .wingD{animation:stepA .26s steps(1) infinite}
 .pal-p .wingU{animation:stepA .26s steps(1) -.13s infinite}
-@keyframes walk{0%,8%{transform:translateX(0)}44%,58%{transform:translateX(var(--to))}94%,100%{transform:translateX(0)}}
 @keyframes faceLR{0%,50.9%{transform:scaleX(-1)}51%,100%{transform:scaleX(1)}}
 @keyframes faceRL{0%,50.9%{transform:scaleX(1)}51%,100%{transform:scaleX(-1)}}
 @keyframes stepA{0%{opacity:1}50%{opacity:0}}
-@keyframes fly{0%{transform:translate(0,calc(var(--carW)*.05))}25%{transform:translate(calc(var(--carW)*.34),0)}50%{transform:translate(calc(var(--carW)*.66),calc(var(--carW)*.05))}75%{transform:translate(calc(var(--carW)*.34),calc(var(--carW)*.1))}100%{transform:translate(0,calc(var(--carW)*.05))}}
 @media (prefers-reduced-motion:reduce){.car .rider{opacity:1!important}.pal{display:none!important}}
 @keyframes carbob{from{transform:translateY(0)}to{transform:translateY(-1.8px)}}
 @keyframes wheelspin{to{transform:rotate(360deg)}}
@@ -941,20 +939,41 @@ function placeCar(instant,onlyIfMoved){
   const cap=car.offsetWidth*.6;
   car.style.setProperty('--wl',Math.max(0,Math.min(cap,x))+'px');
   car.style.setProperty('--wr',Math.max(0,Math.min(cap,box.offsetWidth-x-car.offsetWidth))+'px');
-  if(still){car.style.transition='none';car.style.transform=`translateX(${x}px)`;void car.offsetWidth;car.style.transition='';sc.scrollLeft=left}
+  if(still){car.style.transition='none';car.style.transform=`translateX(${x}px)`;void car.offsetWidth;car.style.transition='';sc.scrollLeft=left;if(!car.classList.contains('aboard'))startPals()}
   else{
     if(Math.abs(x-carX)>1){
       /* everyone hops in, the car drives off, then they get out again */
-      car.dataset.dir=x<carX?'l':'r'; car.classList.add('aboard'); car.style.transitionDelay='.35s';
+      car.dataset.dir=x<carX?'l':'r'; car.classList.add('aboard'); palAnims.forEach(a=>a.cancel()); palAnims=[]; car.style.transitionDelay='.35s';
       clearTimeout(carTimer); clearTimeout(carTimer2); clearTimeout(carTimer3);
       carTimer=setTimeout(()=>car.classList.add('driving'),350);
       carTimer2=setTimeout(()=>{car.classList.remove('driving');car.style.transitionDelay=''},1050);
-      carTimer3=setTimeout(()=>car.classList.remove('aboard'),1250);
+      carTimer3=setTimeout(()=>{car.classList.remove('aboard');startPals()},1250);
     }
     car.style.transform=`translateX(${x}px)`;
     if(S.activeDay!==carDay)sc.scrollTo({left,behavior:'smooth'});
   }
   carX=x; carDay=S.activeDay;
+}
+/* walking dogs + circling parrot: Web Animations with px values */
+let palAnims=[];
+function startPals(){
+  palAnims.forEach(a=>a.cancel()); palAnims=[];
+  const car=$('car'); if(!car||car.classList.contains('aboard')||!car.animate||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const w=car.offsetWidth, wl=parseFloat(car.style.getPropertyValue('--wl'))||0, wr=parseFloat(car.style.getPropertyValue('--wr'))||0;
+  const walk=(el,to,dur,delay)=>el&&palAnims.push(el.animate([
+    {transform:'translateX(0)',offset:0},{transform:'translateX(0)',offset:.08},
+    {transform:`translateX(${to}px)`,offset:.44},{transform:`translateX(${to}px)`,offset:.58},
+    {transform:'translateX(0)',offset:.94},{transform:'translateX(0)',offset:1}],
+    {duration:dur,iterations:Infinity,easing:'ease-in-out',delay}));
+  walk(car.querySelector('.pal-b'),-(w*.145+wl*.8),9000,0);
+  walk(car.querySelector('.pal-y'),w*.145+wr*.8,11000,-1000);
+  const p=car.querySelector('.pal-p');
+  if(p)palAnims.push(p.animate([
+    {transform:`translate(0px,${w*.05}px)`},{transform:`translate(${w*.34}px,0px)`},
+    {transform:`translate(${w*.66}px,${w*.05}px)`},{transform:`translate(${w*.34}px,${w*.1}px)`},
+    {transform:`translate(0px,${w*.05}px)`}],{duration:6000,iterations:Infinity,easing:'ease-in-out'}));
+  /* restart the CSS facing/legs loops so they stay in sync with the walks */
+  car.querySelectorAll('.palflip').forEach(f=>{f.style.animation='none';void f.offsetWidth;f.style.animation=''});
 }
 addEventListener('resize',()=>placeCar(true,true));
 if(window.ResizeObserver)new ResizeObserver(()=>placeCar(true,true)).observe($('tabs'));
