@@ -62,12 +62,12 @@ header{display:flex;align-items:flex-start;justify-content:space-between;gap:10p
 .jeju .j2{color:var(--sea);transform:translateY(1px) rotate(-3deg)}
 .jeju .u{color:var(--pink);transform:rotate(4deg)}
 .jeju svg{width:20px;height:18px;align-self:flex-start;margin-left:3px;fill:none;stroke:var(--tang);stroke-width:3;stroke-linecap:round}
-h1{font-family:var(--f-display);font-weight:700;font-size:1.55rem;line-height:1.2;margin:0;letter-spacing:.04em;text-wrap:balance}
+h1{font-family:var(--f-display);font-weight:700;font-size:1.55rem;line-height:1.2;margin:0;letter-spacing:.04em}
 /* heartbeat title: text thumps twice per 1.3s, each thump sends two rings out (literal values in keyframes for iOS Safari) */
 header{overflow-x:clip}
 .sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 /* wave letters: each glyph bobs and sways in turn; 1.4s per wave; two theme tones alternate */
-.wv{display:inline-block;transform-origin:50% 80%;will-change:transform}
+.wv{display:inline-block;position:relative;transform-origin:50% 80%}
 .wt .wv:nth-child(odd){color:var(--tang)} .wt .wv:nth-child(even){color:var(--sea)}
 .wsp{display:inline-block;width:.35em}
 h1 small{display:block;font-family:var(--f-ko);font-weight:500;font-size:.76rem;color:var(--muted);letter-spacing:.1em;margin-bottom:1px}
@@ -973,20 +973,21 @@ function placeCar(instant,onlyIfMoved){
   }
   carX=x; carDay=S.activeDay;
 }
-/* wave letters in the header: Web Animations, same approach as the walking dogs that run on iOS */
+/* wave letters in the header: a plain frame loop that sets each letter's offset (works where CSS/Web Animations on these spans didn't on iOS) */
 (function(){
   if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-  document.querySelectorAll('.wv').forEach(el=>{
-    const em=parseFloat(getComputedStyle(el).fontSize)||16;
-    if(!el.animate)return;
-    el.animate([
-      {transform:'translate(0px,0px) rotate(0deg)'},
-      {transform:`translate(-1px,${-.26*em}px) rotate(-7deg)`},
-      {transform:'translate(0px,0px) rotate(0deg)'},
-      {transform:`translate(1px,${.08*em}px) rotate(6deg)`},
-      {transform:'translate(0px,0px) rotate(0deg)'}],
-      {duration:1400,iterations:Infinity,easing:'ease-in-out',delay:(parseFloat(el.dataset.d)||0)*1000});
-  });
+  const L=[...document.querySelectorAll('.wv')].map(el=>({el,d:(parseFloat(el.dataset.d)||0)*1000,em:parseFloat(getComputedStyle(el).fontSize)||16}));
+  if(!L.length)return;
+  const P=1400, t0=performance.now();
+  function frame(now){
+    for(const l of L){
+      const t=(((now-t0-l.d)%P)+P)%P/P, s=Math.sin(t*2*Math.PI), up=t<.5;
+      const y=(up?-.26:-.08)*s*l.em, x=(up?-1:-1)*s, r=(up?-7:-6)*s;
+      l.el.style.top=y.toFixed(2)+'px'; l.el.style.left=x.toFixed(2)+'px'; l.el.style.transform='rotate('+r.toFixed(2)+'deg)';
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 })();
 /* walking dogs + circling parrot: Web Animations with px values */
 let palAnims=[];
