@@ -316,7 +316,7 @@ textarea{resize:vertical;min-height:60px}
     <div class="hleft">
       <div class="jeju" aria-hidden="true"><span class="j1"><span class="wv" data-d="0.00">J</span></span><span class="e"><span class="wv" data-d="0.10">E</span></span><span class="j2"><span class="wv" data-d="0.20">J</span></span><span class="u"><span class="wv" data-d="0.30">U</span></span><svg viewBox="0 0 20 18"><path d="M3 15 L5 8"/><path d="M9 11 L12 3"/><path d="M15 12 L19 7"/></svg></div>
       <h1><small lang="ko"><span class="sr">제주 여행 일정</span><span class="wt" aria-hidden="true"><span class="wv" data-d="0.00">제</span><span class="wv" data-d="0.08">주</span><span class="wsp"></span><span class="wv" data-d="0.16">여</span><span class="wv" data-d="0.24">행</span><span class="wsp"></span><span class="wv" data-d="0.32">일</span><span class="wv" data-d="0.40">정</span></span></small><span class="sr">濟州行程板</span><span class="wt" aria-hidden="true"><span class="wv" data-d="0.00">濟</span><span class="wv" data-d="0.10">州</span><span class="wv" data-d="0.20">行</span><span class="wv" data-d="0.30">程</span><span class="wv" data-d="0.40">板</span></span></h1>
-      <div class="summary"><span id="tripSum"></span><span id="verTag" style="font-size:.7rem;color:var(--muted)">v1030e</span><span class="chip" id="sampleChip">範例行程・可直接修改</span></div>
+      <div class="summary"><span id="tripSum"></span><span class="chip" id="sampleChip">範例行程・可直接修改</span></div>
     </div>
     <svg class="hdeco" viewBox="0 0 160 100" aria-hidden="true" focusable="false">
       <path d="M6 56 Q2 30 32 24 Q58 14 84 26 Q110 28 106 56 Q102 90 58 90 Q12 90 6 56Z" style="fill:var(--sea-soft)"/>
@@ -544,10 +544,6 @@ textarea{resize:vertical;min-height:60px}
   </svg>
 </footer>
 
-<script>
-/* debug: show script errors on screen (for iPhone, where there is no console) */
-window.addEventListener('error',function(e){var d=document.getElementById('errBox');if(!d){d=document.createElement('div');d.id='errBox';d.style.cssText='position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;background:var(--red);color:#fff;font:12px/1.4 monospace;padding:8px 10px;border-radius:10px;white-space:pre-wrap';document.body.appendChild(d)}d.textContent+=(e.message||'error')+' @'+(e.lineno||'?')+':'+(e.colno||'?')+' | '});
-</script>
 <script>
 (function(){
 const KEY='jeju-trip-v1', APP='taihu.jeju.trip';
@@ -978,9 +974,7 @@ function placeCar(instant,onlyIfMoved){
 }
 /* wave letters in the header: a plain frame loop that sets each letter's offset (works where CSS/Web Animations on these spans didn't on iOS) */
 (function(){
-  const vt=document.getElementById('verTag'), rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
-  if(vt)vt.textContent='v1030e'+(rm?' RM':'');
-  if(rm)return;
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   const L=[...document.querySelectorAll('.wv')].map(el=>({el,d:(parseFloat(el.dataset.d)||0)*1000,em:parseFloat(getComputedStyle(el).fontSize)||16}));
   if(!L.length)return;
   const P=1400, t0=performance.now();
@@ -990,10 +984,8 @@ function placeCar(instant,onlyIfMoved){
       const y=(up?-.26:-.08)*s*l.em, x=(up?-1:-1)*s, r=(up?-7:-6)*s;
       l.el.style.top=y.toFixed(2)+'px'; l.el.style.left=x.toFixed(2)+'px'; l.el.style.transform='rotate('+r.toFixed(2)+'deg)';
     }
-    if(vt&&++fc%15===0)vt.textContent='v1030e f'+fc+' y'+L[0].el.style.top;
     requestAnimationFrame(frame);
   }
-  let fc=0;
   requestAnimationFrame(frame);
 })();
 /* walking dogs + circling parrot: Web Animations with px values */
