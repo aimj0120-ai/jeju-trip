@@ -65,14 +65,12 @@ header{display:flex;align-items:flex-start;justify-content:space-between;gap:10p
 h1{font-family:var(--f-display);font-weight:700;font-size:1.55rem;line-height:1.2;margin:0;letter-spacing:.04em;text-wrap:balance}
 /* heartbeat title: text thumps twice per 1.3s, each thump sends two rings out (literal values in keyframes for iOS Safari) */
 header{overflow-x:clip}
-.hb{position:relative;display:inline-block}
-.hbt{display:inline-block;transform-origin:50% 50%;animation:hbeat 1.3s ease-in-out infinite;will-change:transform}
-.hr{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;border:2px solid var(--tang);opacity:0;pointer-events:none;z-index:-1;animation:hring 1.3s ease-out infinite}
-.hr2,.hr4{border-color:var(--sea)}
-.hr1{animation-delay:0s}.hr2{animation-delay:.12s}.hr3{animation-delay:.2s}.hr4{animation-delay:.32s}
-@keyframes hbeat{0%{transform:scale(1)}9%{transform:scale(1.12)}18%{transform:scale(1)}27%{transform:scale(1.1)}38%,100%{transform:scale(1)}}
-@keyframes hring{0%{transform:scale(.5);opacity:.6}38%{transform:scale(2.7);opacity:0}100%{transform:scale(2.7);opacity:0}}
-@media (prefers-reduced-motion:reduce){.hr{display:none!important}}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* wave letters: each glyph bobs and sways in turn; 1.4s per wave; two theme tones alternate */
+.wv{display:inline-block;transform-origin:50% 80%;animation:wave 1.4s ease-in-out infinite;will-change:transform}
+.wt .wv:nth-child(odd){color:var(--tang)} .wt .wv:nth-child(even){color:var(--sea)}
+.wsp{display:inline-block;width:.35em}
+@keyframes wave{0%,100%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(-1px,-.26em) rotate(-7deg)}50%{transform:translate(0,0) rotate(0deg)}75%{transform:translate(1px,.08em) rotate(6deg)}}
 h1 small{display:block;font-family:var(--f-ko);font-weight:500;font-size:.76rem;color:var(--muted);letter-spacing:.1em;margin-bottom:1px}
 .hdeco{flex:0 0 auto;width:min(150px,38vw);height:auto}
 .hdeco .stroke{fill:none;stroke:var(--sea);stroke-width:2;stroke-linecap:round}
@@ -318,8 +316,8 @@ textarea{resize:vertical;min-height:60px}
 <div class="wrap">
   <header>
     <div class="hleft">
-      <div class="jeju" aria-hidden="true"><span class="j1">J</span><span class="e">E</span><span class="j2">J</span><span class="u">U</span><svg viewBox="0 0 20 18"><path d="M3 15 L5 8"/><path d="M9 11 L12 3"/><path d="M15 12 L19 7"/></svg></div>
-      <h1><small lang="ko">제주 여행 일정</small><span class="hb"><span class="hbt">濟州行程板</span><i class="hr hr1" aria-hidden="true"></i><i class="hr hr2" aria-hidden="true"></i><i class="hr hr3" aria-hidden="true"></i><i class="hr hr4" aria-hidden="true"></i></span></h1>
+      <div class="jeju" aria-hidden="true"><span class="j1"><span class="wv" style="animation-delay:0.00s">J</span></span><span class="e"><span class="wv" style="animation-delay:0.10s">E</span></span><span class="j2"><span class="wv" style="animation-delay:0.20s">J</span></span><span class="u"><span class="wv" style="animation-delay:0.30s">U</span></span><svg viewBox="0 0 20 18"><path d="M3 15 L5 8"/><path d="M9 11 L12 3"/><path d="M15 12 L19 7"/></svg></div>
+      <h1><small lang="ko"><span class="sr">제주 여행 일정</span><span class="wt" aria-hidden="true"><span class="wv" style="animation-delay:0.00s">제</span><span class="wv" style="animation-delay:0.08s">주</span><span class="wsp"></span><span class="wv" style="animation-delay:0.16s">여</span><span class="wv" style="animation-delay:0.24s">행</span><span class="wsp"></span><span class="wv" style="animation-delay:0.32s">일</span><span class="wv" style="animation-delay:0.40s">정</span></span></small><span class="sr">濟州行程板</span><span class="wt" aria-hidden="true"><span class="wv" style="animation-delay:0.00s">濟</span><span class="wv" style="animation-delay:0.10s">州</span><span class="wv" style="animation-delay:0.20s">行</span><span class="wv" style="animation-delay:0.30s">程</span><span class="wv" style="animation-delay:0.40s">板</span></span></h1>
       <div class="summary"><span id="tripSum"></span><span class="chip" id="sampleChip">範例行程・可直接修改</span></div>
     </div>
     <svg class="hdeco" viewBox="0 0 160 100" aria-hidden="true" focusable="false">
