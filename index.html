@@ -67,10 +67,9 @@ h1{font-family:var(--f-display);font-weight:700;font-size:1.55rem;line-height:1.
 header{overflow-x:clip}
 .sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 /* wave letters: each glyph bobs and sways in turn; 1.4s per wave; two theme tones alternate */
-.wv{display:inline-block;transform-origin:50% 80%;animation:wave 1.4s ease-in-out infinite;will-change:transform}
+.wv{display:inline-block;transform-origin:50% 80%;will-change:transform}
 .wt .wv:nth-child(odd){color:var(--tang)} .wt .wv:nth-child(even){color:var(--sea)}
 .wsp{display:inline-block;width:.35em}
-@keyframes wave{0%,100%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(-1px,-.26em) rotate(-7deg)}50%{transform:translate(0,0) rotate(0deg)}75%{transform:translate(1px,.08em) rotate(6deg)}}
 h1 small{display:block;font-family:var(--f-ko);font-weight:500;font-size:.76rem;color:var(--muted);letter-spacing:.1em;margin-bottom:1px}
 .hdeco{flex:0 0 auto;width:min(150px,38vw);height:auto}
 .hdeco .stroke{fill:none;stroke:var(--sea);stroke-width:2;stroke-linecap:round}
@@ -316,8 +315,8 @@ textarea{resize:vertical;min-height:60px}
 <div class="wrap">
   <header>
     <div class="hleft">
-      <div class="jeju" aria-hidden="true"><span class="j1"><span class="wv" style="animation-delay:0.00s">J</span></span><span class="e"><span class="wv" style="animation-delay:0.10s">E</span></span><span class="j2"><span class="wv" style="animation-delay:0.20s">J</span></span><span class="u"><span class="wv" style="animation-delay:0.30s">U</span></span><svg viewBox="0 0 20 18"><path d="M3 15 L5 8"/><path d="M9 11 L12 3"/><path d="M15 12 L19 7"/></svg></div>
-      <h1><small lang="ko"><span class="sr">제주 여행 일정</span><span class="wt" aria-hidden="true"><span class="wv" style="animation-delay:0.00s">제</span><span class="wv" style="animation-delay:0.08s">주</span><span class="wsp"></span><span class="wv" style="animation-delay:0.16s">여</span><span class="wv" style="animation-delay:0.24s">행</span><span class="wsp"></span><span class="wv" style="animation-delay:0.32s">일</span><span class="wv" style="animation-delay:0.40s">정</span></span></small><span class="sr">濟州行程板</span><span class="wt" aria-hidden="true"><span class="wv" style="animation-delay:0.00s">濟</span><span class="wv" style="animation-delay:0.10s">州</span><span class="wv" style="animation-delay:0.20s">行</span><span class="wv" style="animation-delay:0.30s">程</span><span class="wv" style="animation-delay:0.40s">板</span></span></h1>
+      <div class="jeju" aria-hidden="true"><span class="j1"><span class="wv" data-d="0.00">J</span></span><span class="e"><span class="wv" data-d="0.10">E</span></span><span class="j2"><span class="wv" data-d="0.20">J</span></span><span class="u"><span class="wv" data-d="0.30">U</span></span><svg viewBox="0 0 20 18"><path d="M3 15 L5 8"/><path d="M9 11 L12 3"/><path d="M15 12 L19 7"/></svg></div>
+      <h1><small lang="ko"><span class="sr">제주 여행 일정</span><span class="wt" aria-hidden="true"><span class="wv" data-d="0.00">제</span><span class="wv" data-d="0.08">주</span><span class="wsp"></span><span class="wv" data-d="0.16">여</span><span class="wv" data-d="0.24">행</span><span class="wsp"></span><span class="wv" data-d="0.32">일</span><span class="wv" data-d="0.40">정</span></span></small><span class="sr">濟州行程板</span><span class="wt" aria-hidden="true"><span class="wv" data-d="0.00">濟</span><span class="wv" data-d="0.10">州</span><span class="wv" data-d="0.20">行</span><span class="wv" data-d="0.30">程</span><span class="wv" data-d="0.40">板</span></span></h1>
       <div class="summary"><span id="tripSum"></span><span class="chip" id="sampleChip">範例行程・可直接修改</span></div>
     </div>
     <svg class="hdeco" viewBox="0 0 160 100" aria-hidden="true" focusable="false">
@@ -974,6 +973,21 @@ function placeCar(instant,onlyIfMoved){
   }
   carX=x; carDay=S.activeDay;
 }
+/* wave letters in the header: Web Animations, same approach as the walking dogs that run on iOS */
+(function(){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  document.querySelectorAll('.wv').forEach(el=>{
+    const em=parseFloat(getComputedStyle(el).fontSize)||16;
+    if(!el.animate)return;
+    el.animate([
+      {transform:'translate(0px,0px) rotate(0deg)'},
+      {transform:`translate(-1px,${-.26*em}px) rotate(-7deg)`},
+      {transform:'translate(0px,0px) rotate(0deg)'},
+      {transform:`translate(1px,${.08*em}px) rotate(6deg)`},
+      {transform:'translate(0px,0px) rotate(0deg)'}],
+      {duration:1400,iterations:Infinity,easing:'ease-in-out',delay:(parseFloat(el.dataset.d)||0)*1000});
+  });
+})();
 /* walking dogs + circling parrot: Web Animations with px values */
 let palAnims=[];
 function startPals(){
