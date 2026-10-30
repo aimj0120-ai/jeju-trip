@@ -63,6 +63,16 @@ header{display:flex;align-items:flex-start;justify-content:space-between;gap:10p
 .jeju .u{color:var(--pink);transform:rotate(4deg)}
 .jeju svg{width:20px;height:18px;align-self:flex-start;margin-left:3px;fill:none;stroke:var(--tang);stroke-width:3;stroke-linecap:round}
 h1{font-family:var(--f-display);font-weight:700;font-size:1.55rem;line-height:1.2;margin:0;letter-spacing:.04em;text-wrap:balance}
+/* heartbeat title: text thumps twice per 1.3s, each thump sends two rings out (literal values in keyframes for iOS Safari) */
+header{overflow-x:clip}
+.hb{position:relative;display:inline-block}
+.hbt{display:inline-block;transform-origin:50% 50%;animation:hbeat 1.3s ease-in-out infinite;will-change:transform}
+.hr{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;border:2px solid var(--tang);opacity:0;pointer-events:none;z-index:-1;animation:hring 1.3s ease-out infinite}
+.hr2,.hr4{border-color:var(--sea)}
+.hr1{animation-delay:0s}.hr2{animation-delay:.12s}.hr3{animation-delay:.2s}.hr4{animation-delay:.32s}
+@keyframes hbeat{0%{transform:scale(1)}9%{transform:scale(1.12)}18%{transform:scale(1)}27%{transform:scale(1.1)}38%,100%{transform:scale(1)}}
+@keyframes hring{0%{transform:scale(.5);opacity:.6}38%{transform:scale(2.7);opacity:0}100%{transform:scale(2.7);opacity:0}}
+@media (prefers-reduced-motion:reduce){.hr{display:none!important}}
 h1 small{display:block;font-family:var(--f-ko);font-weight:500;font-size:.76rem;color:var(--muted);letter-spacing:.1em;margin-bottom:1px}
 .hdeco{flex:0 0 auto;width:min(150px,38vw);height:auto}
 .hdeco .stroke{fill:none;stroke:var(--sea);stroke-width:2;stroke-linecap:round}
@@ -309,7 +319,7 @@ textarea{resize:vertical;min-height:60px}
   <header>
     <div class="hleft">
       <div class="jeju" aria-hidden="true"><span class="j1">J</span><span class="e">E</span><span class="j2">J</span><span class="u">U</span><svg viewBox="0 0 20 18"><path d="M3 15 L5 8"/><path d="M9 11 L12 3"/><path d="M15 12 L19 7"/></svg></div>
-      <h1><small lang="ko">제주 여행 일정</small>濟州行程板</h1>
+      <h1><small lang="ko">제주 여행 일정</small><span class="hb"><span class="hbt">濟州行程板</span><i class="hr hr1" aria-hidden="true"></i><i class="hr hr2" aria-hidden="true"></i><i class="hr hr3" aria-hidden="true"></i><i class="hr hr4" aria-hidden="true"></i></span></h1>
       <div class="summary"><span id="tripSum"></span><span class="chip" id="sampleChip">範例行程・可直接修改</span></div>
     </div>
     <svg class="hdeco" viewBox="0 0 160 100" aria-hidden="true" focusable="false">
