@@ -560,7 +560,7 @@ const LOTTE_PICK=()=>st('11:30',LOTTE[0],'樂天租車 Auto House（取車）',L
 const LOTTE_RETURN=()=>st('07:30',LOTTE[0],'樂天租車 Auto House（還車）',LOTTE[1],LOTTE[2],'預約還車 07:30｜油要加滿再還（附近先加油）｜還車後搭接駁車到機場');
 const LOTTEMART=()=>st('18:00','롯데마트 제주점','樂天超市 濟州店',33.48243,126.48185,'營業 10:00–23:00｜晚上買伴手禮、零食、橘子｜付款：有 ZeroPay 標誌可用全支付，其他刷卡；LINE Pay 樂天超市回饋 9 月已結束｜帶護照問退稅｜也可改到 11/20 晚上');
 const MONEYBOX=()=>st('12:15','머니박스 제주지점','Money Box 濟州店（換錢）',33.48595,126.48248,'取車後先來換韓元，帶台幣千元鈔｜停留約 15 分鐘｜週一～六 10:00–21:00、週日 10:00–18:00');
-const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart'],days:[
+const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031'],days:[
  {title:'11/17（二）抵達・咸德・史努比',stops:[
   st('10:00','제주국제공항','濟州國際機場',33.5071,126.4916,AIR_NOTE),
   LOTTE_PICK(),
@@ -758,6 +758,20 @@ if(S.tripId===TRIP_ID&&!S.patches.includes('lotte-mart')){
   const d=S.days.find(x=>(x.title||'').startsWith('11/19'));
   if(d&&!S.days.some(x=>x.stops.some(s=>s.ko==='롯데마트 제주점')))d.stops.push(LOTTEMART());
   S.patches.push('lotte-mart');
+}
+/* safety net: if a renamed day title made the patches above miss, place the stops by content / position */
+if(S.tripId===TRIP_ID&&!S.patches.includes('fix-1031')){
+  const has=ko=>S.days.some(x=>x.stops.some(s=>s.ko===ko));
+  const sortDay=d=>d.stops.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0);
+  if(!has('롯데마트 제주점')){
+    const d=S.days.find(x=>(x.title||'').startsWith('11/19'))||S.days.find(x=>x.stops.some(s=>s.ko==='제주노블레스관광호텔'&&(s.zh||'').includes('第 1 晚')))||S.days[2];
+    if(d){d.stops.push(LOTTEMART());sortDay(d)}
+  }
+  if(!S.days.some(x=>x.stops.some(s=>s.ko===LOTTE[0]&&(s.zh||'').includes('取車')))){
+    const d=S.days.find(x=>(x.title||'').startsWith('11/17'))||S.days.find(x=>x.stops.some(s=>s.ko==='머니박스 제주지점'))||S.days[0];
+    if(d){d.stops.push(LOTTE_PICK());sortDay(d)}
+  }
+  S.patches.push('fix-1031');
 }
 S.days.forEach(d=>d.stops.forEach(s=>{const c=CONTACT[s.ko];if(c){if(!s.tel&&c[0])s.tel=c[0];if(!s.addr)s.addr=c[1]}}));
 save();
@@ -1192,11 +1206,11 @@ $('copyCsv').onclick=()=>{const rows=[['day','day_title','time','name_ko','name_
   S.days.forEach((d,i)=>d.stops.forEach(s=>rows.push([i+1,d.title||'',s.time||'',s.ko||'',s.zh||'',s.lat??'',s.lng??'',s.note||''])));
   copyText(rows.map(r=>r.join('\t')).join('\n'),'已複製，直接貼到 Google Sheet A1 即可')};
 $('importBtn').onclick=()=>{try{const d=JSON.parse($('importBox').value);if(!Array.isArray(d.days))throw 0;
-  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
+  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
   catch(err){flash($('ioMsg'),'JSON 格式不對，請貼上「複製 JSON 備份」的內容',false)}};
 let clrArm=false;
 $('clearSample').onclick=()=>{const b=$('clearSample');if(!clrArm){clrArm=true;b.textContent='再按一次確認清空';setTimeout(()=>{clrArm=false;b.textContent='清空全部'},3000);return}
-  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
+  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
 
 /* first edit drops the sample badge */
 document.addEventListener('change',()=>{if(S.sample){S.sample=false;save();$('sampleChip').hidden=true}},true);
