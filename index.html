@@ -558,8 +558,9 @@ const AIR_NOTE='入境、領行李｜出關後跟著「렌터카 / Rent-a-car」
 const LOTTE=['롯데렌터카 제주오토하우스지점',33.50912,126.50298];
 const LOTTE_PICK=()=>st('11:30',LOTTE[0],'樂天租車 Auto House（取車）',LOTTE[1],LOTTE[2],'SANTA FE 4WD 5 人座｜在接駁車上掃 QR 就會分配車輛｜取車時拍下油錶、里程和車身刮痕｜請櫃台把車機切英文、示範 CarPlay｜營業 06:00–23:00');
 const LOTTE_RETURN=()=>st('07:30',LOTTE[0],'樂天租車 Auto House（還車）',LOTTE[1],LOTTE[2],'預約還車 07:30｜油要加滿再還（附近先加油）｜還車後搭接駁車到機場');
+const LOTTEMART=()=>st('18:00','롯데마트 제주점','樂天超市 濟州店',33.48243,126.48185,'營業 10:00–23:00｜晚上買伴手禮、零食、橘子｜付款：有 ZeroPay 標誌可用全支付，其他刷卡；LINE Pay 樂天超市回饋 9 月已結束｜帶護照問退稅｜也可改到 11/20 晚上');
 const MONEYBOX=()=>st('12:15','머니박스 제주지점','Money Box 濟州店（換錢）',33.48595,126.48248,'取車後先來換韓元，帶台幣千元鈔｜停留約 15 分鐘｜週一～六 10:00–21:00、週日 10:00–18:00');
-const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent'],days:[
+const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart'],days:[
  {title:'11/17（二）抵達・咸德・史努比',stops:[
   st('10:00','제주국제공항','濟州國際機場',33.5071,126.4916,AIR_NOTE),
   LOTTE_PICK(),
@@ -581,7 +582,8 @@ const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-s
   st('10:45','제주해녀박물관','海女博物館',33.5221,126.8635,'約 1 小時｜09:00–18:00，17:00 最後入場｜週一休'),
   st('12:00','런던베이글뮤지엄 제주점','倫敦貝果博物館',33.553587,126.715609,'1–1.5 小時，午餐｜約 08:00–18:00｜出發前確認排隊與臨時休店'),
   st('14:00','만장굴','萬丈窟',33.5283,126.7701,'1–1.5 小時｜09:00–18:00，最後入場約 17:10｜每月第一個週三休｜洞內涼又濕滑'),
-  st('16:30','제주노블레스관광호텔','濟州貴族酒店（第 1 晚）',JJN[0],JJN[1],NOBLESSE_NOTE)]},
+  st('16:30','제주노블레스관광호텔','濟州貴族酒店（第 1 晚）',JJN[0],JJN[1],NOBLESSE_NOTE),
+  LOTTEMART()]},
  {title:'11/20（五）9.81 Park・涯月・精釀',stops:[
   st('08:45','제주노블레스관광호텔','濟州貴族酒店（出發）',JJN[0],JJN[1],''),
   st('09:30','9.81파크','9.81 Park',33.389938,126.366328,'2–2.5 小時｜約 09:00–18:20｜先上官網看套票；天候差戶外賽車可能暫停'),
@@ -608,6 +610,7 @@ const CONTACT={
  '더퍼스트70호텔':['064-766-0000','서귀포시 명동로 46'],
  '제주노블레스관광호텔':['064-748-7161','제주시 월성로4길 19'],
  '롯데렌터카 제주오토하우스지점':['064-751-8000','제주시 용해로 92'],
+ '롯데마트 제주점':['064-798-2500','제주시 연북로 1'],
  '오드랑베이커리':['064-784-5404','제주시 조천읍 조함해안로 552-3'],
  '함덕해수욕장':['064-728-3989','제주시 조천읍 조함해안로 525'],
  '스누피가든':['064-805-1118','제주시 구좌읍 금백조로 930'],
@@ -646,6 +649,7 @@ const REVIEWS={
 const HAMDEOK={ko:'함덕국민학교옛터 공영주차장',zh:'咸德舊國小公營停車場',lat:33.54232,lng:126.66843,addr:'제주시 조천읍 함덕리 1004-3',fee:'免費'};
 const HANDAM={ko:'한담공원 무료주차장',zh:'漢潭公園免費停車場',lat:33.45960,lng:126.31104,addr:'제주시 애월읍 애월리 2459-1',fee:'免費'};
 const PARK={
+ '롯데마트 제주점':{ko:'롯데마트 제주점 주차장',zh:'樂天超市附設停車場',lat:33.48243,lng:126.48185,addr:'제주시 연북로 1',fee:'收費（消費後通常可折抵，結帳時問櫃台）',walk:0,tip:'評論說停車場動線亂、沒有人指揮，進出要慢慢開。旁邊約 300 m 的 E-mart 新濟州店（제주시 1100로 3348）也可以順便比價。'},
  '제주노블레스관광호텔':{ko:'제주노블레스관광호텔',zh:'飯店停車場（地下＋門前）',lat:33.50117,lng:126.50345,addr:'제주시 월성로4길 19',fee:'住客免費',walk:0,tip:'Kakao 資料：飯店自有地下停車場和門前停車場都可以免費停。'},
  '더퍼스트70호텔':{ko:'더퍼스트70호텔',zh:'飯店停車場（地下 1 樓、2 樓）',lat:33.24725,lng:126.56685,addr:'서귀포시 명동로 46',fee:'住客免費',walk:0,tip:'評論說飯店停車位偏窄。滿了就停旁邊的「정방동공영주차장」（서귀동 403-6，約 90 m），20:00–隔天 09:00 免費。這筆停車資料來自同地址舊名「제주노블피아호텔」的 Kakao 頁面，入住時請向櫃台確認。'},
  '머니박스 제주지점':{ko:'노형제2공영주차장',zh:'老衡第 2 公營停車場',lat:33.48729,lng:126.47980,addr:'제주시 월랑로2길 1',fee:'公營（沒查到收費資訊）',walk:290,tip:'換錢只要十幾分鐘，停最近的公營停車場走過去。'},
@@ -690,6 +694,7 @@ const NEARBY=[
   {zh:'創意居酒屋（非精釀）',ko:'마루아라',m:280,tel:'064-763-1364',lat:33.24671911,lng:126.56393109,rate:'★5.0（100）',note:'在李仲燮街，生馬肉、鮭魚，下酒菜好吃'}]}];
 /* intro articles found by web search (2026-10-24) + a YouTube search for videos */
 const LINKS={
+ '롯데마트 제주점':{yt:'濟州 樂天超市 必買',a:[]},
  '오드랑베이커리':{yt:'濟州 Audrant 大蒜麵包',a:[['Trip.com 旅客分享','https://nz.trip.com/moments/poi-audrant-bakery-147901313'],['Wanderlog（英文）','https://wanderlog.com/place/details/1313065']]},
  '함덕해수욕장':{yt:'濟州 咸德海水浴場 犀牛峰',a:[['咸德・犀牛峰攻略','https://www.trvlogue.com/zh-Hant/jeju-hamdeok-seoubong-guide'],['K-Trip Tips 景點介紹','https://www.ktriptips.com/cht/tourspot/1105411']]},
  '스누피가든':{yt:'濟州 史努比庭園 Snoopy Garden',a:[['美麗佳人：史努比庭園','https://www.marieclaire.com.tw/lifestyle/travel/73767/snoopy-garden'],['食尚玩家介紹','https://supertaste.tvbs.com.tw/travel/340390']]},
@@ -747,6 +752,12 @@ if(S.tripId===TRIP_ID&&!S.patches.includes('lotte-rent')){
   }
   if(d5)d5.stops.forEach(s=>{if(s.ko!=='렌터카 반납')return;const r=LOTTE_RETURN();s.ko=r.ko;s.zh=r.zh;s.lat=r.lat;s.lng=r.lng;s.note=r.note;s.tel='';s.addr='';if(!s.time||s.time==='07:20')s.time=r.time});
   S.patches.push('lotte-rent');
+}
+/* one-time patch: Lotte Mart on the evening of 11/19 */
+if(S.tripId===TRIP_ID&&!S.patches.includes('lotte-mart')){
+  const d=S.days.find(x=>(x.title||'').startsWith('11/19'));
+  if(d&&!S.days.some(x=>x.stops.some(s=>s.ko==='롯데마트 제주점')))d.stops.push(LOTTEMART());
+  S.patches.push('lotte-mart');
 }
 S.days.forEach(d=>d.stops.forEach(s=>{const c=CONTACT[s.ko];if(c){if(!s.tel&&c[0])s.tel=c[0];if(!s.addr)s.addr=c[1]}}));
 save();
@@ -932,8 +943,9 @@ const ICON={
  walk:'<path d="M2 25q7-4 14 0t14 0v5H2z" fill="#6bb5e0"/><path d="M3 21q13-5 26-3" stroke="#d3c6a2" stroke-width="3" fill="none" stroke-linecap="round"/><g fill="#45444b"><ellipse cx="10" cy="11" rx="2.2" ry="3.2"/><ellipse cx="16" cy="7" rx="2.2" ry="3.2"/><ellipse cx="22" cy="11" rx="2.2" ry="3.2"/></g>',
  beer:'<rect x="6" y="9" width="15" height="19" rx="3" fill="#f5cf62"/><path d="M21 12h3a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h-3" fill="none" stroke="#c98746" stroke-width="2.4"/><path d="M5 10c0-4 3-6 6-5 2-3 7-3 8 0 3 0 4 3 2 5z" fill="#fff"/><path d="M10 15v9M14 15v9M18 15v9" stroke="#e9b53b" stroke-width="1.4"/>',
  car:'<path d="M4 21l3-8h18l3 8z" fill="#d2600a"/><rect x="3" y="20" width="26" height="6" rx="2" fill="#f39246"/><path d="M9 14h6v6H8zM17 14h6l1 6h-7z" fill="#dcecf6"/><circle cx="9" cy="26" r="3" fill="#26252b"/><circle cx="23" cy="26" r="3" fill="#26252b"/>',
+ cart:'<path d="M3 6h4l3 13h14l3-9H9" fill="none" stroke="#45444b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M11 12h14l-2 6H12z" fill="#d44a3b"/><circle cx="12" cy="25" r="2.4" fill="#45444b"/><circle cx="22" cy="25" r="2.4" fill="#45444b"/><circle cx="16" cy="9" r="3" fill="#f39246"/><path d="M16 6.2l1.4-1.6" stroke="#4f8f3f" stroke-width="1.4" stroke-linecap="round"/>',
  pin:'<path d="M16 29s-9-9-9-15a9 9 0 0 1 18 0c0 6-9 15-9 15z" fill="#d2600a"/><circle cx="16" cy="14" r="3.6" fill="#fff"/>'};
-const ICON_OF={'제주국제공항':'plane','머니박스 제주지점':'money','오드랑베이커리':'bread','함덕해수욕장':'beach','스누피가든':'flower','더퍼스트70호텔':'bed','제주노블레스관광호텔':'bed','정방폭포':'fall','천지연폭포':'fall','서귀포매일올레시장':'market','중문대포해안주상절리대':'columns','이중섭거리':'palette','성산일출봉':'peak','제주해녀박물관':'diver','런던베이글뮤지엄 제주점':'bagel','만장굴':'cave','9.81파크':'kart','애월 카페거리':'coffee','한담해안산책로':'walk','맥파이 브루어리 탭룸':'beer','렌터카 반납':'car','롯데렌터카 제주오토하우스지점':'car'};
+const ICON_OF={'제주국제공항':'plane','머니박스 제주지점':'money','오드랑베이커리':'bread','함덕해수욕장':'beach','스누피가든':'flower','더퍼스트70호텔':'bed','제주노블레스관광호텔':'bed','정방폭포':'fall','천지연폭포':'fall','서귀포매일올레시장':'market','중문대포해안주상절리대':'columns','이중섭거리':'palette','성산일출봉':'peak','제주해녀박물관':'diver','런던베이글뮤지엄 제주점':'bagel','만장굴':'cave','9.81파크':'kart','애월 카페거리':'coffee','한담해안산책로':'walk','맥파이 브루어리 탭룸':'beer','렌터카 반납':'car','롯데렌터카 제주오토하우스지점':'car','롯데마트 제주점':'cart'};
 const stopIcon=s=>`<svg viewBox="0 0 32 32">${ICON[ICON_OF[s.ko]||'pin']}</svg>`;
 function parkHtml(s){const p=PARK[s.ko];if(!p)return '';
   const walk=p.walk?`步行約 ${Math.max(1,Math.round(p.walk/70))} 分鐘（${p.walk} m）`:'就在旁邊';
@@ -1180,11 +1192,11 @@ $('copyCsv').onclick=()=>{const rows=[['day','day_title','time','name_ko','name_
   S.days.forEach((d,i)=>d.stops.forEach(s=>rows.push([i+1,d.title||'',s.time||'',s.ko||'',s.zh||'',s.lat??'',s.lng??'',s.note||''])));
   copyText(rows.map(r=>r.join('\t')).join('\n'),'已複製，直接貼到 Google Sheet A1 即可')};
 $('importBtn').onclick=()=>{try{const d=JSON.parse($('importBox').value);if(!Array.isArray(d.days))throw 0;
-  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
+  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
   catch(err){flash($('ioMsg'),'JSON 格式不對，請貼上「複製 JSON 備份」的內容',false)}};
 let clrArm=false;
 $('clearSample').onclick=()=>{const b=$('clearSample');if(!clrArm){clrArm=true;b.textContent='再按一次確認清空';setTimeout(()=>{clrArm=false;b.textContent='清空全部'},3000);return}
-  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
+  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
 
 /* first edit drops the sample badge */
 document.addEventListener('change',()=>{if(S.sample){S.sample=false;save();$('sampleChip').hidden=true}},true);
