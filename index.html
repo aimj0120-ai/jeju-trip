@@ -185,6 +185,12 @@ html,body{overflow-x:clip}
 
 /* timeline */
 .stopsblock{display:flex;flex-direction:column;gap:10px}
+.stop.alt .card{border-style:dashed;border-color:var(--sea)}
+.stop.alt .num{background:var(--sea);color:var(--on-sea);font-size:.62rem;letter-spacing:0}
+.altleg .leg{color:var(--muted)}
+.altchip{align-self:flex-start;font-size:.76rem;font-weight:700;color:var(--sea);background:var(--sea-soft);border-radius:99px;padding:2px 10px}
+.altnext{font-size:.8rem;color:var(--sea)}
+.lpin.alt{background:var(--sea);font-size:10px}
 /* weather card for the selected day (Open-Meteo, live) */
 .wx{order:1;display:flex;align-items:center;gap:12px;background:var(--sea-soft);border-radius:18px 22px 18px 24px;padding:10px 14px}
 .wx svg{flex:0 0 auto;width:40px;height:40px}
@@ -571,14 +577,17 @@ const LOTTE=['롯데렌터카 제주오토하우스지점',33.50912,126.50298];
 const LOTTE_PICK=()=>st('11:30',LOTTE[0],'樂天租車 Auto House（取車）',LOTTE[1],LOTTE[2],'SANTA FE 4WD 5 人座｜在接駁車上掃 QR 就會分配車輛｜取車時拍下油錶、里程和車身刮痕｜請櫃台把車機切英文、示範 CarPlay｜營業 06:00–23:00');
 const LOTTE_RETURN=()=>st('07:30',LOTTE[0],'樂天租車 Auto House（還車）',LOTTE[1],LOTTE[2],'預約還車 07:30｜油要加滿再還（附近先加油）｜還車後搭接駁車到機場');
 const LOTTEMART=()=>st('18:00','롯데마트 제주점','樂天超市 濟州店',33.48243,126.48185,'營業 10:00–23:00｜晚上買伴手禮、零食、橘子｜付款：有 ZeroPay 標誌可用全支付，其他刷卡；LINE Pay 樂天超市回饋 9 月已結束｜帶護照問退稅｜也可改到 11/20 晚上');
+const HD_RAIN='｜下雨就改去下方的雨備：東門市場';
+const DONGMUN=()=>Object.assign(st('13:30','동문재래시장','東門市場（雨備）',33.51278,126.52830,'有屋頂、雨天也能逛｜停留約 1 小時｜08:00–21:00｜Money Box 東門市場店就在旁邊（관덕로 64），可順便換錢｜逛完直接開往 Snoopy Garden（17:00 前入場）'),{alt:true});
 const MONEYBOX=()=>st('12:15','머니박스 제주지점','Money Box 濟州店（換錢）',33.48595,126.48248,'取車後先來換韓元，帶台幣千元鈔｜停留約 15 分鐘｜週一～六 10:00–21:00、週日 10:00–18:00');
-const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031'],days:[
+const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun'],days:[
  {title:'11/17（二）抵達・咸德・史努比',stops:[
   st('10:00','제주국제공항','濟州國際機場',33.5071,126.4916,AIR_NOTE),
   LOTTE_PICK(),
   MONEYBOX(),
   st('12:55','오드랑베이커리','Audrant Bakery',33.542088,126.671547,'停留 30–45 分｜大蒜麵包、蛋塔、咖啡當午餐｜約 07:00–22:00'),
-  st('13:30','함덕해수욕장','咸德海水浴場',33.5432,126.6699,'停留 30–45 分｜看海、吃麵包；海風強，帶防風外套'),
+  st('13:30','함덕해수욕장','咸德海水浴場',33.5432,126.6699,'停留 30–45 分｜看海、吃麵包；海風強，帶防風外套'+HD_RAIN),
+  DONGMUN(),
   st('14:45','스누피가든','Snoopy Garden',33.4447,126.7797,'停留 2–2.5 小時｜冬季 09:00–18:00，17:00 截止入場'),
   st('18:30','더퍼스트70호텔','The First70 Hotel（第 1 晚）',SGP[0],SGP[1],HOTEL_NOTE+'｜晚餐：黑豬肉烤肉、豬肉湯麵或海鮮鍋')]},
  {title:'11/18（三）西歸浦瀑布與海岸',stops:[
@@ -623,6 +632,7 @@ const CONTACT={
  '제주노블레스관광호텔':['064-748-7161','제주시 월성로4길 19'],
  '롯데렌터카 제주오토하우스지점':['064-751-8000','제주시 용해로 92'],
  '롯데마트 제주점':['064-798-2500','제주시 연북로 1'],
+ '동문재래시장':['','제주시 동문로 16'],
  '오드랑베이커리':['064-784-5404','제주시 조천읍 조함해안로 552-3'],
  '함덕해수욕장':['064-728-3989','제주시 조천읍 조함해안로 525'],
  '스누피가든':['064-805-1118','제주시 구좌읍 금백조로 930'],
@@ -641,6 +651,7 @@ const CONTACT={
  '맥파이 브루어리 탭룸':['064-721-0227','제주시 동회천1길 23']};
 /* review digest from Kakao Map (rating + ~40 latest/recommended reviews per place, read 2026-10-24) */
 const REVIEWS={
+ '동문재래시장':{r:'3.6',n:826,lv:'mixed',good:['伴手禮：오메기떡（濟州艾草糕）、橘子、과즐（油蜜果）、紅蘿蔔汁','吃的：고기국수（豬肉湯麵）、흑돼지오겹말이（黑豬五花捲）','有評論說價格大多一致、不太會被坑；買橘子老闆還送零食'],bad:['人非常多，巷子窄','晚上的夜市攤評價普通又貴（白天去沒影響）','很多店都在賣一樣的巧克力類伴手禮','廁所沒有洗手乳']},
  '오드랑베이커리':{r:'4.3',n:702,lv:'good',good:['招牌 마농바게트（大蒜奶油法棍）幾乎人人推，買一條就夠','인절미빵（黃豆粉麻糬麵包）、먹물 크림치즈빵（墨魚起司）、어니언빵（洋蔥麵包）也常被點名','隔天吃用氣炸鍋回烤，大蒜香更明顯'],bad:['不少人覺得大蒜麵包太甜、太重口','鹽麵包等其他品項普通，價格偏高','店內座位少、觀光客多很吵；門口只停得下 2–3 台車']},
  '함덕해수욕장':{r:'4.5',n:653,lv:'good',good:['爬旁邊的 서우봉（犀牛峰）看整片沙灘最美','海邊咖啡廳、小吃很多，델문도（Delmundo）有人推薦'],bad:['很商業化、人多不安靜','海草多時有腥味']},
  '스누피가든':{r:'4.5',n:670,lv:'good',good:['戶外庭園比室內更好看，集章活動大人也玩得很開心','咖啡廳的檸檬汁、沙拉、冰淇淋評價好','紀念品選擇多；成人門票 ₩19,000'],bad:['票價偏貴','團客多，熱門拍照點要排隊','有幾則說員工服務態度差']},
@@ -661,6 +672,7 @@ const REVIEWS={
 const HAMDEOK={ko:'함덕국민학교옛터 공영주차장',zh:'咸德舊國小公營停車場',lat:33.54232,lng:126.66843,addr:'제주시 조천읍 함덕리 1004-3',fee:'免費'};
 const HANDAM={ko:'한담공원 무료주차장',zh:'漢潭公園免費停車場',lat:33.45960,lng:126.31104,addr:'제주시 애월읍 애월리 2459-1',fee:'免費'};
 const PARK={
+ '동문재래시장':{ko:'동문공영주차장',zh:'東門公營停車場',lat:33.51206,lng:126.52860,addr:'제주시 동문로4길 9',fee:'公營，收費',walk:85,tip:'評論說市場周邊很難停；這個最近，滿了就停 제주동문재래시장 공영주차장（중앙로13길 16-8，約 300 m）。'},
  '롯데마트 제주점':{ko:'롯데마트 제주점 주차장',zh:'樂天超市附設停車場',lat:33.48243,lng:126.48185,addr:'제주시 연북로 1',fee:'收費（消費後通常可折抵，結帳時問櫃台）',walk:0,tip:'評論說停車場動線亂、沒有人指揮，進出要慢慢開。旁邊約 300 m 的 E-mart 新濟州店（제주시 1100로 3348）也可以順便比價。'},
  '제주노블레스관광호텔':{ko:'제주노블레스관광호텔',zh:'飯店停車場（地下＋門前）',lat:33.50117,lng:126.50345,addr:'제주시 월성로4길 19',fee:'住客免費',walk:0,tip:'Kakao 資料：飯店自有地下停車場和門前停車場都可以免費停。'},
  '더퍼스트70호텔':{ko:'더퍼스트70호텔',zh:'飯店停車場（地下 1 樓、2 樓）',lat:33.24725,lng:126.56685,addr:'서귀포시 명동로 46',fee:'住客免費',walk:0,tip:'評論說飯店停車位偏窄。滿了就停旁邊的「정방동공영주차장」（서귀동 403-6，約 90 m），20:00–隔天 09:00 免費。這筆停車資料來自同地址舊名「제주노블피아호텔」的 Kakao 頁面，入住時請向櫃台確認。'},
@@ -706,6 +718,7 @@ const NEARBY=[
   {zh:'創意居酒屋（非精釀）',ko:'마루아라',m:280,tel:'064-763-1364',lat:33.24671911,lng:126.56393109,rate:'★5.0（100）',note:'在李仲燮街，生馬肉、鮭魚，下酒菜好吃'}]}];
 /* intro articles found by web search (2026-10-24) + a YouTube search for videos */
 const LINKS={
+ '동문재래시장':{yt:'濟州 東門市場 美食',a:[]},
  '롯데마트 제주점':{yt:'濟州 樂天超市 必買',a:[]},
  '오드랑베이커리':{yt:'濟州 Audrant 大蒜麵包',a:[['Trip.com 旅客分享','https://nz.trip.com/moments/poi-audrant-bakery-147901313'],['Wanderlog（英文）','https://wanderlog.com/place/details/1313065']]},
  '함덕해수욕장':{yt:'濟州 咸德海水浴場 犀牛峰',a:[['咸德・犀牛峰攻略','https://www.trvlogue.com/zh-Hant/jeju-hamdeok-seoubong-guide'],['K-Trip Tips 景點介紹','https://www.ktriptips.com/cht/tourspot/1105411']]},
@@ -785,6 +798,16 @@ if(S.tripId===TRIP_ID&&!S.patches.includes('fix-1031')){
   }
   S.patches.push('fix-1031');
 }
+/* one-time patch: Dongmun Market as the rain backup for Hamdeok beach on 11/17 */
+if(S.tripId===TRIP_ID&&!S.patches.includes('rain-dongmun')){
+  if(!S.days.some(d=>d.stops.some(s=>s.ko==='동문재래시장'))){
+    const d=S.days.find(x=>x.stops.some(s=>s.ko==='함덕해수욕장'));
+    if(d){const i=d.stops.findIndex(s=>s.ko==='함덕해수욕장');const h=d.stops[i];
+      if(h.note&&!h.note.includes('東門市場'))h.note+=HD_RAIN;
+      const b=DONGMUN(); if(h.time)b.time=h.time; d.stops.splice(i+1,0,b)}
+  }
+  S.patches.push('rain-dongmun');
+}
 S.days.forEach(d=>d.stops.forEach(s=>{const c=CONTACT[s.ko];if(c){if(!s.tel&&c[0])s.tel=c[0];if(!s.addr)s.addr=c[1]}}));
 save();
 const $=id=>document.getElementById(id);
@@ -803,15 +826,23 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 const layer=L.layerGroup().addTo(map);
 let pins={}, fittedDay=-1, pending=null;
 
+/* rain-backup ("雨備") stops sit beside a main stop: not numbered, not part of the day's route or drive total */
+const isAlt=s=>!!s.alt;
+const prevMain=(stops,i)=>{for(let j=i-1;j>=0;j--)if(!isAlt(stops[j]))return stops[j];return null};
+const nextMain=(stops,i)=>{for(let j=i+1;j<stops.length;j++)if(!isAlt(stops[j]))return stops[j];return null};
+/* a backup replaces the main stop just before it, so its drive starts from the main stop before that one */
+const altReplaces=(stops,i)=>prevMain(stops,i);
+const altFrom=(stops,i)=>{const r=altReplaces(stops,i);return r?prevMain(stops,stops.indexOf(r)):null};
 function drawMap(){
   const day=S.days[S.activeDay];
   layer.clearLayers(); pins={};
   S.days.forEach((d,i)=>{if(i===S.activeDay)return;d.stops.forEach(s=>{if(!valid(s))return;
     L.circleMarker([s.lat,s.lng],{radius:4,stroke:false,fillColor:tok('--muted'),fillOpacity:.55}).bindTooltip(`Day ${i+1}・${esc(s.zh||s.ko)}`).addTo(layer)})});
-  const pts=day.stops.filter(valid).map(s=>[+s.lat,+s.lng]);
+  const pts=day.stops.filter(s=>valid(s)&&!isAlt(s)).map(s=>[+s.lat,+s.lng]);
   if(pts.length>1)L.polyline(pts,{color:tok('--sea'),weight:2.5,dashArray:'6 5'}).addTo(layer);
-  day.stops.forEach((s,i)=>{if(!valid(s))return;
-    pins[s.id]=L.marker([s.lat,s.lng],{icon:L.divIcon({className:'lpin',html:String(i+1),iconSize:[26,26],iconAnchor:[13,13]}),title:`${i+1}. ${s.zh||s.ko}`}).on('click',()=>hit(s.id)).addTo(layer)});
+  let n=0;
+  day.stops.forEach(s=>{const alt=isAlt(s);if(!alt)n++;if(!valid(s))return;const lab=alt?'雨':String(n);
+    pins[s.id]=L.marker([s.lat,s.lng],{icon:L.divIcon({className:'lpin'+(alt?' alt':''),html:lab,iconSize:[26,26],iconAnchor:[13,13]}),title:`${alt?'雨備':lab+'.'} ${s.zh||s.ko}`}).on('click',()=>hit(s.id)).addTo(layer)});
   if(fittedDay!==S.activeDay){fittedDay=S.activeDay;
     if(pts.length>1)map.fitBounds(pts,{padding:[36,36],maxZoom:14});else if(pts.length)map.setView(pts[0],13);else map.setView([33.38,126.55],10)}
   const others=S.days.reduce((a,d,i)=>a+(i===S.activeDay?0:d.stops.length),0);
@@ -904,15 +935,19 @@ function legText(a,b){
   if(failed.has(S.activeDay))return `<b>開車約 ${fmtDur(km*1.4/38*3600)}</b>（估算）・直線 ${km.toFixed(1)} km`;
   return `直線 ${km.toFixed(1)} km・計算車程中…`;
 }
-function dayDrive(day){let t=0;day.stops.forEach((s,i)=>{const p=day.stops[i-1];if(p&&valid(p)&&valid(s)){const d=DRIVE[pairKey(p,s)];if(d)t+=d[0]}});return t}
+function dayDrive(day){let t=0;const m=day.stops.filter(s=>!isAlt(s));m.forEach((s,i)=>{const p=m[i-1];if(p&&valid(p)&&valid(s)){const d=DRIVE[pairKey(p,s)];if(d)t+=d[0]}});return t}
 function fetchDrives(){
-  const di=S.activeDay, v=S.days[di].stops.filter(valid);
-  if(driveBusy||failed.has(di)||v.length<2||!v.some((s,i)=>i&&ll(v[i-1])!==ll(s)&&!DRIVE[pairKey(v[i-1],s)]))return;
+  const di=S.activeDay, st=S.days[di].stops;
+  /* chains: the main route, plus prev-main → backup → next-main for each rain backup */
+  const chains=[st.filter(s=>valid(s)&&!isAlt(s))];
+  st.forEach((s,i)=>{if(isAlt(s)&&valid(s))chains.push([altFrom(st,i),s,nextMain(st,i)].filter(x=>x&&valid(x)))});
+  const need=chains.filter(v=>v.length>1&&v.some((s,i)=>i&&ll(v[i-1])!==ll(s)&&!DRIVE[pairKey(v[i-1],s)]));
+  if(driveBusy||failed.has(di)||!need.length)return;
   driveBusy=true;
-  fetch(`https://router.project-osrm.org/route/v1/driving/${v.map(ll).join(';')}?overview=false`)
+  Promise.all(need.map(v=>fetch(`https://router.project-osrm.org/route/v1/driving/${v.map(ll).join(';')}?overview=false`)
     .then(r=>r.json()).then(d=>{if(d.code!=='Ok')throw 0;
-      d.routes[0].legs.forEach((l,i)=>{DRIVE[pairKey(v[i],v[i+1])]=[Math.round(l.duration),Math.round(l.distance)]});
-      try{localStorage.setItem(DKEY,JSON.stringify(DRIVE))}catch(e){}})
+      d.routes[0].legs.forEach((l,i)=>{DRIVE[pairKey(v[i],v[i+1])]=[Math.round(l.duration),Math.round(l.distance)]})})))
+    .then(()=>{try{localStorage.setItem(DKEY,JSON.stringify(DRIVE))}catch(e){}})
     .catch(()=>failed.add(di))
     .finally(()=>{driveBusy=false;if(S.activeDay===di)render();else fetchDrives()});
 }
@@ -1013,7 +1048,7 @@ const ICON={
  car:'<path d="M4 21l3-8h18l3 8z" fill="#d2600a"/><rect x="3" y="20" width="26" height="6" rx="2" fill="#f39246"/><path d="M9 14h6v6H8zM17 14h6l1 6h-7z" fill="#dcecf6"/><circle cx="9" cy="26" r="3" fill="#26252b"/><circle cx="23" cy="26" r="3" fill="#26252b"/>',
  cart:'<path d="M3 6h4l3 13h14l3-9H9" fill="none" stroke="#45444b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M11 12h14l-2 6H12z" fill="#d44a3b"/><circle cx="12" cy="25" r="2.4" fill="#45444b"/><circle cx="22" cy="25" r="2.4" fill="#45444b"/><circle cx="16" cy="9" r="3" fill="#f39246"/><path d="M16 6.2l1.4-1.6" stroke="#4f8f3f" stroke-width="1.4" stroke-linecap="round"/>',
  pin:'<path d="M16 29s-9-9-9-15a9 9 0 0 1 18 0c0 6-9 15-9 15z" fill="#d2600a"/><circle cx="16" cy="14" r="3.6" fill="#fff"/>'};
-const ICON_OF={'제주국제공항':'plane','머니박스 제주지점':'money','오드랑베이커리':'bread','함덕해수욕장':'beach','스누피가든':'flower','더퍼스트70호텔':'bed','제주노블레스관광호텔':'bed','정방폭포':'fall','천지연폭포':'fall','서귀포매일올레시장':'market','중문대포해안주상절리대':'columns','이중섭거리':'palette','성산일출봉':'peak','제주해녀박물관':'diver','런던베이글뮤지엄 제주점':'bagel','만장굴':'cave','9.81파크':'kart','애월 카페거리':'coffee','한담해안산책로':'walk','맥파이 브루어리 탭룸':'beer','렌터카 반납':'car','롯데렌터카 제주오토하우스지점':'car','롯데마트 제주점':'cart'};
+const ICON_OF={'제주국제공항':'plane','머니박스 제주지점':'money','오드랑베이커리':'bread','함덕해수욕장':'beach','스누피가든':'flower','더퍼스트70호텔':'bed','제주노블레스관광호텔':'bed','정방폭포':'fall','천지연폭포':'fall','서귀포매일올레시장':'market','중문대포해안주상절리대':'columns','이중섭거리':'palette','성산일출봉':'peak','제주해녀박물관':'diver','런던베이글뮤지엄 제주점':'bagel','만장굴':'cave','9.81파크':'kart','애월 카페거리':'coffee','한담해안산책로':'walk','맥파이 브루어리 탭룸':'beer','렌터카 반납':'car','롯데렌터카 제주오토하우스지점':'car','롯데마트 제주점':'cart','동문재래시장':'market'};
 const stopIcon=s=>`<svg viewBox="0 0 32 32">${ICON[ICON_OF[s.ko]||'pin']}</svg>`;
 function parkHtml(s){const p=PARK[s.ko];if(!p)return '';
   const walk=p.walk?`步行約 ${Math.max(1,Math.round(p.walk/70))} 分鐘（${p.walk} m）`:'就在旁邊';
@@ -1132,18 +1167,23 @@ function render(){
   drawMap();
   renderPlanner();
   if(!day.stops.length){$('stops').innerHTML=`<li class="empty">這天還沒有地點。按下方「新增地點」，貼上 Google Maps 連結就能加入。</li>`;return}
+  let num=0;
   $('stops').innerHTML=day.stops.map((s,i)=>{
-    const prev=i>0?day.stops[i-1]:null; const ok=valid(s); const open=openTray.has(s.id);
-    const leg=prev?`<li class="legrow" aria-label="與上一站的車程"><span class="leg">${ok&&valid(prev)?legText(prev,s):''}</span></li>`:'';
-    return `${leg}<li class="stop">
-      <div class="mark"><div class="num">${i+1}</div>${s.time?`<span class="time">${esc(s.time)}</span>`:''}</div>
+    const alt=isAlt(s); if(!alt)num++;
+    const prev=alt?altFrom(day.stops,i):prevMain(day.stops,i), repl=alt?altReplaces(day.stops,i):null; const ok=valid(s); const open=openTray.has(s.id);
+    const nx=alt?nextMain(day.stops,i):null;
+    const leg=prev?`<li class="legrow${alt?' altleg':''}" aria-label="與上一站的車程"><span class="leg">${alt?'雨備・':''}${ok&&valid(prev)?legText(prev,s):''}</span></li>`:'';
+    return `${leg}<li class="stop${alt?' alt':''}">
+      <div class="mark"><div class="num">${alt?'雨備':num}</div>${s.time?`<span class="time">${esc(s.time)}</span>`:''}</div>
       <article class="card" id="card-${s.id}">
         <div class="cardtop">
           <span class="sicon" aria-hidden="true">${stopIcon(s)}</span>
           <div class="names"><div class="ko" lang="ko">${esc(s.ko||s.zh||'未命名')}</div>${s.zh&&s.ko?`<div class="zh">${esc(s.zh)}</div>`:''}</div>
           <button class="more" data-act="more" data-id="${s.id}" aria-expanded="${open}" aria-label="更多操作">⋯</button>
         </div>
+        ${alt&&repl?`<div class="altchip">雨備：下雨時改來這裡，取代「${esc(repl.zh||repl.ko)}」</div>`:''}
         ${s.note?`<div class="note">${esc(s.note)}</div>`:''}
+        ${alt&&nx&&ok&&valid(nx)?`<div class="altnext">走雨備時，之後到「${esc(nx.zh||nx.ko)}」${legText(s,nx)}</div>`:''}
         ${linkHtml(s)}
         ${revHtml(s)}
         ${parkHtml(s)}
@@ -1235,8 +1275,8 @@ $('saveBtn').onclick=()=>{
   const target=+$('fDay').value;
   const data={ko,zh,lat,lng,time:$('fTime').value,note:$('fNote').value.trim(),tel:$('fTel').value.trim(),addr:$('fAddr').value.trim()};
   const wasEdit=!!editing;
-  if(editing){for(const d of S.days){const i=d.stops.findIndex(x=>x.id===editing);if(i>-1){d.stops.splice(i,1);break}}}
-  const stop={id:editing||uid(),...data}; const arr=S.days[target].stops;
+  let wasAlt=false;if(editing){for(const d of S.days){const i=d.stops.findIndex(x=>x.id===editing);if(i>-1){wasAlt=!!d.stops[i].alt;d.stops.splice(i,1);break}}}
+  const stop={id:editing||uid(),...data};if(wasAlt)stop.alt=true; const arr=S.days[target].stops;
   arr.push(stop); arr.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0);
   S.activeDay=target; save(); flash($('saveMsg'),wasEdit?'已更新':'已加入',true); resetForm(); render(); hit(stop.id);
 };
@@ -1260,11 +1300,11 @@ $('copyCsv').onclick=()=>{const rows=[['day','day_title','time','name_ko','name_
   S.days.forEach((d,i)=>d.stops.forEach(s=>rows.push([i+1,d.title||'',s.time||'',s.ko||'',s.zh||'',s.lat??'',s.lng??'',s.note||''])));
   copyText(rows.map(r=>r.join('\t')).join('\n'),'已複製，直接貼到 Google Sheet A1 即可')};
 $('importBtn').onclick=()=>{try{const d=JSON.parse($('importBox').value);if(!Array.isArray(d.days))throw 0;
-  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
+  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
   catch(err){flash($('ioMsg'),'JSON 格式不對，請貼上「複製 JSON 備份」的內容',false)}};
 let clrArm=false;
 $('clearSample').onclick=()=>{const b=$('clearSample');if(!clrArm){clrArm=true;b.textContent='再按一次確認清空';setTimeout(()=>{clrArm=false;b.textContent='清空全部'},3000);return}
-  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
+  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
 
 /* first edit drops the sample badge */
 document.addEventListener('change',()=>{if(S.sample){S.sample=false;save();$('sampleChip').hidden=true}},true);
