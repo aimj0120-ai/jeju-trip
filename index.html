@@ -185,6 +185,17 @@ html,body{overflow-x:clip}
 
 /* timeline */
 .stopsblock{display:flex;flex-direction:column;gap:10px}
+/* weather card for the selected day (Open-Meteo, live) */
+.wx{order:1;display:flex;align-items:center;gap:12px;background:var(--sea-soft);border-radius:18px 22px 18px 24px;padding:10px 14px}
+.wx svg{flex:0 0 auto;width:40px;height:40px}
+.wx-main{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+.wx-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.wx-top b{font-family:var(--f-display);font-size:1.05rem;color:var(--ink)}
+.wx-t{font-family:var(--f-mono);font-size:.92rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.wx-meta{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:.8rem;color:var(--sea);font-variant-numeric:tabular-nums}
+.wx-tip{font-size:.8rem;color:var(--ink)}
+.wx-tip.warn{color:var(--red);font-weight:700}
+.wx-src{font-size:.7rem;color:var(--muted)}
 ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .stop,.legrow{display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:0 12px;position:relative}
 .stop::before,.legrow::before{content:"";position:absolute;left:1.6rem;top:0;bottom:0;border-left:2.5px dashed var(--trail)}
@@ -480,6 +491,7 @@ textarea{resize:vertical;min-height:60px}
           <input id="dayTitle" class="daytitle" aria-label="這一天的標題" placeholder="幫這天取個主題">
         </div>
       </div>
+      <section class="wx" id="wx" aria-label="這天的天氣預報" hidden></section>
 
       <div class="stopsblock">
         <ol class="stops" id="stops"></ol>
@@ -905,6 +917,48 @@ function fetchDrives(){
     .finally(()=>{driveBusy=false;if(S.activeDay===di)render();else fetchDrives()});
 }
 
+/* ---- weather: Open-Meteo daily forecast for the day's area, cached 3 h ---- */
+const WXKEY='jeju-wx-v1'; let WX={}; try{WX=JSON.parse(localStorage.getItem(WXKEY)||'{}')}catch(e){}
+const TRIP_START=new Date(2026,10,17);
+function dayDate(i){const t=(S.days[i].title||'').match(/^(\d{1,2})\/(\d{1,2})/);const d=t?new Date(2026,+t[1]-1,+t[2]):new Date(TRIP_START.getTime()+i*864e5);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function wxText(c){if(c===0)return['晴','sun'];if(c<=2)return['晴時多雲','part'];if(c===3)return['陰天','cloud'];if(c===45||c===48)return['有霧','cloud'];
+  if(c>=51&&c<=57)return['毛毛雨','rain'];if(c>=61&&c<=67)return['下雨','rain'];if(c>=71&&c<=77)return['下雪','cloud'];if(c>=80&&c<=82)return['陣雨','rain'];if(c>=95)return['雷雨','rain'];return['多雲','cloud']}
+const WXI={sun:'<circle cx="20" cy="20" r="8" fill="#f5cf62"/><g stroke="#f39246" stroke-width="2.4" stroke-linecap="round"><path d="M20 3v5M20 32v5M3 20h5M32 20h5M8 8l3.5 3.5M28.5 28.5 32 32M8 32l3.5-3.5M28.5 11.5 32 8"/></g>',
+ part:'<circle cx="15" cy="14" r="7" fill="#f5cf62"/><path d="M12 31a7 7 0 0 1 1-13.9A9 9 0 0 1 30 18a6.5 6.5 0 0 1 1 13z" fill="#fff" stroke="#9aa0a8" stroke-width="1.6"/>',
+ cloud:'<path d="M10 30a8 8 0 0 1 1.5-15.8A10 10 0 0 1 30 15a7.5 7.5 0 0 1 1 15z" fill="#e6e8ec" stroke="#9aa0a8" stroke-width="1.6"/>',
+ rain:'<path d="M10 24a8 8 0 0 1 1.5-15.8A10 10 0 0 1 30 9a7.5 7.5 0 0 1 1 15z" fill="#e6e8ec" stroke="#9aa0a8" stroke-width="1.6"/><g stroke="#2b78a8" stroke-width="2.4" stroke-linecap="round"><path d="M13 28l-2 5M20 28l-2 5M27 28l-2 5"/></g>'};
+let wxBusy=false;
+function renderWx(){
+  const el=$('wx'), i=S.activeDay, date=dayDate(i), w=WX[date];
+  if(!w){el.hidden=true;fetchWx();return}
+  const [txt,ic]=wxText(w.code), tips=[];
+  if(w.rain>=60)tips.push(['降雨機率高：帶雨具，戶外行程準備室內備案',1]);
+  else if(w.rain>=30||ic==='rain')tips.push(['有機會下雨，帶把折疊傘',0]);
+  if(w.wind>=10)tips.push([`風很大（陣風等級約 ${w.wind.toFixed(0)} m/s）：海邊、登山步道注意安全，9.81 Park 戶外賽車可能暫停`,1]);
+  if(w.min<=10)tips.push(['早晚偏冷，帶保暖外套',0]);
+  if(!tips.length)tips.push([ic==='sun'||ic==='part'?'天氣不錯，適合戶外行程':'天氣穩定，照原計畫走',0]);
+  el.innerHTML=`<svg viewBox="0 0 40 40" aria-hidden="true">${WXI[ic]}</svg><div class="wx-main">
+    <div class="wx-top"><b>${txt}</b><span class="wx-t">${Math.round(w.min)}–${Math.round(w.max)}°C</span></div>
+    <div class="wx-meta"><span>降雨機率 ${w.rain}%</span><span>最大風速 ${w.wind.toFixed(1)} m/s</span></div>
+    ${tips.map(([t,warn])=>`<div class="wx-tip${warn?' warn':''}">${esc(t)}</div>`).join('')}
+    <div class="wx-src">預報：Open-Meteo（${w.fetched} 更新，越接近出發越準）</div></div>`;
+  el.hidden=false;
+}
+function fetchWx(){
+  if(wxBusy)return; const i=S.activeDay, date=dayDate(i), v=S.days[i].stops.filter(valid);
+  const now=Date.now(), w=WX[date]; if(w&&now-w.ts<3*36e5)return;
+  const la=v.length?v.reduce((a,s)=>a+ +s.lat,0)/v.length:33.38, lo=v.length?v.reduce((a,s)=>a+ +s.lng,0)/v.length:126.55;
+  wxBusy=true;
+  fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la.toFixed(3)}&longitude=${lo.toFixed(3)}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max&wind_speed_unit=ms&timezone=Asia%2FSeoul&start_date=${date}&end_date=${date}`)
+    .then(r=>r.json()).then(d=>{const x=d.daily;if(!x||x.weather_code[0]==null)return;
+      const t=new Date();
+      WX[date]={code:x.weather_code[0],min:x.temperature_2m_min[0],max:x.temperature_2m_max[0],rain:x.precipitation_probability_max[0]??0,wind:x.wind_speed_10m_max[0]??0,ts:Date.now(),fetched:`${t.getMonth()+1}/${t.getDate()} ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`};
+      try{localStorage.setItem(WXKEY,JSON.stringify(WX))}catch(e){}})
+    .catch(()=>{})
+    .finally(()=>{wxBusy=false;if(S.activeDay===i&&WX[date])renderWx()});
+}
+
 /* ---- route planner ---- */
 const MODES={car:'開車',public:'大眾運輸',walk:'步行',bicycle:'單車'};
 function findStop(id){for(const d of S.days){const s=d.stops.find(x=>x.id===id);if(s)return s}return null}
@@ -1070,7 +1124,7 @@ function render(){
   const day=S.days[S.activeDay];
   const tot=dayDrive(day);
   $('dayEyebrow').textContent=`DAY ${S.activeDay+1} / ${S.days.length}・${day.stops.length} 個地點${day.stops[0]?.time?`・${day.stops[0].time} 出發`:''}${tot?`・開車合計約 ${fmtDur(tot)}`:''}`;
-  fetchDrives();
+  fetchDrives(); renderWx(); fetchWx();
   $('dayTitle').value=day.title||'';
   $('delDay').hidden=S.days.length<2;
   $('addStopBtn').textContent=`＋ 在 Day ${S.activeDay+1} 新增地點`;
