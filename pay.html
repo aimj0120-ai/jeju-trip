@@ -9,7 +9,7 @@
 <title>韓國付款攻略</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Sans+KR:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one column; sticky section chips on top, then one card per topic (who pays with what, Lotte Mart, convenience stores, how to pay, what to buy).
+/* Layout: one column; sticky section chips on top, then one card per topic (which card for which shop, Lotte Mart, convenience stores, how to pay, what to buy).
    Same palette and type as the trip board (index.html). */
 :root{
   padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
@@ -94,17 +94,17 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
   </header>
 
   <nav class="chips" aria-label="章節">
-    <a href="#quick">一張表</a><a href="#me">你怎麼付</a><a href="#gf">女友怎麼付</a><a href="#mart">樂天超市</a><a href="#cvs">便利商店</a><a href="#how">付款步驟</a><a href="#buy">買什麼</a>
+    <a href="#quick">一張表</a><a href="#me">國泰</a><a href="#gf">中信 LINE Pay 卡</a><a href="#mart">樂天超市</a><a href="#cvs">便利商店</a><a href="#how">付款步驟</a><a href="#buy">買什麼</a>
   </nav>
 
   <section id="quick" aria-labelledby="h-quick">
     <h2 id="h-quick">一張表：在哪裡用哪個</h2>
     <div class="card">
       <table class="tbl">
-        <thead><tr><th>地方</th><th>你（國泰）</th><th>女友（中信 LINE Pay 卡）</th></tr></thead>
+        <thead><tr><th>地方</th><th>國泰 CUBE Visa＋國泰帳戶</th><th>中信 LINE Pay 卡</th></tr></thead>
         <tbody>
-          <tr><td>便利商店</td><td>LINE Pay 綁 CUBE，<span class="pct">15%</span> → 用完上限改悠遊付</td><td>LINE Pay 綁中信卡，最高 <span class="pct">25%</span></td></tr>
-          <tr><td>樂天超市</td><td>自己的自己付：LINE Pay 綁 CUBE，約 <span class="pct">10%</span></td><td>自己的自己付：LINE Pay 綁中信卡，約 <span class="pct">15%</span></td></tr>
+          <tr><td>便利商店</td><td>LINE Pay 綁 CUBE，<span class="pct">15%</span> → 用完上限改悠遊付</td><td>LINE Pay 綁中信卡，<span class="pct">25%</span> → 用完上限改悠遊付</td></tr>
+          <tr><td>樂天超市</td><td>LINE Pay 綁 CUBE，約 <span class="pct">10%</span></td><td>LINE Pay 綁中信卡，約 <span class="pct">15%</span></td></tr>
           <tr><td>傳統市場、小店</td><td>有 ZeroPay 貼紙就用全支付綁國泰帳戶 <span class="pct">8.5%</span></td><td>全支付綁帳戶 <span class="pct">3.5%</span></td></tr>
           <tr><td>大創、Ediya、樂天免稅店</td><td>悠遊付（TWQR）<span class="pct">12%</span></td><td>悠遊付（TWQR）<span class="pct">12%</span></td></tr>
           <tr><td>其他餐廳</td><td>CUBE 切「趣旅行」刷卡約 3%</td><td>中信 LINE Pay 卡刷卡 2.8%（登錄再 +2.2%）</td></tr>
@@ -115,9 +115,9 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
   </section>
 
   <section id="me" aria-labelledby="h-me">
-    <h2 id="h-me">你：國泰 CUBE 卡＋國泰帳戶</h2>
+    <h2 id="h-me">國泰 CUBE Visa 卡＋國泰帳戶</h2>
     <div class="card">
-      <h3>全支付（ZeroPay / HIVEX 店家）<span class="who me">最適合你</span></h3>
+      <h3>全支付（ZeroPay / HIVEX 店家）<span class="who me">綁國泰帳戶回饋最高</span></h3>
       <ul>
         <li>筆筆 <span class="pct">3.5%</span>（單筆最多 350 點，每月最多 1,000 點）</li>
         <li><b>綁國泰帳戶付款再加 <span class="pct">5%</span></b>：單筆最多 100 點、<b>每週最多 100 點</b>（週一起算，11/17–11/21 同一週，所以這趟只能拿 100 點，約消費 NT$2,000 就滿）</li>
@@ -128,7 +128,7 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
       <p class="small">在店家看到 <b>ZeroPay</b> 或 <b>HIVEX</b> 標誌才能用，多半是小吃店、傳統市場攤位、炸雞店。東門市場、偶來市場很多攤位有。</p>
     </div>
     <div class="card">
-      <h3>悠遊付（TWQR 店家）<span class="who both">兩人都可以</span></h3>
+      <h3>悠遊付（TWQR 店家）<span class="who both">每個帳號都能用</span></h3>
       <ul>
         <li>筆筆 <span class="pct">10.5%</span> 回饋金＋免 1.5% 手續費＝<span class="pct">12%</span></li>
         <li>11/1–11/24 是同一個活動階段，每人上限 <b>NT$600</b>（約消費 NT$5,700）</li>
@@ -143,7 +143,7 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
         <li>便利商店（CU、7-Eleven、emart24）：LINE Pay 5%＋綁 Visa 10%＝<span class="pct">15%</span></li>
         <li>樂天超市：綁 Visa 3%＋觀光公社 7%（到 12/11）＝<span class="pct">10%</span></li>
         <li>上限：5% 每月最多 100 點、Visa 10% 每月最多 200 點，便利商店大約消費 NT$2,000 就滿；樂天超市 3% 每月最多 150 點</li>
-        <li>這兩個上限是<b>每個 LINE Pay 帳號各自算</b>，你和女友各有一份</li>
+        <li>這兩個上限是<b>每個 LINE Pay 帳號各自算</b></li>
         <li>LINE Pay 刷的 CUBE 消費算不算「趣旅行」海外 3% 不一定，當作額外的就好</li>
       </ul>
     </div>
@@ -158,7 +158,7 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
   </section>
 
   <section id="gf" aria-labelledby="h-gf">
-    <h2 id="h-gf">女友：中信 LINE Pay 卡</h2>
+    <h2 id="h-gf">中信 LINE Pay 卡</h2>
     <div class="card">
       <h3>LINE Pay 綁中信 LINE Pay 卡<span class="who gf">便利商店、樂天超市</span></h3>
       <table class="tbl">
@@ -177,7 +177,7 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
         <li>11 月內用 LINE Pay 付滿 2 筆，可以抽最高 666 點</li>
         <li>點數大多隔天下午入帳，可以在 LINE Pay App 看</li>
       </ul>
-      <p class="small">中信加碼是每月限量、發完為止；台新的加碼 11/15 就結束，跟你們無關。</p>
+      <p class="small">中信加碼是每月限量、發完為止；台新的加碼 11/15 就結束，用不到。</p>
     </div>
   </section>
 
@@ -186,9 +186,8 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
     <div class="card">
       <h3>結帳建議</h3>
       <ol class="order">
-        <li><span><b>兩個人分開結帳</b>：放上收銀台時把東西分成兩堆，跟店員說「<span class="ko">따로 계산해 주세요</span>（請分開結帳）」。</span></li>
-        <li><span><b>女友</b>：LINE Pay 綁中信卡，約 <span class="pct">15%</span>；<b>你</b>：LINE Pay 綁 CUBE Visa，約 <span class="pct">10%</span>。回饋上限各算各的。</span></li>
-        <li><span>要退稅的話，<b>每個人的收據各自要滿 ₩15,000</b>，用自己的護照辦。</span></li>
+        <li><span>LINE Pay 綁中信卡約 <span class="pct">15%</span>；LINE Pay 綁 CUBE Visa 約 <span class="pct">10%</span>。</span></li>
+        <li><span>要退稅的話，<b>收據要滿 ₩15,000</b>，用結帳人自己的護照辦。</span></li>
         <li><span>櫃台結帳時跟店員說「<span class="ko">라인페이요</span>（LINE Pay）」，打開 LINE Pay 的付款條碼給店員刷。</span></li>
       </ol>
       <div class="warn">樂天超市是大賣場，<b>通常沒有 ZeroPay</b>，全支付大多不能用；悠遊付也不在清單內。以門口和櫃台貼的標誌為準。</div>
@@ -210,9 +209,8 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
     <div class="card">
       <h3>用的順序</h3>
       <ol class="order">
-        <li><span><b>兩個人分開付</b>：各拿各的東西排隊，或在收銀台說「<span class="ko">따로 계산해 주세요</span>（請分開結帳）」</span></li>
-        <li><span><b>女友</b>：LINE Pay 綁中信卡 <span class="pct">25%</span>；<b>你</b>：LINE Pay 綁 CUBE Visa <span class="pct">15%</span>。上限各算各的</span></li>
-        <li><span>誰的 LINE Pay 上限用完了，那個人就改用<b>悠遊付</b>（<span class="pct">12%</span>，11/20 週五 14%）</span></li>
+        <li><span>LINE Pay 綁中信卡 <span class="pct">25%</span>；LINE Pay 綁 CUBE Visa <span class="pct">15%</span></span></li>
+        <li><span>LINE Pay 上限用完後改用<b>悠遊付</b>（<span class="pct">12%</span>，11/20 週五 14%）</span></li>
       </ol>
       <p class="small">LINE Pay 活動清單裡有 CU、7-Eleven、emart24，<b>GS25 不在清單內</b>；在 GS25 直接用悠遊付，四大超商都能用。</p>
     </div>
@@ -232,7 +230,7 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
     <div class="card">
       <h3>LINE Pay</h3>
       <ol class="order">
-        <li><span>出發前在 LINE 錢包綁好卡（女友綁中信 LINE Pay 卡，你綁 CUBE Visa 卡），並設成預設付款卡</span></li>
+        <li><span>出發前在 LINE 錢包綁好卡（中信 LINE Pay 卡或 CUBE Visa 卡），並設成預設付款卡</span></li>
         <li><span>結帳時打開 LINE → 錢包 → 付款，出示<b>條碼</b>給店員刷</span></li>
         <li><span>跟店員說「<span class="ko">라인페이요</span>」；店員找不到時，可以指收銀機上的 LINE Pay 貼紙</span></li>
       </ol>
