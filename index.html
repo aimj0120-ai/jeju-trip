@@ -189,6 +189,10 @@ html,body{overflow-x:clip}
 .stop.alt .num{background:var(--sea);color:var(--on-sea);font-size:.62rem;letter-spacing:0}
 .altleg .leg{color:var(--muted)}
 .altchip{align-self:flex-start;font-size:.76rem;font-weight:700;color:var(--sea);background:var(--sea-soft);border-radius:99px;padding:2px 10px}
+.reserve{border:1.5px solid var(--naver);border-radius:14px;padding:8px 12px;display:flex;flex-direction:column;gap:6px;font-size:.8rem}
+.reserve>b{font-size:.78rem;color:var(--naver)}
+.rsv-item{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;min-width:0}
+.rsv-item span{color:var(--muted);overflow-wrap:anywhere;min-width:0}
 .must{background:var(--tang-soft);border-radius:14px;padding:8px 12px;display:flex;flex-direction:column;gap:6px;font-size:.84rem}
 .must>b{font-size:.78rem;color:var(--tang)}
 .must-item{display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -584,13 +588,13 @@ const LOTTE_RETURN=()=>st('07:30',LOTTE[0],'樂天租車 Auto House（還車）'
 const LOTTEMART=()=>st('19:00','롯데마트 제주점','樂天超市 濟州店',33.48243,126.48185,'營業 10:00–23:00｜晚上買伴手禮、零食、橘子｜付款：有 ZeroPay 標誌可用全支付，其他刷卡；LINE Pay 樂天超市回饋 9 月已結束｜帶護照問退稅｜也可改到 11/20 晚上');
 const HD_RAIN='｜下雨就改去下方的雨備：東門市場';
 const DONGMUN=()=>Object.assign(st('13:30','동문재래시장','東門市場（雨備）',33.51278,126.52830,'有屋頂、雨天也能逛｜停留約 1 小時｜08:00–21:00｜Money Box 東門市場店就在旁邊（관덕로 64），可順便換錢｜逛完直接開往 Snoopy Garden（17:00 前入場）'),{alt:true});
-const GEUMDOT=()=>st('17:15','금돗 성산흑돼지','金豚 城山黑豬肉（晚餐）',33.46521,126.93250,'煙燻濟州黑豬肉，Kakao ★4.9｜生意很好，先在 NAVER 預約｜11:00–22:30｜吃完開回西歸浦約 1 小時');
+const GEUMDOT=()=>st('17:15','금돗 성산흑돼지','金豚 城山黑豬肉（晚餐）',33.46521,126.93250,'煙燻濟州黑豬肉，Kakao ★4.9｜生意很好，用下方「NAVER 預約」先訂位｜11:00–22:30，最後點餐 21:30｜吃完開回西歸浦約 1 小時');
 const SAEKDAL=()=>st('12:50','중문색달통갈치','中文色達白帶魚（午餐）',33.25836,126.40455,'整條烤白帶魚，2 人份約 ₩40,000，3 人點 2 人份剛好｜拍完照店員會幫忙去刺｜11:00–20:50｜離柱狀節理帶約 5 分鐘車程');
 const MYEONGHO=()=>st('17:15','명호마농갈비 본점','明浩大蒜烤牛排（晚餐）',33.48859,126.49485,'烤韓牛＋大量蒜頭，網傳平常要排 1–2 小時｜17:00 左右去比較不用等｜13:00–23:00｜離飯店約 1.5 km');
 const SAMDAE=()=>st('21:00','삼대국수회관 본점','三代麵條會館（宵夜）',33.50690,126.53006,'老字號黑豬肉湯麵，也有豬肉湯飯，湯飯評價比麵好｜08:30–01:30 全年無休｜吃不下就改 11/20 早餐');
 const HDJUMAK=()=>st('18:00','함덕주막','咸德酒幕（晚餐・韓式居酒屋）',33.54164,126.67303,'在地人多的小店｜推薦蒜頭蛤蠣湯、海鮮煎餅（跟披薩一樣大）｜17:00–02:00｜喝酒請搭計程車往返');
 const MONEYBOX=()=>st('12:15','머니박스 제주지점','Money Box 濟州店（換錢）',33.48595,126.48248,'取車後先來換韓元，帶台幣千元鈔｜停留約 15 分鐘｜週一～六 10:00–21:00、週日 10:00–18:00');
-const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114'],days:[
+const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv'],days:[
  {title:'11/17（二）抵達・咸德・史努比',stops:[
   st('10:00','제주국제공항','濟州國際機場',33.5071,126.4916,AIR_NOTE),
   LOTTE_PICK(),
@@ -737,6 +741,10 @@ const NEARBY=[
   {zh:'啤酒屋（非精釀）',ko:'발랄한맥주',m:550,tel:'',lat:33.24336593,lng:126.56315802,rate:'★4.8（18）',note:'한라봉生啤、烤明太魚乾，營業到很晚',hrs:'18:00–04:00'},
   {zh:'創意居酒屋（非精釀）',ko:'마루아라',m:280,tel:'064-763-1364',lat:33.24671911,lng:126.56393109,rate:'★5.0（100）',note:'在李仲燮街，生馬肉、鮭魚，下酒菜好吃'}]}];
 /* intro articles found by web search (2026-10-24) + a YouTube search for videos */
+/* booking links shown as buttons on the card */
+const RESERVE={'금돗 성산흑돼지':[
+  {label:'NAVER 預約',url:'https://map.naver.com/p/search/'+encodeURIComponent('금돗 성산흑돼지'),hint:'打開後點店家，再按「예약」選日期、時間、人數'},
+  {label:'Tabling 遠端排隊',url:'https://www.tabling.co.kr/restaurant/7273',hint:'沒訂到位時，到附近再用 Tabling 線上排隊'}]};
 const MUSTEAT={'서귀포매일올레시장':[
   {zh:'名不虛傳血腸豬腳',ko:'소문난순대족발',tel:'064-767-3690',id:9151351,note:'豬腳 ₩22,000 那份 3 人吃不完，血腸選有內臟的，完全不腥｜只能外帶'},
   {zh:'元祖老奶奶水果麻糬',ko:'할머니떡집',tel:'064-732-6210',id:10927446,note:'綜合水果麻糬一盒 ₩8,000，橘子會爆汁｜08:00–21:00'},
@@ -848,6 +856,10 @@ if(S.tripId===TRIP_ID&&!S.patches.includes('food-1114')){
   d=dayWith('롯데마트 제주점')||dayWith('만장굴'); if(d){retime(d,'롯데마트 제주점','18:00','19:00');add(d,MYEONGHO());add(d,SAMDAE())}
   d=dayWith('맥파이 브루어리 탭룸'); if(d){d.stops.forEach(s=>{if(s.ko==='제주노블레스관광호텔'&&s.time==='17:30'&&(s.zh||'').includes('第 2 晚'))s.time='20:00'});add(d,HDJUMAK())}
   S.patches.push('food-1114');
+}
+if(S.tripId===TRIP_ID&&!S.patches.includes('geumdot-rsv')){
+  S.days.forEach(d=>d.stops.forEach(s=>{if(s.ko==='금돗 성산흑돼지'&&s.note==='煙燻濟州黑豬肉，Kakao ★4.9｜生意很好，先在 NAVER 預約｜11:00–22:30｜吃完開回西歸浦約 1 小時')s.note='煙燻濟州黑豬肉，Kakao ★4.9｜生意很好，用下方「NAVER 預約」先訂位｜11:00–22:30，最後點餐 21:30｜吃完開回西歸浦約 1 小時'}));
+  S.patches.push('geumdot-rsv');
 }
 S.days.forEach(d=>d.stops.forEach(s=>{const c=CONTACT[s.ko];if(c){if(!s.tel&&c[0])s.tel=c[0];if(!s.addr)s.addr=c[1]}}));
 save();
@@ -1063,6 +1075,8 @@ function revHtml(s){const v=REVIEWS[s.ko];if(!v)return '';
     <div class="revbody"><b>推薦</b><ul>${v.good.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>
     <b>負評重點</b><ul class="neg">${v.bad.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div></details>`}
 
+function reserveHtml(s){const v=RESERVE[s.ko];if(!v)return '';
+  return `<div class="reserve"><b>預約</b>${v.map(r=>`<div class="rsv-item"><a class="btn small naver" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.label)}</a><span>${esc(r.hint)}</span></div>`).join('')}</div>`}
 function mustHtml(s){const v=MUSTEAT[s.ko];if(!v)return '';
   return `<div class="must"><b>必吃清單</b>${v.map(m=>`<div class="must-item"><div><b>${esc(m.zh)}</b> <small lang="ko">${esc(m.ko)}</small></div><div class="must-note">${esc(m.note)}</div>
     <div class="actions">${m.tel?`<a class="btn small" href="tel:${esc(m.tel.replace(/[^\d]/g,''))}">${esc(m.tel)}</a>`:''}${m.id?`<a class="btn small ghost" href="https://place.map.kakao.com/${m.id}" target="_blank" rel="noopener">Kakao 店家頁</a>`:''}</div></div>`).join('')}</div>`}
@@ -1231,6 +1245,7 @@ function render(){
         ${alt&&repl?`<div class="altchip">雨備：下雨時改來這裡，取代「${esc(repl.zh||repl.ko)}」</div>`:''}
         ${s.note?`<div class="note">${esc(s.note)}</div>`:''}
         ${alt&&nx&&ok&&valid(nx)?`<div class="altnext">走雨備時，之後到「${esc(nx.zh||nx.ko)}」${legText(s,nx)}</div>`:''}
+        ${reserveHtml(s)}
         ${mustHtml(s)}
         ${linkHtml(s)}
         ${revHtml(s)}
@@ -1348,11 +1363,11 @@ $('copyCsv').onclick=()=>{const rows=[['day','day_title','time','name_ko','name_
   S.days.forEach((d,i)=>d.stops.forEach(s=>rows.push([i+1,d.title||'',s.time||'',s.ko||'',s.zh||'',s.lat??'',s.lng??'',s.note||''])));
   copyText(rows.map(r=>r.join('\t')).join('\n'),'已複製，直接貼到 Google Sheet A1 即可')};
 $('importBtn').onclick=()=>{try{const d=JSON.parse($('importBox').value);if(!Array.isArray(d.days))throw 0;
-  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
+  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
   catch(err){flash($('ioMsg'),'JSON 格式不對，請貼上「複製 JSON 備份」的內容',false)}};
 let clrArm=false;
 $('clearSample').onclick=()=>{const b=$('clearSample');if(!clrArm){clrArm=true;b.textContent='再按一次確認清空';setTimeout(()=>{clrArm=false;b.textContent='清空全部'},3000);return}
-  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
+  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
 
 /* first edit drops the sample badge */
 document.addEventListener('change',()=>{if(S.sample){S.sample=false;save();$('sampleChip').hidden=true}},true);
