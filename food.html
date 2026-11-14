@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="濟州美食">
+<meta name="theme-color" content="#fbf6ea">
+<title>濟州美食清單</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Sans+KR:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column; sticky day chips on top, then one section per day with a card per meal.
+   Same palette and type as the trip board (index.html). */
+:root{
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#fbf6ea; --surface:#fffdf8; --ink:#2c2a27; --muted:#6a655b; --line:#e6dcc3;
+  --sea:#2b78a8; --sea-soft:#d9ebf6; --tang:#d2600a; --tang-soft:#fde5cb; --on-tang:#ffffff;
+  --naver:#03a94f; --leaf:#4f8f3f; --leaf-soft:#dcebc9; --red:#d44a3b; --red-soft:#f8d9d2; --sand:#f2e4c1;
+  --blob-a:#dcecf6; --blob-b:#e3efd0; --blob-c:#f8e6c4; --shade:rgba(44,42,39,.10);
+  --f-body:"Noto Sans TC",system-ui,sans-serif;
+  --f-display:"Chiron GoRound TC","Noto Sans TC",system-ui,sans-serif;
+  --f-ko:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --blobby:22px 28px 24px 30px / 26px 22px 28px 24px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1a1916; --surface:#242220; --ink:#f0eadc; --muted:#a8a193; --line:#3b3830;
+  --sea:#6bb5e0; --sea-soft:#1d3342; --tang:#f39246; --tang-soft:#3d2916; --on-tang:#2a1606;
+  --naver:#2fcf74; --leaf:#8cc274; --leaf-soft:#27331f; --red:#ef7769; --red-soft:#43211c; --sand:#3a3220;
+  --blob-a:#1d2b35; --blob-b:#222b1c; --blob-c:#33291a; --shade:rgba(0,0,0,.45); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1a1916; --surface:#242220; --ink:#f0eadc; --muted:#a8a193; --line:#3b3830;
+  --sea:#6bb5e0; --sea-soft:#1d3342; --tang:#f39246; --tang-soft:#3d2916; --on-tang:#2a1606;
+  --naver:#2fcf74; --leaf:#8cc274; --leaf-soft:#27331f; --red:#ef7769; --red-soft:#43211c; --sand:#3a3220;
+  --blob-a:#1d2b35; --blob-b:#222b1c; --blob-c:#33291a; --shade:rgba(0,0,0,.45); color-scheme:dark}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{margin:0;background-color:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  background-image:radial-gradient(ellipse 280px 190px at calc(100% + 30px) 120px,var(--blob-c),transparent 72%),
+    radial-gradient(ellipse 240px 180px at -50px 700px,var(--blob-b),transparent 72%),
+    radial-gradient(ellipse 300px 200px at calc(100% + 20px) 1500px,var(--blob-a),transparent 72%);background-repeat:no-repeat}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 48px;display:flex;flex-direction:column;gap:18px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+
+header{display:flex;flex-direction:column;gap:6px}
+.back{align-self:flex-start;font-size:.86rem;text-decoration:none;color:var(--sea);border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:4px 12px}
+h1{font-family:var(--f-display);font-weight:700;font-size:1.8rem;line-height:1.2;margin:0;letter-spacing:.03em}
+h1 small{display:block;font-family:var(--f-ko);font-weight:500;font-size:.78rem;color:var(--tang);letter-spacing:.1em}
+.lead{margin:0;color:var(--muted);font-size:.9rem;max-width:60ch}
+
+.chips{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;background:var(--bg);display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:8px;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px));border-bottom:1.5px solid var(--line)}
+.chips::-webkit-scrollbar{display:none}
+.chips a{flex:0 0 auto;text-decoration:none;font-size:.84rem;font-weight:700;border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;color:var(--ink)}
+.chips a.today{background:var(--tang);border-color:var(--tang);color:var(--on-tang)}
+
+.must{display:flex;flex-wrap:wrap;gap:6px}
+.must span{font-size:.8rem;background:var(--leaf-soft);color:var(--leaf);border-radius:99px;padding:2px 10px;font-weight:700}
+
+section.day{display:flex;flex-direction:column;gap:10px;scroll-margin-top:64px}
+.dayhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.dayhead h2{font-family:var(--f-display);font-size:1.25rem;margin:0}
+.dayhead span{font-family:var(--f-mono);font-size:.78rem;color:var(--sea);letter-spacing:.06em}
+.dayhead .now{font-family:var(--f-body);font-size:.74rem;font-weight:700;color:var(--on-tang);background:var(--tang);border-radius:99px;padding:1px 9px;letter-spacing:0}
+
+.meal{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--blobby);padding:12px 14px;display:grid;grid-template-columns:3.6rem minmax(0,1fr);gap:4px 12px;box-shadow:0 2px 0 var(--line)}
+.meal.alt{border-style:dashed;border-color:var(--sea)}
+.when{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.when time{font-family:var(--f-mono);font-size:.86rem;font-variant-numeric:tabular-nums}
+.tag{font-size:.72rem;font-weight:700;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.t-lunch{background:var(--tang-soft);color:var(--tang)}
+.t-dinner{background:var(--red-soft);color:var(--red)}
+.t-snack{background:var(--leaf-soft);color:var(--leaf)}
+.t-night{background:var(--sea-soft);color:var(--sea)}
+.t-alt{background:var(--sea-soft);color:var(--sea)}
+.t-drink{background:var(--sand);color:var(--tang)}
+.body{min-width:0;display:flex;flex-direction:column;gap:4px}
+.name{font-family:var(--f-display);font-weight:700;font-size:1.05rem;line-height:1.3}
+.ko{font-family:var(--f-ko);font-size:.82rem;color:var(--muted)}
+.eat{font-size:.92rem}
+.eat b{color:var(--tang)}
+.tip{font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.acts a{font-size:.78rem;text-decoration:none;border:1.5px solid var(--line);border-radius:99px;padding:3px 10px;background:var(--bg)}
+.acts a.nv{border-color:var(--naver);color:var(--naver)}
+.acts a.rsv{background:var(--naver);border-color:var(--naver);color:#fff;font-weight:700}
+
+.note{background:var(--tang-soft);border-radius:var(--blobby);padding:12px 14px;font-size:.88rem;display:flex;flex-direction:column;gap:4px}
+.note b{font-family:var(--f-display)}
+footer{font-size:.74rem;color:var(--muted);text-align:center}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← 回行程板</a>
+    <h1><small lang="ko">제주 맛집 리스트</small>濟州美食清單</h1>
+    <p class="lead">11/17–11/21 每天要吃什麼。點「Kakao」看店家照片和評論，點「NAVER」打開地圖導航。</p>
+    <div class="must" aria-label="這趟會吃到的濟州名物"><span>黑豬肉</span><span>白帶魚</span><span>豬肉湯麵</span><span>橘子炸雞</span><span>韓牛</span><span>大蒜法棍</span><span>水果麻糬</span><span>精釀啤酒</span></div>
+  </header>
+
+  <nav class="chips" id="chips" aria-label="跳到某一天"></nav>
+  <main id="days" style="display:flex;flex-direction:column;gap:22px"></main>
+
+  <div class="note">
+    <b>小提醒</b>
+    <div>・11/17 金豚記得先用 NAVER 預約；11/19 明浩大蒜烤牛排常排 1–2 小時，17:00 左右去。</div>
+    <div>・11/20 下午 Magpie、晚上咸德酒幕都會喝酒，請搭計程車或安排不喝酒的駕駛。</div>
+    <div>・11/18–11/20 早餐沒有排：飯店樓下都有 CU；三代麵條會館 08:30 就開門。</div>
+  </div>
+  <footer>資料來源：Kakao 地圖、店家資訊與網路食記（2026/11）。價格與營業時間可能變動。</footer>
+</div>
+<script>
+(function(){
+const K=id=>`https://place.map.kakao.com/${id}`;
+const N=q=>`https://map.naver.com/p/search/${encodeURIComponent(q)}`;
+const DAYS=[
+ {date:'2026-11-17',label:'11/17（二）',title:'抵達・咸德・史努比',meals:[
+  {t:'12:35',tag:'lunch',zh:'耽羅苑 老衡店',ko:'황궁쟁반짜장 탐라원 노형점',eat:'<b>炸醬麵</b> ₩3,000、盤炸醬 ₩6,000、炒碼麵 ₩4,000',tip:'政府認證「善良價格店」，就在 Money Box 旁邊；常要排隊',tel:'064-749-6644',k:1410392512},
+  {t:'13:20',tag:'snack',zh:'Audrant Bakery',ko:'오드랑베이커리',eat:'招牌 <b>大蒜法棍</b>（마농바게트），黃豆粉麻糬麵包、蛋塔',tip:'一條就夠，偏甜；隔天用氣炸鍋回烤更香',tel:'064-784-5404',k:1578746387},
+  {t:'13:50',tag:'alt',zh:'東門市場（雨備）',ko:'동문재래시장',eat:'<b>오메기떡（艾草糕）</b>、橘子、豬肉湯麵、黑豬五花捲',tip:'下雨不去咸德時才來；人很多',k:1262338999},
+  {t:'14:45',tag:'snack',zh:'Snoopy Garden 咖啡廳',ko:'스누피가든',eat:'檸檬汁、冰淇淋、沙拉',tip:'評論推薦，逛累了休息一下',tel:'064-805-1118'},
+  {t:'17:15',tag:'dinner',zh:'金豚 城山黑豬肉',ko:'금돗 성산흑돼지',eat:'<b>煙燻濟州黑豬肉</b>（店員幫烤）',tip:'Kakao ★4.9，生意很好；11:00–22:30',tel:'0502-5553-5938',k:267645011,rsv:true}]},
+ {date:'2026-11-18',label:'11/18（三）',title:'西歸浦瀑布與海岸',meals:[
+  {t:'11:40',tag:'snack',zh:'偶來市場・名不虛傳血腸豬腳',ko:'소문난순대족발',eat:'<b>豬腳</b> ₩22,000、<b>血腸</b>（選有內臟的）',tip:'3 人吃不完，只能外帶',tel:'064-767-3690',k:9151351},
+  {t:'11:40',tag:'snack',zh:'偶來市場・老奶奶水果麻糬',ko:'할머니떡집',eat:'<b>綜合水果麻糬</b> 一盒 ₩8,000',tip:'橘子麻糬會爆汁',tel:'064-732-6210',k:10927446},
+  {t:'11:40',tag:'snack',zh:'石頭爺爺橘子汁',ko:'귤따는 하르방',eat:'<b>造型瓶橘子汁</b>，選無糖',tip:'全濟州超商都買得到'},
+  {t:'12:50',tag:'lunch',zh:'中文色達白帶魚',ko:'중문색달통갈치',eat:'<b>整條烤白帶魚</b>（2 人份約 ₩40,000）',tip:'3 人點 2 份剛好，店員會幫忙去刺；Kakao ★4.7',tel:'064-738-2088',k:1602465884},
+  {t:'14:00',tag:'snack',zh:'柱狀節理帶',ko:'중문대포주상절리대',eat:'漢拏峰冰淇淋 ₩5,000',tip:'廁所旁的熱狗、現榨果汁也有人推'},
+  {t:'18:30',tag:'dinner',zh:'濟州風味雞 偶來市場店',ko:'제주스럽닭 서귀포올레점',eat:'<b>橘子炸雞</b>（댕귤치킨 ₩24,900），辣味 핫댕귤치킨 更推',tip:'離飯店約 500 m，走路去；可外帶',tel:'064-763-8110',k:1543018321}]},
+ {date:'2026-11-19',label:'11/19（四）',title:'城山・海女・萬丈窟',meals:[
+  {t:'12:00',tag:'lunch',zh:'倫敦貝果博物館',ko:'런던베이글뮤지엄 제주점',eat:'<b>青蔥椒鹽貝果</b>、馬鈴薯起司貝果、蘑菇湯',tip:'別停對面收 ₩5,000 的停車場；下午常賣完'},
+  {t:'17:15',tag:'dinner',zh:'明浩大蒜烤牛排',ko:'명호마농갈비 본점',eat:'<b>烤韓牛</b>配大量蒜頭',tip:'常排 1–2 小時，早點去；13:00–23:00',tel:'064-744-8985',k:673097455},
+  {t:'21:00',tag:'night',zh:'三代麵條會館',ko:'삼대국수회관 본점',eat:'<b>黑豬肉湯麵</b>，或評價更好的豬肉湯飯',tip:'08:30–01:30；吃不下就改隔天早餐',tel:'064-759-6645',k:1027828348}]},
+ {date:'2026-11-20',label:'11/20（五）',title:'9.81 Park・涯月・精釀',meals:[
+  {t:'12:15',tag:'lunch',zh:'涯月海岸咖啡廳',ko:'애월 카페거리',eat:'輕食＋咖啡',tip:'評論點名 Cafe 봄날 海景好；附近停車很貴'},
+  {t:'15:30',tag:'drink',zh:'Magpie Brewery & Taproom',ko:'맥파이 브루어리 탭룸',eat:'<b>Porter 黑啤</b>、酸啤 Ghost、IPA，配薄脆披薩、薯條',tip:'週三至週日 12:00–20:00',tel:'064-721-0227'},
+  {t:'18:00',tag:'dinner',zh:'咸德酒幕（韓式居酒屋）',ko:'함덕주막',eat:'<b>蒜頭蛤蠣湯</b>、<b>海鮮煎餅</b>（跟披薩一樣大）',tip:'在地人多；17:00–02:00',tel:'0502-5551-1619',k:1608295869}]},
+ {date:'2026-11-21',label:'11/21（六）',title:'還車・返回桃園',meals:[
+  {t:'07:00',tag:'snack',zh:'飯店樓下 CU',ko:'CU 노블레스관광호텔점',eat:'簡單早餐、最後補買零食',tip:'IT655 10:10 起飛'}]}];
+const TAG={lunch:['午餐','t-lunch'],dinner:['晚餐','t-dinner'],snack:['點心','t-snack'],night:['宵夜','t-night'],alt:['雨備','t-alt'],drink:['啤酒','t-drink']};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const d=new Date(), today=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+document.getElementById('chips').innerHTML=DAYS.map((x,i)=>`<a href="#d${i+1}"${x.date===today?' class="today"':''}>${x.label.replace(/（.）/,'')}</a>`).join('');
+document.getElementById('days').innerHTML=DAYS.map((x,i)=>`<section class="day" id="d${i+1}" aria-labelledby="h${i+1}">
+  <div class="dayhead"><h2 id="h${i+1}">${esc(x.label)} ${esc(x.title)}</h2><span>DAY ${i+1}</span>${x.date===today?'<span class="now">今天</span>':''}</div>
+  ${x.meals.map(m=>{const [tl,tc]=TAG[m.tag];return `<article class="meal${m.tag==='alt'?' alt':''}">
+    <div class="when"><time>${m.t}</time><span class="tag ${tc}">${tl}</span></div>
+    <div class="body"><div class="name">${esc(m.zh)}</div><div class="ko" lang="ko">${esc(m.ko)}</div>
+      <div class="eat">${m.eat}</div><div class="tip">${esc(m.tip)}</div>
+      <div class="acts">${m.rsv?`<a class="rsv" href="${N(m.ko)}" target="_blank" rel="noopener">NAVER 預約</a>`:''}${m.k?`<a href="${K(m.k)}" target="_blank" rel="noopener">Kakao</a>`:''}<a class="nv" href="${N(m.ko)}" target="_blank" rel="noopener">NAVER</a>${m.tel?`<a href="tel:${m.tel.replace(/[^\d]/g,'')}">${m.tel}</a>`:''}</div>
+    </div></article>`}).join('')}
+</section>`).join('');
+const t=DAYS.findIndex(x=>x.date===today); if(t>=0&&!location.hash)document.getElementById('d'+(t+1)).scrollIntoView({block:'start'});
+})();
+</script>
+</body>
+</html>
