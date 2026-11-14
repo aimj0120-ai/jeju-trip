@@ -586,7 +586,7 @@ const AIR_NOTE='入境、領行李｜出關後跟著「렌터카 / Rent-a-car」
 const LOTTE=['롯데렌터카 제주오토하우스지점',33.50912,126.50298];
 const LOTTE_PICK=()=>st('11:30',LOTTE[0],'樂天租車 Auto House（取車）',LOTTE[1],LOTTE[2],'SANTA FE 4WD 5 人座｜在接駁車上掃 QR 就會分配車輛｜取車時拍下油錶、里程和車身刮痕｜請櫃台把車機切英文、示範 CarPlay｜營業 06:00–23:00');
 const LOTTE_RETURN=()=>st('07:30',LOTTE[0],'樂天租車 Auto House（還車）',LOTTE[1],LOTTE[2],'預約還車 07:30｜油要加滿再還（附近先加油）｜還車後搭接駁車到機場');
-const LOTTEMART=()=>st('19:00','롯데마트 제주점','樂天超市 濟州店',33.48243,126.48185,'營業 10:00–23:00｜晚上買伴手禮、零食、橘子｜付款：女友用 LINE Pay 綁中信卡結帳最划算（約 15%，含觀光公社 7% 到 12/11），樂天超市通常不能用全支付｜帶護照，滿 ₩15,000 可退稅｜詳見「付款攻略」｜也可改到 11/20 晚上');
+const LOTTEMART=()=>st('19:00','롯데마트 제주점','樂天超市 濟州店',33.48243,126.48185,'營業 10:00–23:00｜晚上買伴手禮、零食、橘子｜付款：兩人分開結帳（따로 계산해 주세요），女友 LINE Pay 綁中信卡約 15%、你 LINE Pay 綁 CUBE 約 10%，通常不能用全支付｜各自帶護照，每張收據滿 ₩15,000 可退稅｜詳見「付款攻略」｜也可改到 11/20 晚上');
 const HD_RAIN='｜下雨就改去下方的雨備：東門市場';
 const DONGMUN=()=>Object.assign(st('13:50','동문재래시장','東門市場（雨備）',33.51278,126.52830,'有屋頂、雨天也能逛｜停留約 1 小時｜08:00–21:00｜Money Box 東門市場店就在旁邊（관덕로 64），可順便換錢｜逛完直接開往 Snoopy Garden（17:00 前入場）'),{alt:true});
 const GEUMDOT=()=>st('17:15','금돗 성산흑돼지','金豚 城山黑豬肉（晚餐）',33.46521,126.93250,'煙燻濟州黑豬肉，Kakao ★4.9｜生意很好，用下方「NAVER 預約」先訂位｜11:00–22:30，最後點餐 21:30｜吃完開回西歸浦約 1 小時');
@@ -602,7 +602,7 @@ const MYOHAM=()=>st('21:00','묘함','貓咪酒吧 묘함',33.48494,126.48752,'�
 const TAMNAWON=()=>st('12:35','황궁쟁반짜장 탐라원 노형점','耽羅苑 老衡店（午餐・中華料理）',33.48537,126.48300,'炸醬麵 ₩3,000、盤炸醬 ₩6,000、炒碼麵 ₩4,000，韓國政府認證的「善良價格店」｜就在 Money Box 旁邊，走路可到｜11:00 開門，常要排隊｜停車不好停，車子停在 Money Box 那邊走過來');
 const DAKSUIL=()=>st('18:30','제주스럽닭 서귀포올레점','濟州風味雞 偶來市場店（晚餐・炸雞）',33.24428,126.56258,'招牌 댕귤치킨（橘子炸雞）₩24,900，辣的 핫댕귤치킨 評價更好｜離飯店約 500 m，放好車走路過去｜平日 12:30–00:30、週末 14:00–00:30｜Kakao ★4.2｜可內用也可外帶');
 const MONEYBOX=()=>st('12:15','머니박스 제주지점','Money Box 濟州店（換錢）',33.48595,126.48248,'取車後先來換韓元，帶台幣千元鈔｜停留約 15 分鐘｜週一～六 10:00–21:00、週日 10:00–18:00');
-const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115','chicken-olle','woodae','soup-noodle','funliday','nodo','pay-guide'],days:[
+const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115','chicken-olle','woodae','soup-noodle','funliday','nodo','pay-guide','mart-split'],days:[
  {title:'11/17（二）抵達・咸德・史努比',stops:[
   st('10:00','제주국제공항','濟州國際機場',33.5071,126.4916,AIR_NOTE),
   LOTTE_PICK(),
@@ -931,6 +931,11 @@ if(S.tripId===TRIP_ID&&!S.patches.includes('chicken-olle')){
     if(hit){d.stops.forEach(s=>{if(s.ko==='더퍼스트70호텔'&&s.time==='18:30'&&(s.zh||'').includes('第 2 晚'))s.time='18:00'});
       d.stops.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0)}});
   S.patches.push('chicken-olle');
+}
+/* one-time patch: Lotte Mart note says the two of them pay separately */
+if(S.tripId===TRIP_ID&&!S.patches.includes('mart-split')){
+  S.days.forEach(d=>d.stops.forEach(s=>{if(s.ko==='롯데마트 제주점'&&((s.note||'').includes('女友用 LINE Pay 綁中信卡結帳最划算')||(s.note||'').includes('9 月已結束')))s.note=LOTTEMART().note}));
+  S.patches.push('mart-split');
 }
 /* one-time patch: Lotte Mart payment note now points to the pay guide */
 if(S.tripId===TRIP_ID&&!S.patches.includes('pay-guide')){
@@ -1477,11 +1482,11 @@ $('copyCsv').onclick=()=>{const rows=[['day','day_title','time','name_ko','name_
   S.days.forEach((d,i)=>d.stops.forEach(s=>rows.push([i+1,d.title||'',s.time||'',s.ko||'',s.zh||'',s.lat??'',s.lng??'',s.note||''])));
   copyText(rows.map(r=>r.join('\t')).join('\n'),'已複製，直接貼到 Google Sheet A1 即可')};
 $('importBtn').onclick=()=>{try{const d=JSON.parse($('importBox').value);if(!Array.isArray(d.days))throw 0;
-  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115','chicken-olle','woodae','soup-noodle','funliday','nodo','pay-guide'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
+  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115','chicken-olle','woodae','soup-noodle','funliday','nodo','pay-guide','mart-split'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
   catch(err){flash($('ioMsg'),'JSON 格式不對，請貼上「複製 JSON 備份」的內容',false)}};
 let clrArm=false;
 $('clearSample').onclick=()=>{const b=$('clearSample');if(!clrArm){clrArm=true;b.textContent='再按一次確認清空';setTimeout(()=>{clrArm=false;b.textContent='清空全部'},3000);return}
-  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115','chicken-olle','woodae','soup-noodle','funliday','nodo','pay-guide'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
+  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115','chicken-olle','woodae','soup-noodle','funliday','nodo','pay-guide','mart-split'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
 
 /* first edit drops the sample badge */
 document.addEventListener('change',()=>{if(S.sample){S.sample=false;save();$('sampleChip').hidden=true}},true);
