@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="韓國付款">
+<meta name="theme-color" content="#fbf6ea">
+<title>韓國付款攻略</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Sans+KR:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column; sticky section chips on top, then one card per topic (who pays with what, Lotte Mart, convenience stores, how to pay, what to buy).
+   Same palette and type as the trip board (index.html). */
+:root{
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#fbf6ea; --surface:#fffdf8; --ink:#2c2a27; --muted:#6a655b; --line:#e6dcc3;
+  --sea:#2b78a8; --sea-soft:#d9ebf6; --tang:#d2600a; --tang-soft:#fde5cb; --on-tang:#ffffff;
+  --naver:#03a94f; --leaf:#4f8f3f; --leaf-soft:#dcebc9; --red:#d44a3b; --red-soft:#f8d9d2; --sand:#f2e4c1;
+  --blob-a:#dcecf6; --blob-b:#e3efd0; --blob-c:#f8e6c4; --shade:rgba(44,42,39,.10);
+  --f-body:"Noto Sans TC",system-ui,sans-serif;
+  --f-display:"Chiron GoRound TC","Noto Sans TC",system-ui,sans-serif;
+  --f-ko:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --blobby:22px 28px 24px 30px / 26px 22px 28px 24px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1a1916; --surface:#242220; --ink:#f0eadc; --muted:#a8a193; --line:#3b3830;
+  --sea:#6bb5e0; --sea-soft:#1d3342; --tang:#f39246; --tang-soft:#3d2916; --on-tang:#2a1606;
+  --naver:#2fcf74; --leaf:#8cc274; --leaf-soft:#27331f; --red:#ef7769; --red-soft:#43211c; --sand:#3a3220;
+  --blob-a:#1d2b35; --blob-b:#222b1c; --blob-c:#33291a; --shade:rgba(0,0,0,.45); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1a1916; --surface:#242220; --ink:#f0eadc; --muted:#a8a193; --line:#3b3830;
+  --sea:#6bb5e0; --sea-soft:#1d3342; --tang:#f39246; --tang-soft:#3d2916; --on-tang:#2a1606;
+  --naver:#2fcf74; --leaf:#8cc274; --leaf-soft:#27331f; --red:#ef7769; --red-soft:#43211c; --sand:#3a3220;
+  --blob-a:#1d2b35; --blob-b:#222b1c; --blob-c:#33291a; --shade:rgba(0,0,0,.45); color-scheme:dark}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{margin:0;background-color:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  background-image:radial-gradient(ellipse 280px 190px at calc(100% + 30px) 120px,var(--blob-c),transparent 72%),
+    radial-gradient(ellipse 240px 180px at -50px 700px,var(--blob-b),transparent 72%),
+    radial-gradient(ellipse 300px 200px at calc(100% + 20px) 1500px,var(--blob-a),transparent 72%);background-repeat:no-repeat}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 48px;display:flex;flex-direction:column;gap:18px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+
+header{display:flex;flex-direction:column;gap:6px}
+.back{align-self:flex-start;font-size:.86rem;text-decoration:none;color:var(--sea);border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:4px 12px}
+h1{font-family:var(--f-display);font-weight:700;font-size:1.8rem;line-height:1.2;margin:0;letter-spacing:.03em}
+h1 small{display:block;font-family:var(--f-ko);font-weight:500;font-size:.78rem;color:var(--tang);letter-spacing:.1em}
+.lead{margin:0;color:var(--muted);font-size:.9rem;max-width:60ch}
+
+.chips{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;background:var(--bg);display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-block:8px;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px));border-bottom:1.5px solid var(--line)}
+.chips::-webkit-scrollbar{display:none}
+.chips a{flex:0 0 auto;text-decoration:none;font-size:.84rem;font-weight:700;border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;color:var(--ink)}
+.chips a.today{background:var(--tang);border-color:var(--tang);color:var(--on-tang)}
+
+
+section{display:flex;flex-direction:column;gap:10px;scroll-margin-top:60px}
+h2{font-family:var(--f-display);font-size:1.25rem;margin:6px 0 0}
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--blobby);padding:12px 14px;box-shadow:0 2px 0 var(--line);display:flex;flex-direction:column;gap:6px;min-width:0}
+.card h3{font-family:var(--f-display);font-size:1.02rem;margin:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card p{margin:0}
+.card ul,.card ol{margin:0;padding-left:1.2em}
+.card li{margin:2px 0}
+.who{font-size:.74rem;font-weight:700;border-radius:99px;padding:1px 9px}
+.who.me{background:var(--sea-soft);color:var(--sea)}
+.who.gf{background:var(--red-soft);color:var(--red)}
+.who.both{background:var(--leaf-soft);color:var(--leaf)}
+.pct{font-family:var(--f-mono);font-weight:500;color:var(--tang)}
+.small{font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
+.ko{font-family:var(--f-ko)}
+.tbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}
+.tbl th{font-size:.76rem;color:var(--muted);font-weight:700}
+.tbl td:first-child{font-weight:700;width:5.4em}
+.warn{background:var(--tang-soft);border-radius:14px;padding:8px 12px;font-size:.84rem}
+.order{counter-reset:o;list-style:none;padding:0!important;display:flex;flex-direction:column;gap:6px}
+.order li{counter-increment:o;display:grid;grid-template-columns:1.6rem minmax(0,1fr);gap:6px;margin:0}
+.order li::before{content:counter(o);font-family:var(--f-mono);font-weight:500;background:var(--tang);color:var(--on-tang);border-radius:99px;width:1.4rem;height:1.4rem;display:grid;place-items:center;font-size:.78rem;margin-top:2px}
+.buy{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.buy div{background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:8px 10px;font-size:.84rem}
+.buy b{display:block}
+.buy span{font-family:var(--f-ko);font-size:.76rem;color:var(--muted)}
+.src a{color:var(--sea)}
+footer{font-size:.74rem;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← 回行程板</a>
+    <h1><small lang="ko">한국 결제 가이드</small>韓國付款攻略</h1>
+    <p class="lead">LINE Pay、悠遊付、全支付在 11/17–11/21 能拿多少回饋、每個地方該用哪一個，以及樂天超市和便利商店要買什麼。資料整理於 2026/11/14，回饋都有名額，額滿就停，付款前先打開 App 看活動頁。</p>
+  </header>
+
+  <nav class="chips" aria-label="章節">
+    <a href="#quick">一張表</a><a href="#me">你怎麼付</a><a href="#gf">女友怎麼付</a><a href="#mart">樂天超市</a><a href="#cvs">便利商店</a><a href="#how">付款步驟</a><a href="#buy">買什麼</a>
+  </nav>
+
+  <section id="quick" aria-labelledby="h-quick">
+    <h2 id="h-quick">一張表：在哪裡用哪個</h2>
+    <div class="card">
+      <table class="tbl">
+        <thead><tr><th>地方</th><th>你（國泰）</th><th>女友（中信 LINE Pay 卡）</th></tr></thead>
+        <tbody>
+          <tr><td>便利商店</td><td>LINE Pay 綁 CUBE（Visa 才有 10%）→ 用完上限改悠遊付</td><td>LINE Pay 綁中信卡，最高 <span class="pct">25%</span></td></tr>
+          <tr><td>樂天超市</td><td>LINE Pay 綁 CUBE（Visa 才有回饋）</td><td><b>由她結帳</b>：LINE Pay 綁中信卡，最高約 <span class="pct">15%</span></td></tr>
+          <tr><td>傳統市場、小店</td><td>有 ZeroPay 貼紙就用全支付綁國泰帳戶 <span class="pct">8.5%</span></td><td>全支付綁帳戶 <span class="pct">3.5%</span></td></tr>
+          <tr><td>大創、Ediya、樂天免稅店</td><td>悠遊付（TWQR）<span class="pct">12%</span></td><td>悠遊付（TWQR）<span class="pct">12%</span></td></tr>
+          <tr><td>其他餐廳</td><td>CUBE 切「趣旅行」刷卡約 3%</td><td>中信 LINE Pay 卡刷卡 2.8%（登錄再 +2.2%）</td></tr>
+        </tbody>
+      </table>
+      <p class="small">刷信用卡要付 1.5% 海外手續費，回饋要扣掉這筆；悠遊付、全支付綁帳戶付款免手續費。</p>
+    </div>
+  </section>
+
+  <section id="me" aria-labelledby="h-me">
+    <h2 id="h-me">你：國泰 CUBE 卡＋國泰帳戶</h2>
+    <div class="card">
+      <h3>全支付（ZeroPay / HIVEX 店家）<span class="who me">最適合你</span></h3>
+      <ul>
+        <li>筆筆 <span class="pct">3.5%</span>（單筆最多 350 點，每月最多 1,000 點）</li>
+        <li><b>綁國泰帳戶付款再加 <span class="pct">5%</span></b>：單筆最多 100 點、<b>每週最多 100 點</b>（週一起算，11/17–11/21 同一週，所以這趟只能拿 100 點，約消費 NT$2,000 就滿）</li>
+        <li>單筆滿 NT$10,000 再加 5%（一般用不到）</li>
+        <li>綁國泰信用卡在韓國單筆滿 NT$1,000，可拿 100 全點（每個帳號一次）</li>
+        <li>免 1.5% 海外手續費；每次付款送「返台樂購券」，每月最多 3 張</li>
+      </ul>
+      <p class="small">在店家看到 <b>ZeroPay</b> 或 <b>HIVEX</b> 標誌才能用，多半是小吃店、傳統市場攤位、炸雞店。東門市場、偶來市場很多攤位有。</p>
+    </div>
+    <div class="card">
+      <h3>悠遊付（TWQR 店家）<span class="who both">兩人都可以</span></h3>
+      <ul>
+        <li>筆筆 <span class="pct">10.5%</span> 回饋金＋免 1.5% 手續費＝<span class="pct">12%</span></li>
+        <li>11/1–11/24 是同一個活動階段，每人上限 <b>NT$600</b>（約消費 NT$5,700）</li>
+        <li><b>11/20（五）</b>是悠遊付會員日，再加 <span class="pct">2%</span></li>
+        <li>付一次就送樂天免稅店 NT$100 券、返台 10% 回饋券各 1 張</li>
+      </ul>
+      <p class="small">在韓國<b>不能綁信用卡</b>，只能用悠遊付錢包或綁銀行帳戶扣款。出發前綁好國泰帳戶，或先儲值。可用：CU、GS25、7-Eleven、emart24、大創、Ediya、樂天免稅店。</p>
+    </div>
+    <div class="card">
+      <h3>LINE Pay 綁 CUBE 卡<span class="who me">先看卡號開頭</span></h3>
+      <p>LINE Pay 的韓國加碼大多要求 <b>Visa 卡</b>。CUBE 卡號 4 開頭是 Visa，5 開頭是 Mastercard，35 開頭是 JCB。</p>
+      <ul>
+        <li>Visa：便利商店 5%＋10%＝<span class="pct">15%</span>；樂天超市 3%＋7%＝<span class="pct">10%</span></li>
+        <li>不是 Visa：便利商店只有 5%，樂天超市沒有加碼，改用悠遊付或讓女友結帳</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>直接刷 CUBE 卡<span class="who me">沒有行動支付時</span></h3>
+      <ul>
+        <li>刷卡<b>當天</b>在 CUBE App 把權益切到「<b>趣旅行</b>」，海外實體消費 <span class="pct">3%</span> 小樹點（用國泰帳戶繳卡費才有 3%）</li>
+        <li>沒切換只剩 0.3%；一天只能切一次</li>
+        <li>扣掉 1.5% 手續費，實拿約 1.5%</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="gf" aria-labelledby="h-gf">
+    <h2 id="h-gf">女友：中信 LINE Pay 卡</h2>
+    <div class="card">
+      <h3>LINE Pay 綁中信 LINE Pay 卡<span class="who gf">便利商店、樂天超市都她付</span></h3>
+      <table class="tbl">
+        <thead><tr><th>項目</th><th>便利商店（吃喝補給）</th><th>樂天超市（旅遊購物）</th></tr></thead>
+        <tbody>
+          <tr><td>LINE Pay 付款</td><td>5%（每月上限 100 點）</td><td>—</td></tr>
+          <tr><td>綁 Visa 卡</td><td>10%（每月上限 200 點）</td><td>3%（每月上限 150 點）</td></tr>
+          <tr><td>綁中信卡加碼</td><td>10%（每月上限 144 點）</td><td>5%（每月上限 110 點）</td></tr>
+          <tr><td>觀光公社 × LINE Pay</td><td>—</td><td>7%（綁 Visa，到 12/11）</td></tr>
+          <tr><td>合計</td><td><span class="pct">25%</span></td><td>約 <span class="pct">15%</span></td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>上限換算：便利商店大約買到 NT$1,500–2,000 就會陸續滿；樂天超市大約 NT$2,000–3,000</li>
+        <li>卡片本身在韓國另有 2.8% 回饋，登錄後再加 2.2%（要付 1.5% 海外手續費）</li>
+        <li>11 月內用 LINE Pay 付滿 2 筆，可以抽最高 666 點</li>
+        <li>點數大多隔天下午入帳，可以在 LINE Pay App 看</li>
+      </ul>
+      <p class="small">中信加碼是每月限量、發完為止；台新的加碼 11/15 就結束，跟你們無關。</p>
+    </div>
+  </section>
+
+  <section id="mart" aria-labelledby="h-mart">
+    <h2 id="h-mart">樂天超市（11/19 晚上）</h2>
+    <div class="card">
+      <h3>結帳建議</h3>
+      <ol class="order">
+        <li><span><b>女友用 LINE Pay（綁中信卡）結帳</b>，最高約 15%。買很多可以拆成兩張單：先付到她的上限，剩下的你付。</span></li>
+        <li><span>你的 CUBE 如果是 Visa，你的那張單也用 LINE Pay，約 10%；不是 Visa 就直接刷 CUBE「趣旅行」3%。</span></li>
+        <li><span>櫃台結帳時跟店員說「<span class="ko">라인페이요</span>（LINE Pay）」，打開 LINE Pay 的付款條碼給店員刷。</span></li>
+      </ol>
+      <div class="warn">樂天超市是大賣場，<b>通常沒有 ZeroPay</b>，全支付大多不能用；悠遊付也不在清單內。以門口和櫃台貼的標誌為準。</div>
+    </div>
+    <div class="card">
+      <h3>省錢小技巧</h3>
+      <ul>
+        <li><b>退稅</b>：同一天同一間店消費滿 ₩15,000 可以退稅（以現場公告為準），帶<b>護照</b>，結帳後拿收據到退稅櫃台辦</li>
+        <li><b>會員價</b>：部分商品標的是 L.POINT 會員價，可以先下載 L.POINT App 註冊</li>
+        <li>沒有塑膠袋，自備購物袋；出口附近的包裝區有免費紙箱和膠帶，可以直接打包託運</li>
+        <li>醬料、酒、液體要放託運行李</li>
+        <li>營業到 23:00，19:00 去人不多</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="cvs" aria-labelledby="h-cvs">
+    <h2 id="h-cvs">便利商店（CU、GS25、7-Eleven、emart24）</h2>
+    <div class="card">
+      <h3>用的順序</h3>
+      <ol class="order">
+        <li><span><b>女友</b>：LINE Pay 綁中信卡，<span class="pct">25%</span>，先把她的每月上限用完</span></li>
+        <li><span><b>你</b>：CUBE 是 Visa 就先用 LINE Pay（<span class="pct">15%</span>）到上限</span></li>
+        <li><span>上限都用完了，兩個人都改用<b>悠遊付</b>（<span class="pct">12%</span>，11/20 週五 14%）</span></li>
+      </ol>
+      <p class="small">LINE Pay 活動清單裡有 CU、7-Eleven、emart24，<b>GS25 不在清單內</b>；在 GS25 直接用悠遊付，四大超商都能用。</p>
+    </div>
+    <div class="card">
+      <h3>行程上會遇到的便利商店</h3>
+      <ul>
+        <li>The First70 Hotel（西歸浦）：同棟 1 樓 CU、135 m 有 7-Eleven</li>
+        <li>濟州貴族酒店：同棟 1 樓 CU；11/21 還車前可以在這裡買早餐</li>
+        <li>韓國便利商店很多 <b>1+1</b>（買一送一）、<b>2+1</b>（買二送一）標籤，先看貨架上的黃色、紅色小卡</li>
+        <li>杯麵可以在店裡用熱水機泡，旁邊有桌子吃</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="how" aria-labelledby="h-how">
+    <h2 id="h-how">付款步驟</h2>
+    <div class="card">
+      <h3>LINE Pay</h3>
+      <ol class="order">
+        <li><span>出發前在 LINE 錢包綁好卡（女友綁中信 LINE Pay 卡；你確認 CUBE 是不是 Visa）</span></li>
+        <li><span>結帳時打開 LINE → 錢包 → 付款，出示<b>條碼</b>給店員刷</span></li>
+        <li><span>跟店員說「<span class="ko">라인페이요</span>」；店員找不到時，可以指收銀機上的 LINE Pay 貼紙</span></li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>悠遊付</h3>
+      <ol class="order">
+        <li><span>出發前綁國泰帳戶，或先儲值悠遊付錢包（韓國不能用信用卡）</span></li>
+        <li><span>結帳時打開悠遊付 →「付款碼」→ 選 TWQR／海外付款，出示 QR Code 給店員掃</span></li>
+        <li><span>店員可能會說要用「<span class="ko">페이북</span>（Paybooc）」或 BC 掃碼，是同一個東西</span></li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>全支付</h3>
+      <ol class="order">
+        <li><span>出發前綁國泰帳戶（加碼要用國泰帳戶付，不是信用卡）</span></li>
+        <li><span>到韓國後在 App 把地區切到「韓國」，畫面會顯示歡迎來到韓國</span></li>
+        <li><span>出示 ZeroPay / HIVEX 付款碼給店家掃，或掃店家桌上的 ZeroPay QR Code、自己輸入金額給老闆看</span></li>
+      </ol>
+    </div>
+    <div class="warn">三個 App 都要<b>先在台灣登入並綁好</b>，到韓國才收簡訊驗證碼可能收不到。也帶一張實體信用卡和一點韓元現金備用，傳統市場有些攤位只收現金。</div>
+  </section>
+
+  <section id="buy" aria-labelledby="h-buy">
+    <h2 id="h-buy">買什麼</h2>
+    <div class="card">
+      <h3>樂天超市：濟州味</h3>
+      <div class="buy">
+        <div><b>橘子／漢拏峰巧克力</b><span>감귤 초콜릿</span>濟州最經典的伴手禮，大包裝比機場便宜</div>
+        <div><b>漢拏峰茶、柚子茶</b><span>한라봉차 · 유자차</span>罐裝果醬茶，泡熱水喝；要託運</div>
+        <div><b>O'sulloc 綠茶茶包</b><span>오설록 티백</span>濟州綠茶品牌，輕又好分送</div>
+        <div><b>漢拏山燒酒</b><span>한라산 소주</span>濟州在地燒酒，送喝酒的朋友；要託運</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>樂天超市：泡麵、零食、料理</h3>
+      <div class="buy">
+        <div><b>泡麵</b><span>신라면 · 짜파게티 · 안성탕면 · 불닭볶음면</span>5 包一袋買，比超商便宜很多</div>
+        <div><b>海苔</b><span>도시락김</span>小包裝便當海苔，輕、好分</div>
+        <div><b>蜂蜜奶油杏仁</b><span>HBAF 아몬드</span>口味很多，常有多包裝特價</div>
+        <div><b>Market O 布朗尼</b><span>마켓오 브라우니</span>經典零食伴手禮</div>
+        <div><b>烏龜餅乾</b><span>꼬북칩</span>四層酥脆，口味常換</div>
+        <div><b>韓式辣醬、大醬</b><span>고추장 · 된장</span>買小盒就好；要託運</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>便利商店</h3>
+      <div class="buy">
+        <div><b>香蕉牛奶</b><span>바나나맛우유</span>必喝，也有草莓、哈密瓜口味</div>
+        <div><b>三角飯糰、飯捲</b><span>삼각김밥 · 김밥</span>早上趕路、還車前的早餐</div>
+        <div><b>杯麵＋熱水</b><span>컵라면</span>店裡就能泡</div>
+        <div><b>醒酒飲料</b><span>컨디션 · 여명808</span>喝 Magpie、燒酒的前後喝</div>
+        <div><b>濟州啤酒</b><span>제주위트에일</span>濟州小麥啤酒，回飯店喝</div>
+        <div><b>冰淇淋</b><span>메로나 · 붕어싸만코</span>哈密瓜冰棒、鯛魚燒冰淇淋</div>
+        <div><b>1+1、2+1 商品</b><span>원플러스원</span>看標籤挑，常常比較划算</div>
+      </div>
+      <p class="small">各店貨架和特價不一樣，以現場為準。</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-src">
+    <h2 id="h-src">資料來源</h2>
+    <div class="card src small">
+      <ul>
+        <li><a href="https://windko.tw/linepay-cu/" target="_blank" rel="noopener">windko：韓國 CU 用 LINE Pay（2026/10–12 活動條款）</a></li>
+        <li><a href="https://web-tw-pay.line.me/cms/event/template1.3/41d258e3-85f1-44cb-be25-3c2d7396f9e9" target="_blank" rel="noopener">LINE Pay 官方：韓國觀光公社 × LINE Pay 7%（含樂天超市，到 12/11）</a></li>
+        <li><a href="https://nicklee.tw/3230/paypay/" target="_blank" rel="noopener">小氣少年：全支付 2026/10–12 日韓活動</a></li>
+        <li><a href="https://windko.tw/pxpayplus-korea/" target="_blank" rel="noopener">windko：韓國用全支付回饋上限</a></li>
+        <li><a href="https://www.xinmedia.com/article/306328" target="_blank" rel="noopener">欣傳媒：悠遊付 9–12 月韓國 12% 回饋</a></li>
+        <li><a href="https://windko.tw/easy-wallet-korea/" target="_blank" rel="noopener">windko：韓國用悠遊付（可用店家、週五加碼）</a></li>
+        <li><a href="https://roo.cash/blog/cub-cube-card-introduction/" target="_blank" rel="noopener">Roo.Cash：國泰 CUBE 卡權益整理</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>整理於 2026/11/14・回饋以各 App 活動頁為準</footer>
+</div>
+</body>
+</html>
