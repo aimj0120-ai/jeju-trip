@@ -594,9 +594,9 @@ const MYEONGHO=()=>st('17:15','명호마농갈비 본점','明浩大蒜烤牛排
 const SAMDAE=()=>st('21:00','삼대국수회관 본점','三代麵條會館（宵夜）',33.50690,126.53006,'老字號黑豬肉湯麵，也有豬肉湯飯，湯飯評價比麵好｜08:30–01:30 全年無休｜吃不下就改 11/20 早餐');
 const HDJUMAK=()=>st('18:00','함덕주막','咸德酒幕（晚餐・韓式居酒屋）',33.54164,126.67303,'在地人多的小店｜推薦蒜頭蛤蠣湯、海鮮煎餅（跟披薩一樣大）｜17:00–02:00｜喝酒請搭計程車往返');
 const TAMNAWON=()=>st('12:35','황궁쟁반짜장 탐라원 노형점','耽羅苑 老衡店（午餐・中華料理）',33.48537,126.48300,'炸醬麵 ₩3,000、盤炸醬 ₩6,000、炒碼麵 ₩4,000，韓國政府認證的「善良價格店」｜就在 Money Box 旁邊，走路可到｜11:00 開門，常要排隊｜停車不好停，車子停在 Money Box 那邊走過來');
-const DAKSUIL=()=>st('17:00','제주스럽닭 서귀중문점','濟州風味雞 中文店（晚餐・炸雞）',33.25092,126.42334,'招牌 댕귤치킨（橘子炸雞），辣的 핫댕귤치킨 評價更好｜16:30–01:00｜可外帶回飯店吃｜同品牌「偶來市場店」（태평로 396）離飯店約 500 m、12:30 就開，想少開車可以改去那間');
+const DAKSUIL=()=>st('18:30','제주스럽닭 서귀포올레점','濟州風味雞 偶來市場店（晚餐・炸雞）',33.24428,126.56258,'招牌 댕귤치킨（橘子炸雞）₩24,900，辣的 핫댕귤치킨 評價更好｜離飯店約 500 m，放好車走路過去｜平日 12:30–00:30、週末 14:00–00:30｜Kakao ★4.2｜可內用也可外帶');
 const MONEYBOX=()=>st('12:15','머니박스 제주지점','Money Box 濟州店（換錢）',33.48595,126.48248,'取車後先來換韓元，帶台幣千元鈔｜停留約 15 分鐘｜週一～六 10:00–21:00、週日 10:00–18:00');
-const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115'],days:[
+const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115','chicken-olle'],days:[
  {title:'11/17（二）抵達・咸德・史努比',stops:[
   st('10:00','제주국제공항','濟州國際機場',33.5071,126.4916,AIR_NOTE),
   LOTTE_PICK(),
@@ -615,8 +615,8 @@ const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-s
   SAEKDAL(),
   st('14:00','중문대포해안주상절리대','中文大浦柱狀節理帶',33.2378,126.4253,'約 1 小時｜風浪大或下雨就改去咖啡廳'),
   st('15:30','이중섭거리','李仲燮文化街',33.244887,126.564453,'約 1 小時｜小店、咖啡廳、藝術街區'),
-  DAKSUIL(),
-  st('18:30','더퍼스트70호텔','The First70 Hotel（第 2 晚）',SGP[0],SGP[1],'晚餐：鮑魚石鍋飯、海鮮鍋、黑豬肉｜走路就能到偶來市場、李仲燮街')]},
+  st('18:00','더퍼스트70호텔','The First70 Hotel（第 2 晚）',SGP[0],SGP[1],'晚餐：鮑魚石鍋飯、海鮮鍋、黑豬肉｜走路就能到偶來市場、李仲燮街'),
+  DAKSUIL()]},
  {title:'11/19（四）城山・海女・萬丈窟',stops:[
   st('07:15','더퍼스트70호텔','The First70 Hotel（退房出發）',SGP[0],SGP[1],'早點出發，今天開車時間最長'),
   st('08:30','성산일출봉','城山日出峰',33.4589,126.9408,'約 1.5–1.75 小時｜06:00–18:00，閉園前 1 小時停售｜每月第一個週一休'),
@@ -662,7 +662,7 @@ const CONTACT={
  '삼대국수회관 본점':['064-759-6645','제주시 삼성로 41'],
  '함덕주막':['0502-5551-1619','제주시 조천읍 함덕로 20'],
  '황궁쟁반짜장 탐라원 노형점':['064-749-6644','제주시 원노형6길 7'],
- '제주스럽닭 서귀중문점':['064-738-0044','서귀포시 천제연로178번길 14-2'],
+ '제주스럽닭 서귀포올레점':['064-763-8110','서귀포시 태평로 396'],
  '오드랑베이커리':['064-784-5404','제주시 조천읍 조함해안로 552-3'],
  '함덕해수욕장':['064-728-3989','제주시 조천읍 조함해안로 525'],
  '스누피가든':['064-805-1118','제주시 구좌읍 금백조로 930'],
@@ -757,7 +757,7 @@ const MUSTEAT={'서귀포매일올레시장':[
   {zh:'石頭爺爺橘子汁',ko:'귤따는 하르방',tel:'',id:0,note:'造型瓶很可愛，選無糖的｜全濟州超商也買得到，不用特地找'}]};
 const LINKS={
  '황궁쟁반짜장 탐라원 노형점':{yt:'濟州 탐라원 짜장면',a:[['Kakao 店家頁','https://place.map.kakao.com/1410392512']]},
- '제주스럽닭 서귀중문점':{yt:'濟州 제주스럽닭 댕귤치킨',a:[['Kakao 店家頁','https://place.map.kakao.com/26089065'],['偶來市場店 Kakao','https://place.map.kakao.com/1543018321']]},
+ '제주스럽닭 서귀포올레점':{yt:'濟州 제주스럽닭 댕귤치킨',a:[['Kakao 店家頁','https://place.map.kakao.com/1543018321']]},
  '금돗 성산흑돼지':{yt:'濟州 城山 금돗 黑豬肉',a:[['Kakao 店家頁','https://place.map.kakao.com/267645011']]},
  '중문색달통갈치':{yt:'濟州 中文 色達 白帶魚',a:[['Kakao 店家頁','https://place.map.kakao.com/1602465884']]},
  '명호마농갈비 본점':{yt:'濟州 명호마농갈비',a:[['Kakao 店家頁','https://place.map.kakao.com/673097455']]},
@@ -878,8 +878,16 @@ if(S.tripId===TRIP_ID&&!S.patches.includes('food-1115')){
   let d=dayWith('머니박스 제주지점');
   if(d&&!has('황궁쟁반짜장 탐라원 노형점')){retime(d,'오드랑베이커리','12:55','13:20');retime(d,'함덕해수욕장','13:30','13:50');retime(d,'동문재래시장','13:30','13:50');d.stops.push(TAMNAWON());sortDay(d)}
   d=dayWith('이중섭거리');
-  if(d&&!has('제주스럽닭 서귀중문점')){d.stops.forEach(s=>{if(s.ko==='더퍼스트70호텔'&&s.time==='18:00'&&(s.zh||'').includes('第 2 晚'))s.time='18:30'});d.stops.push(DAKSUIL());sortDay(d)}
+  if(d&&!has('제주스럽닭 서귀중문점')&&!has('제주스럽닭 서귀포올레점')){d.stops.push(DAKSUIL());sortDay(d)}
   S.patches.push('food-1115');
+}
+/* one-time patch: chicken moves to the Olle-market branch near the hotel */
+if(S.tripId===TRIP_ID&&!S.patches.includes('chicken-olle')){
+  S.days.forEach(d=>{let hit=false;
+    d.stops.forEach(s=>{if(s.ko==='제주스럽닭 서귀중문점'){const n=DAKSUIL();s.ko=n.ko;s.zh=n.zh;s.lat=n.lat;s.lng=n.lng;s.note=n.note;s.tel='';s.addr='';if(s.time==='17:00')s.time=n.time;hit=true}});
+    if(hit){d.stops.forEach(s=>{if(s.ko==='더퍼스트70호텔'&&s.time==='18:30'&&(s.zh||'').includes('第 2 晚'))s.time='18:00'});
+      d.stops.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0)}});
+  S.patches.push('chicken-olle');
 }
 S.days.forEach(d=>d.stops.forEach(s=>{const c=CONTACT[s.ko];if(c){if(!s.tel&&c[0])s.tel=c[0];if(!s.addr)s.addr=c[1]}}));
 save();
@@ -1130,7 +1138,7 @@ const ICON={
  noodle:'<path d="M4 16h24a12 10 0 0 1-24 0z" fill="#fff" stroke="#45444b" stroke-width="1.6"/><path d="M9 16c1-4 3-4 4 0M14 16c1-4 3-4 4 0M19 16c1-4 3-4 4 0" stroke="#e9b53b" stroke-width="1.6" fill="none"/><path d="M20 3l-6 12M25 4l-8 11" stroke="#7a5a3a" stroke-width="1.6" stroke-linecap="round"/><rect x="12" y="17" width="7" height="3" rx="1" fill="#e5698a"/>',
  chicken:'<path d="M20 4c5 0 8 4 7 9-1 6-7 8-11 7l-5 5" fill="none"/><path d="M19 3c6 0 9 5 8 10-1 6-8 9-13 7z" fill="#d99a4e"/><path d="M15 18l-7 7" stroke="#f2e4c1" stroke-width="3.4" stroke-linecap="round"/><circle cx="6.5" cy="26.5" r="2.6" fill="#f2e4c1"/><circle cx="9" cy="28.5" r="2.2" fill="#f2e4c1"/><circle cx="22" cy="10" r="2.2" fill="#f39246"/>',
  pin:'<path d="M16 29s-9-9-9-15a9 9 0 0 1 18 0c0 6-9 15-9 15z" fill="#d2600a"/><circle cx="16" cy="14" r="3.6" fill="#fff"/>'};
-const ICON_OF={'제주국제공항':'plane','머니박스 제주지점':'money','오드랑베이커리':'bread','함덕해수욕장':'beach','스누피가든':'flower','더퍼스트70호텔':'bed','제주노블레스관광호텔':'bed','정방폭포':'fall','천지연폭포':'fall','서귀포매일올레시장':'market','중문대포해안주상절리대':'columns','이중섭거리':'palette','성산일출봉':'peak','제주해녀박물관':'diver','런던베이글뮤지엄 제주점':'bagel','만장굴':'cave','9.81파크':'kart','애월 카페거리':'coffee','한담해안산책로':'walk','맥파이 브루어리 탭룸':'beer','렌터카 반납':'car','롯데렌터카 제주오토하우스지점':'car','롯데마트 제주점':'cart','동문재래시장':'market','금돗 성산흑돼지':'bbq','중문색달통갈치':'fish','명호마농갈비 본점':'bbq','삼대국수회관 본점':'noodle','함덕주막':'beer','황궁쟁반짜장 탐라원 노형점':'noodle','제주스럽닭 서귀중문점':'chicken'};
+const ICON_OF={'제주국제공항':'plane','머니박스 제주지점':'money','오드랑베이커리':'bread','함덕해수욕장':'beach','스누피가든':'flower','더퍼스트70호텔':'bed','제주노블레스관광호텔':'bed','정방폭포':'fall','천지연폭포':'fall','서귀포매일올레시장':'market','중문대포해안주상절리대':'columns','이중섭거리':'palette','성산일출봉':'peak','제주해녀박물관':'diver','런던베이글뮤지엄 제주점':'bagel','만장굴':'cave','9.81파크':'kart','애월 카페거리':'coffee','한담해안산책로':'walk','맥파이 브루어리 탭룸':'beer','렌터카 반납':'car','롯데렌터카 제주오토하우스지점':'car','롯데마트 제주점':'cart','동문재래시장':'market','금돗 성산흑돼지':'bbq','중문색달통갈치':'fish','명호마농갈비 본점':'bbq','삼대국수회관 본점':'noodle','함덕주막':'beer','황궁쟁반짜장 탐라원 노형점':'noodle','제주스럽닭 서귀포올레점':'chicken'};
 const stopIcon=s=>`<svg viewBox="0 0 32 32">${ICON[ICON_OF[s.ko]||'pin']}</svg>`;
 function parkHtml(s){const p=PARK[s.ko];if(!p)return '';
   const walk=p.walk?`步行約 ${Math.max(1,Math.round(p.walk/70))} 分鐘（${p.walk} m）`:'就在旁邊';
@@ -1384,11 +1392,11 @@ $('copyCsv').onclick=()=>{const rows=[['day','day_title','time','name_ko','name_
   S.days.forEach((d,i)=>d.stops.forEach(s=>rows.push([i+1,d.title||'',s.time||'',s.ko||'',s.zh||'',s.lat??'',s.lng??'',s.note||''])));
   copyText(rows.map(r=>r.join('\t')).join('\n'),'已複製，直接貼到 Google Sheet A1 即可')};
 $('importBtn').onclick=()=>{try{const d=JSON.parse($('importBox').value);if(!Array.isArray(d.days))throw 0;
-  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
+  d.days.forEach(x=>{x.stops=(x.stops||[]).map(s=>({...s,id:s.id||uid()}))});S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115','chicken-olle'],days:d.days,activeDay:0,sample:false};save();render();flash($('ioMsg'),`已匯入 ${d.days.length} 天`,true)}
   catch(err){flash($('ioMsg'),'JSON 格式不對，請貼上「複製 JSON 備份」的內容',false)}};
 let clrArm=false;
 $('clearSample').onclick=()=>{const b=$('clearSample');if(!clrArm){clrArm=true;b.textContent='再按一次確認清空';setTimeout(()=>{clrArm=false;b.textContent='清空全部'},3000);return}
-  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
+  clrArm=false;b.textContent='清空全部';S={tripId:TRIP_ID,patches:['moneybox','hotel-sgp','hotel-jjn','lotte-rent','lotte-mart','fix-1031','rain-dongmun','food-1114','geumdot-rsv','food-1115','chicken-olle'],days:[{title:'',stops:[]}],activeDay:0,sample:false};save();render()};
 
 /* first edit drops the sample badge */
 document.addEventListener('change',()=>{if(S.sample){S.sample=false;save();$('sampleChip').hidden=true}},true);
