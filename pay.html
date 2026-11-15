@@ -73,6 +73,8 @@ h2{font-family:var(--f-display);font-size:1.25rem;margin:6px 0 0}
 .tbl th,.tbl td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}
 .tbl th{font-size:.76rem;color:var(--muted);font-weight:700}
 .tbl td:first-child{font-weight:700;width:5.4em}
+.tbl th.grp{background:var(--bg);color:var(--tang);font-size:.8rem;padding-top:10px}
+.caps td:nth-child(3){white-space:nowrap}
 .warn{background:var(--tang-soft);border-radius:14px;padding:8px 12px;font-size:.84rem}
 .order{counter-reset:o;list-style:none;padding:0!important;display:flex;flex-direction:column;gap:6px}
 .order li{counter-increment:o;display:grid;grid-template-columns:1.6rem minmax(0,1fr);gap:6px;margin:0}
@@ -104,7 +106,7 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
   </header>
 
   <nav class="chips" aria-label="章節">
-    <a href="#quick">一張表</a><a href="#me">國泰</a><a href="#gf">中信 LINE Pay 卡</a><a href="#mart">樂天超市</a><a href="#cvs">便利商店</a><a href="#how">付款步驟</a><a href="#buy">買什麼</a>
+    <a href="#quick">一張表</a><a href="#caps">回饋上限</a><a href="#me">國泰</a><a href="#gf">中信 LINE Pay 卡</a><a href="#mart">樂天超市</a><a href="#cvs">便利商店</a><a href="#how">付款步驟</a><a href="#buy">買什麼</a>
   </nav>
 
   <section id="quick" aria-labelledby="h-quick">
@@ -138,6 +140,40 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
         <li>CU、7-Eleven、emart24 和其他吃喝店家（Ediya、OSULLOC 等）<b>共用</b>同一份便利商店上限</li>
         <li>上限是<b>每個 LINE Pay 帳號、每個月</b>各自算；這趟 11/17–11/21 都算 11 月</li>
         <li>「單月付滿 2 筆抽最高 666 點」是兩類合計，便利商店 1 筆＋樂天超市 1 筆也算</li>
+      </ul>
+    </div>
+    <div class="card" id="caps" style="scroll-margin-top:60px">
+      <h3>各支付的回饋上限</h3>
+      <p class="small">「拿滿要花」是剛好用完上限的消費金額，超過的部分就沒有活動回饋。點數 1 點＝NT$1；韓元以 1 台幣 ≈ 40 韓元估算（11/15 市價約 40.6），實際以扣款匯率為準。上限都是每個帳號各自算。</p>
+      <table class="tbl caps">
+        <thead><tr><th>項目</th><th>上限</th><th>拿滿要花</th></tr></thead>
+        <tbody>
+          <tr><th colspan="3" class="grp">LINE Pay・便利商店（每月）</th></tr>
+          <tr><td>LINE Pay 付款 5%</td><td>100 點</td><td>NT$2,000<br><span class="small">約 ₩80,000</span></td></tr>
+          <tr><td>綁 Visa 10%</td><td>200 點</td><td>NT$2,000<br><span class="small">約 ₩80,000</span></td></tr>
+          <tr><td>綁中信卡再加 10%</td><td>144 點（中信加碼部分）</td><td>NT$2,000<br><span class="small">約 ₩80,000</span></td></tr>
+          <tr><th colspan="3" class="grp">LINE Pay・樂天超市</th></tr>
+          <tr><td>綁 Visa 3%</td><td>每月 150 點</td><td>NT$5,000<br><span class="small">約 ₩200,000</span></td></tr>
+          <tr><td>綁中信卡再加 5%</td><td>每月 110 點（中信加碼部分）</td><td>NT$5,000<br><span class="small">約 ₩200,000</span></td></tr>
+          <tr><td>觀光公社 7%（綁 Visa）</td><td>活動期間 350 點</td><td>NT$5,000<br><span class="small">約 ₩200,000</span></td></tr>
+          <tr><th colspan="3" class="grp">悠遊付</th></tr>
+          <tr><td>基本 10.5%</td><td>11/1–11/24 共 NT$600</td><td>NT$5,714<br><span class="small">約 ₩230,000</span></td></tr>
+          <tr><td>週五 2%、月級挑戰</td><td>未公布</td><td>—<br><span class="small">—</span></td></tr>
+          <tr><th colspan="3" class="grp">全支付</th></tr>
+          <tr><td>基本 3.5%（含滿萬加碼）</td><td>單筆 350 點、每月 1,000 點</td><td>每月約 NT$28,500<br><span class="small">約 ₩1,150,000</span></td></tr>
+          <tr><td>綁國泰帳戶 5%</td><td>單筆 100 點、<b>每週 100 點</b></td><td>NT$2,000<br><span class="small">約 ₩80,000</span></td></tr>
+          <tr><td>綁國泰信用卡</td><td>單筆滿額送 100 點，一次</td><td>單筆 NT$1,000<br><span class="small">約 ₩40,000</span></td></tr>
+          <tr><th colspan="3" class="grp">信用卡直接刷</th></tr>
+          <tr><td>CUBE 趣旅行 3%</td><td>無上限</td><td>—<br><span class="small">—</span></td></tr>
+          <tr><th colspan="3" class="grp">樂天超市優惠券（單筆門檻，兩張選一）</th></tr>
+          <tr><td>KKday 折 ₩6,000</td><td>每張收據一次</td><td>約 NT$2,500<br><span class="small">₩100,000</span></td></tr>
+          <tr><td>L.POINT 折 ₩5,000</td><td>每張收據一次</td><td>約 NT$2,000<br><span class="small">₩80,000</span></td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li><b>便利商店</b>：每人大約買 <b>₩80,000（NT$2,000）</b>，LINE Pay 的三項回饋就同時拿滿，之後改用悠遊付</li>
+        <li><b>樂天超市</b>：每人大約買 <b>₩200,000（NT$5,000）</b>，LINE Pay 回饋就拿滿</li>
+        <li><b>全支付</b>：國泰帳戶 5% 這週只有 NT$2,000 額度，用完後只剩基本 3.5%</li>
       </ul>
     </div>
   </section>
@@ -200,7 +236,7 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
         </tbody>
       </table>
       <ul>
-        <li>上限換算：便利商店大約買到 NT$1,500–2,000 就會陸續滿；樂天超市大約 NT$2,000–3,000</li>
+        <li>上限換算：便利商店大約買到 NT$2,000（約 ₩80,000）就滿；樂天超市大約 NT$5,000（約 ₩200,000）</li>
         <li>卡片本身在韓國另有 2.8% 回饋，登錄後再加 2.2%（要付 1.5% 海外手續費）</li>
         <li>11 月內用 LINE Pay 付滿 2 筆，可以抽最高 666 點</li>
         <li>點數大多隔天下午入帳，可以在 LINE Pay App 看</li>
