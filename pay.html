@@ -81,6 +81,11 @@ h2{font-family:var(--f-display);font-size:1.25rem;margin:6px 0 0}
 .buy div{background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:8px 10px;font-size:.84rem;display:flex;flex-direction:column;gap:2px;min-width:0}
 .buy img{display:block;width:calc(100% + 20px);height:auto;aspect-ratio:4/3;object-fit:cover;margin:-8px -10px 6px;border-radius:12px 12px 0 0;background:var(--line)}
 .buy i{font-style:normal;font-size:.72rem;color:var(--muted)}
+.items{list-style:none;padding:0!important;display:flex;flex-direction:column;gap:8px}
+.items li{margin:0;padding-bottom:8px;border-bottom:1px solid var(--line);font-size:.86rem}
+.items li:last-child{border-bottom:0;padding-bottom:0}
+.items .ko{font-size:.76rem;color:var(--muted)}
+h3.sub{font-family:var(--f-display);font-size:1.05rem;margin:6px 0 0;color:var(--tang)}
 .buy em{align-self:flex-start;font-style:normal;font-size:.7rem;font-weight:700;background:var(--sea-soft);color:var(--sea);border-radius:99px;padding:0 8px}
 .buy b{display:block}
 .buy span{font-family:var(--f-ko);font-size:.76rem;color:var(--muted)}
@@ -279,49 +284,67 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
         <div><b>海苔</b><span>도시락김</span>小包裝便當海苔，輕、好分</div>
       </div>
     </div>
+    <h3 class="sub">便利商店</h3>
     <div class="card">
-      <h3>便利商店：每家都有</h3>
-      <div class="buy">
-        <div><img src="img/banana-milk.webp" alt="香蕉牛奶" loading="lazy" width="360" height="270"><b>香蕉牛奶</b><span>바나나맛우유</span>必喝，也有草莓、哈密瓜口味</div>
-        <div><img src="img/kimbap.webp" alt="三角飯糰、飯捲" loading="lazy" width="360" height="270"><b>三角飯糰、飯捲</b><span>삼각김밥 · 김밥</span>早上趕路、還車前的早餐</div>
-        <div><img src="img/cupramen.webp" alt="杯麵＋熱水" loading="lazy" width="360" height="270"><b>杯麵＋熱水</b><span>컵라면</span>店裡就能泡，很多店有自助煮泡麵機；加魚肉香腸、溏心蛋更像韓劇</div>
-        <div><img src="img/melona.webp" alt="哈密瓜冰棒" loading="lazy" width="360" height="270"><b>哈密瓜冰棒</b><span>메로나</span>韓國國民冰棒</div>
-        <div><img src="img/samanco.webp" alt="鯛魚燒冰淇淋" loading="lazy" width="360" height="270"><b>鯛魚燒冰淇淋</b><span>붕어싸만코</span>餅皮夾紅豆和香草冰淇淋</div>
-        <div><img src="img/jejubeer.webp" alt="濟州啤酒" loading="lazy" width="360" height="270"><b>濟州啤酒</b><span>제주맥주 · 제주위트에일 · 맥BTI</span>濟州在地精釀，回飯店喝；GS25 有印 MBTI 字母的罐裝「맥BTI」</div>
-        <div><img src="img/yonsei.webp" alt="延世牛奶生乳包" loading="lazy" width="360" height="270"><b>延世牛奶生乳包</b><span>연세우유 생크림빵</span>CU 招牌，鮮奶油爆漿；常有草莓、抹茶等限定口味</div>
-        <div><img src="img/saltbread.webp" alt="圖為麵包店的開心果款" loading="lazy" width="360" height="270"><b>鮮奶油鹽麵包</b><span>생크림 소금빵</span>鹹鹹的鹽可頌夾鮮奶油，配咖啡<i>圖為麵包店的開心果款</i></div>
-        <div><img src="img/dubai.webp" alt="杜拜巧克力" loading="lazy" width="360" height="270"><b>杜拜巧克力</b><span>두바이 초콜릿</span>開心果內餡加脆麵絲，韓國超商版還有麻糬口味</div>
-        <div><img src="img/tteokbokki.webp" alt="辣炒年糕" loading="lazy" width="360" height="270"><b>辣炒年糕</b><span>떡볶이</span>冷藏櫃的微波辣炒年糕，熱一下就能吃</div>
-        <div><img src="img/eomuk.webp" alt="圖為魚板串" loading="lazy" width="360" height="270"><b>熟食、微波食品</b><span>어묵 · 닭발 · 족발</span>魚板串、辣雞爪、豬腳肉、便當，GS25 種類最多<i>圖為魚板串</i></div>
-        <div><img src="img/jinramen.webp" alt="圖為真拉麵和湯粉" loading="lazy" width="360" height="270"><b>真拉麵調味粉</b><span>오뚜기 진라면 스프</span>單賣的泡麵湯粉，煮湯、炒菜都能加；分原味和辣味<i>圖為真拉麵和湯粉</i></div>
-        <div><img src="img/nobrand.webp" alt="圖為 No Brand 門市貨架" loading="lazy" width="360" height="270"><b>No Brand 零食</b><span>노브랜드</span>emart24 的自有品牌，洋芋片、餅乾便宜又大包<i>圖為 No Brand 門市貨架</i></div>
-        <div><b>《黑白大廚》聯名食品</b><span>흑백요리사</span>名廚聯名的便當、飯糰、甜點，CU、GS25、7-Eleven 都有</div>
-        <div><b>袋裝優格</b><span>짜먹는 요거트</span>轉開蓋子直接擠著吃，也有附穀片的款式</div>
-        <div><b>袋裝飲料＋冰塊杯</b><span>파우치 음료 · 얼음컵</span>買一杯冰塊杯，把袋裝咖啡、果汁、柚子茶倒進去</div>
-        <div><img src="img/kkotgerang.webp" alt="螃蟹餅乾" loading="lazy" width="360" height="270"><b>螃蟹餅乾</b><span>꽃게랑</span>比洋芋片更脆，原味、辣炒碼麵口味都推，很下酒</div>
-        <div><img src="img/eggsand.webp" alt="圖為蛋沙拉三明治示意" loading="lazy" width="360" height="270"><b>水果、蛋沙拉三明治</b><span>과일 · 에그샐러드 샌드위치</span>整顆水果夾鮮奶油，口味跟季節換；蛋沙拉款當早餐<i>圖為蛋沙拉三明治示意</i></div>
-        <div><b>青葡萄汁</b><span>포도봉봉</span>罐裝葡萄汁，裡面有葡萄果肉</div>
-        <div><b>蟹膏醬</b><span>속초대게딱지장</span>配白飯、飯捲吃，附香油；要託運</div>
-        <div><b>寶可夢麵包</b><span>포켓몬빵</span>附收集貼紙的限定麵包，遇到就買</div>
-        <div><b>醒酒飲料</b><span>컨디션 · 여명808</span>喝 Magpie、燒酒的前後喝</div>
-        <div><b>1+1、2+1 商品</b><span>원플러스원</span>看標籤挑，常常比較划算</div>
-      </div>
+      <h3>每家都有</h3>
+      <ul class="items">
+        <li><b>香蕉牛奶</b> <span class="ko">바나나맛우유</span><br>必喝，也有草莓、哈密瓜口味</li>
+        <li><b>三角飯糰、飯捲</b> <span class="ko">삼각김밥 · 김밥</span><br>早上趕路、還車前的早餐</li>
+        <li><b>杯麵＋熱水</b> <span class="ko">컵라면</span><br>店裡就能泡，很多店有自助煮泡麵機；加魚肉香腸、溏心蛋</li>
+        <li><b>水果、蛋沙拉三明治</b> <span class="ko">과일 · 에그샐러드 샌드위치</span><br>整顆水果夾鮮奶油，口味跟季節換；蛋沙拉款當早餐</li>
+        <li><b>辣炒年糕</b> <span class="ko">떡볶이</span><br>冷藏櫃的微波辣炒年糕</li>
+        <li><b>熟食、微波食品</b> <span class="ko">어묵 · 닭발 · 족발</span><br>魚板串、辣雞爪、豬腳肉、便當</li>
+        <li><b>鮮奶油鹽麵包</b> <span class="ko">생크림 소금빵</span><br>鹽可頌夾鮮奶油，配咖啡</li>
+        <li><b>杜拜巧克力</b> <span class="ko">두바이 초콜릿</span><br>開心果內餡加脆麵絲，韓國版還有麻糬口味</li>
+        <li><b>《黑白大廚》聯名食品</b> <span class="ko">흑백요리사</span><br>名廚聯名的便當、飯糰、甜點（CU、GS25、7-Eleven）</li>
+        <li><b>螃蟹餅乾</b> <span class="ko">꽃게랑</span><br>比洋芋片更脆，原味、辣炒碼麵口味都推</li>
+        <li><b>真拉麵調味粉</b> <span class="ko">오뚜기 진라면 스프</span><br>單賣的泡麵湯粉，煮湯、炒菜都能加</li>
+        <li><b>蟹膏醬</b> <span class="ko">속초대게딱지장</span><br>配白飯、飯捲吃；要託運</li>
+        <li><b>寶可夢麵包</b> <span class="ko">포켓몬빵</span><br>附收集貼紙的限定麵包，遇到就買</li>
+        <li><b>哈密瓜冰棒</b> <span class="ko">메로나</span><br>韓國國民冰棒</li>
+        <li><b>鯛魚燒冰淇淋</b> <span class="ko">붕어싸만코</span><br>餅皮夾紅豆和香草冰淇淋</li>
+        <li><b>袋裝優格</b> <span class="ko">짜먹는 요거트</span><br>轉開蓋子直接擠著吃</li>
+        <li><b>袋裝飲料＋冰塊杯</b> <span class="ko">파우치 음료 · 얼음컵</span><br>買冰塊杯，把袋裝咖啡、果汁、柚子茶倒進去</li>
+        <li><b>青葡萄汁</b> <span class="ko">포도봉봉</span><br>罐裝葡萄汁，裡面有果肉</li>
+        <li><b>濟州啤酒</b> <span class="ko">제주맥주 · 제주위트에일</span><br>濟州在地精釀，回飯店喝</li>
+        <li><b>醒酒飲料</b> <span class="ko">컨디션 · 여명808</span><br>喝 Magpie、燒酒的前後喝</li>
+        <li><b>1+1、2+1 商品</b> <span class="ko">원플러스원</span><br>看標籤挑，常常比較划算</li>
+      </ul>
       <p class="small">各店貨架和特價不一樣，以現場為準。</p>
     </div>
     <div class="card">
-      <h3>便利商店：各家獨家</h3>
-      <div class="buy">
-        <div><em>GS25</em><b>YOUUS 微波韓食</b><span>유어스 찜닭 · 갈비찜</span>燉雞、燉排骨、辣燉雞湯，一人份就能吃</div>
-        <div><em>GS25</em><b>YOUUS 泡菜鍋拉麵</b><span>유어스 김치찌개라면</span>吃起來像餐廳的泡菜鍋</div>
-        <div><img src="img/yakult.webp" alt="圖為養樂多示意" loading="lazy" width="360" height="270"><em>7-Eleven</em><b>麝香葡萄養樂多</b><span>샤구르트</span>7-Select 和 Binggrae 聯名，也有冰棒和軟糖<i>圖為養樂多示意</i></div>
-        <div><em>7-Eleven</em><b>魷魚條</b><span>숏다리 x 오잉</span>魷魚味很濃的甜鹹零食，配酒</div>
-        <div><img src="img/dakbal.webp" alt="圖為辣炒雞爪示意" loading="lazy" width="360" height="270"><em>7-Eleven</em><b>無骨辣雞爪</b><span>무뼈불닭발</span>微波就能吃，有年糕和炭火香；剩的醬汁拌飯糰<i>圖為辣炒雞爪示意</i></div>
-        <div><em>CU</em><b>辣奶油義大利麵</b><span>Chef M 파스타</span>CU 最紅的微波義大利麵，寬麵配辣奶油醬</div>
-        <div><img src="img/rollcake.webp" alt="圖為蛋糕捲示意" loading="lazy" width="360" height="270"><em>CU</em><b>蛋糕捲</b><span>롤케이크</span>CU 甜點代表，原味、提拉米蘇是長青款<i>圖為蛋糕捲示意</i></div>
-        <div><img src="img/macaron.webp" alt="圖為馬卡龍示意" loading="lazy" width="360" height="270"><em>CU</em><b>有嚼勁的馬卡龍</b><span>쫀득한 마카롱</span>一盒三種口味，出過濟州綠茶款<i>圖為馬卡龍示意</i></div>
-        <div><img src="img/friedrice.webp" alt="圖為炒飯示意" loading="lazy" width="360" height="270"><em>CU</em><b>海苔鐵板炒飯</b><span>철판볶음밥</span>微波或倒進平底鍋炒，有蔥油、排骨、醃蘿蔔口味<i>圖為炒飯示意</i></div>
-      </div>
-      <p class="small">這區來自 KKday 文章，內容是 2024 年取材，限定和聯名商品可能已經下架，以現場為準。</p>
+      <h3>CU<span class="who both">LINE Pay、悠遊付</span></h3>
+      <ul class="items">
+        <li><b>延世牛奶生乳包</b> <span class="ko">연세우유 생크림빵</span><br>招牌，鮮奶油爆漿；有牛奶、紅豆、巧克力、哈密瓜等口味</li>
+        <li><b>辣奶油義大利麵</b> <span class="ko">Chef M 파스타</span><br>最紅的微波義大利麵，寬麵配辣奶油醬</li>
+        <li><b>蛋糕捲</b> <span class="ko">롤케이크</span><br>甜點代表，原味、提拉米蘇是長青款</li>
+        <li><b>有嚼勁的馬卡龍</b> <span class="ko">쫀득한 마카롱</span><br>一盒三種口味，出過濟州綠茶款</li>
+        <li><b>海苔鐵板炒飯</b> <span class="ko">철판볶음밥</span><br>微波或倒進平底鍋炒，有蔥油、排骨、醃蘿蔔口味</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>GS25<span class="who both">悠遊付（LINE Pay 不在活動清單）</span></h3>
+      <ul class="items">
+        <li><b>YOUUS 微波韓食</b> <span class="ko">유어스 찜닭 · 갈비찜</span><br>燉雞、燉排骨、辣燉雞湯，一人份就能吃</li>
+        <li><b>YOUUS 泡菜鍋拉麵</b> <span class="ko">유어스 김치찌개라면</span><br>吃起來像餐廳的泡菜鍋</li>
+        <li><b>濟州啤酒 MBTI 罐</b> <span class="ko">맥BTI</span><br>濟州啤酒和 GS25 聯名，罐上印 MBTI 字母</li>
+        <li><b>熟食、便當</b> <span class="ko">도시락</span><br>GS25 的熟食和微波食品種類最多</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>7-Eleven<span class="who both">LINE Pay、悠遊付</span></h3>
+      <ul class="items">
+        <li><b>麝香葡萄養樂多</b> <span class="ko">샤구르트</span><br>7-Select 和 Binggrae 聯名，也有冰棒和軟糖</li>
+        <li><b>魷魚條</b> <span class="ko">숏다리 x 오잉</span><br>魷魚味很濃的甜鹹零食，配酒</li>
+        <li><b>無骨辣雞爪</b> <span class="ko">무뼈불닭발</span><br>微波就能吃，有年糕；剩的醬汁拌飯糰</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>emart24<span class="who both">LINE Pay、悠遊付</span></h3>
+      <ul class="items">
+        <li><b>No Brand 零食</b> <span class="ko">노브랜드</span><br>E-mart 自有品牌，洋芋片、餅乾便宜又大包</li>
+      </ul>
+      <p class="small">各家獨家商品來自 KKday、遠傳文章，部分是 2024 年取材，限定和聯名商品可能已經下架。</p>
     </div>
   </section>
 
@@ -347,35 +370,15 @@ footer{font-size:.74rem;color:var(--muted);text-align:center}
     <div class="card src small">
       <p>商品圖片來自 Wikimedia Commons，實際包裝可能不同。</p>
       <ul>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Binggrae_Banana_Flavored_Milk_03.jpg" target="_blank" rel="noopener">banana-milk</a>：KOREA.NET，CC BY-SA 2.0</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:ORION_-_Choco_Pie.jpg" target="_blank" rel="noopener">chocopie</a>：Quercus acuta，CC0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Cup_Ramyeon_inside.jpg" target="_blank" rel="noopener">cupramen</a>：The Pancake of Heaven!，CC BY-SA 4.0</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:Gochujang_(chilli_paste).jpg" target="_blank" rel="noopener">gochujang</a>：온맘으로，CC BY 4.0</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:Dekopon.jpg" target="_blank" rel="noopener">hallabong</a>：Laitr Keiows，CC BY-SA 3.0</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:%ED%95%B4%ED%83%9C%EC%A0%9C%EA%B3%BC_%ED%97%88%EB%8B%88%EB%B2%84%ED%84%B0%EC%B9%A9_1.jpg" target="_blank" rel="noopener">honeybutter</a>：수원알림이 *라프*，CC BY 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Jeju_beer_09_(cropped).jpg" target="_blank" rel="noopener">jejubeer</a>：KOREA.NET - Official page of the Republic of Korea，CC BY 2.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:%EC%82%BC%EA%B0%81%EA%B9%80%EB%B0%A5_%EC%82%AC%EC%A7%84.jpg" target="_blank" rel="noopener">kimbap</a>：박찹쌀，CC BY-SA 2.0 kr</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:Kkobuk_Chip_20201126_003.jpg" target="_blank" rel="noopener">kkobuk</a>：Mobius6，CC BY-SA 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Melona.jpg" target="_blank" rel="noopener">melona</a>：Hyeon-Jeong Suk，CC BY 2.0</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:O%27Sulloc_Tea_Field_KIM.jpg" target="_blank" rel="noopener">osulloc</a>：LIUCKIM8，CC BY-SA 4.0</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:Nongshim_Shin_Ramyun_20210529_001.jpg" target="_blank" rel="noopener">ramyun</a>：Mobius6，CC BY-SA 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Outlook_of_Bung-er_Samanco,_Carp_Ice_Waffle.png" target="_blank" rel="noopener">samanco</a>：호로조，CC BY-SA 3.0</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:Korean_alcoholic_beverage-Jeju_Island-Hallasan_soju-01.jpg" target="_blank" rel="noopener">soju</a>：SEEMS to be at Flickr，CC BY-SA 3.0</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:Korean_yuja_tea.jpg" target="_blank" rel="noopener">yuja</a>：Drew Lietzow，Public domain</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Dubai_chocolate_on_a_plate_01.jpg" target="_blank" rel="noopener">dubai</a>：Ionenlaser，CC BY 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Kkochi-eomuk.jpg" target="_blank" rel="noopener">eomuk</a>：anokarina，CC BY-SA 2.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Jin_Ramen_(mild)_20210731_001.jpg" target="_blank" rel="noopener">jinramen</a>：Mobius6，CC BY-SA 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:2020-03-19_19.19.47_%EB%85%B8%EB%B8%8C%EB%9E%9C%EB%93%9C_%EC%9B%90%EC%A3%BC%EB%B0%98%EA%B3%A1%EC%A0%90.jpg" target="_blank" rel="noopener">nobrand</a>：MatthieuRicard，CC0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:%EB%85%B8%ED%8B%B0%EB%93%9C_%EB%B6%80%EC%82%B0%ED%95%B4%EC%9A%B4%EB%8C%80%EC%A0%90_%ED%94%BC%EC%8A%A4%ED%83%80%EC%B9%98%EC%98%A4_%ED%81%AC%EB%A6%BC_%EC%86%8C%EA%B8%88%EB%B9%B5.jpg" target="_blank" rel="noopener">saltbread</a>：쿄쿄，CC BY-SA 2.0 kr</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Korean.snacks-Tteokbokki-08.jpg" target="_blank" rel="noopener">tteokbokki</a>：by jetalone (flickr)，CC BY 2.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:%EC%97%B0%EC%84%B8%EC%9A%B0%EC%9C%A0_%EC%9A%B0%EC%9C%A0%EC%83%9D%ED%81%AC%EB%A6%BC%EB%B9%B5.jpg" target="_blank" rel="noopener">yonsei</a>：이분의일디자인，CC BY 2.0 kr</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Dakbal-bokkeum.jpg" target="_blank" rel="noopener">dakbal</a>：김정옥，CC BY 2.0 kr</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Japanese_egg_sandwich_in_a_sandwich_case.jpg" target="_blank" rel="noopener">eggsand</a>：Quercus acuta，CC BY-SA 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Kimchi_fried_rice.jpg" target="_blank" rel="noopener">friedrice</a>：Sharon Ang，CC0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:%EA%BD%83%EA%B2%8C%EB%9E%91_%EC%98%A4%EB%A6%AC%EC%A7%80%EB%84%90,_%EB%B6%88%EC%A7%AC%EB%BD%95.jpg" target="_blank" rel="noopener">kkotgerang</a>：올리뷰，CC BY-SA 2.0 kr</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Box_of_Macarons.jpg" target="_blank" rel="noopener">macaron</a>：AlphaLemur，CC BY-SA 4.0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Classic_roll_cake_-_Ikigai_Coffee_2024-09-21.jpg" target="_blank" rel="noopener">rollcake</a>：Andy Li，CC0</li>
-        <li><a href="https://commons.wikimedia.org/wiki/File:Yakult_drink.jpg" target="_blank" rel="noopener">yakult</a>：Amin，CC BY-SA 4.0</li>
       </ul>
     </div>
   </section>
