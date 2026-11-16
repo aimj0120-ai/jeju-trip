@@ -188,6 +188,15 @@ html,body{overflow-x:clip}
 .stopsblock{display:flex;flex-direction:column;gap:10px}
 .stop.alt .card{border-style:dashed;border-color:var(--sea)}
 .stop.alt .num{background:var(--sea);color:var(--on-sea);font-size:.62rem;letter-spacing:0}
+/* finished stops: the user ticks them off on the road */
+.done-btn{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 12px;border-radius:99px;border:1.5px solid var(--line);background:var(--surface);color:var(--muted);font-size:.78rem;font-weight:700;white-space:nowrap}
+.done-btn .box{width:16px;height:16px;border-radius:5px;border:2px solid currentColor;display:grid;place-items:center;font-size:.7rem;line-height:1}
+.done-btn[aria-pressed="true"]{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.stop.done .card{background:var(--bg)}
+.stop.done .card>*:not(.actions):not(.cardtop){opacity:.55}
+.stop.done .cardtop{opacity:.7}
+.stop.done .card .ko{text-decoration:line-through;text-decoration-thickness:2px}
+.stop.done .num{background:var(--leaf);color:#fff;font-size:1rem}
 .altleg .leg{color:var(--muted)}
 .altchip{align-self:flex-start;font-size:.76rem;font-weight:700;color:var(--sea);background:var(--sea-soft);border-radius:99px;padding:2px 10px}
 .reserve{border:1.5px solid var(--naver);border-radius:14px;padding:8px 12px;display:flex;flex-direction:column;gap:6px;font-size:.8rem}
@@ -1368,7 +1377,8 @@ function render(){
   placeCar();
   const day=S.days[S.activeDay];
   const tot=dayDrive(day);
-  $('dayEyebrow').textContent=`DAY ${S.activeDay+1} / ${S.days.length}・${day.stops.length} 個地點${day.stops[0]?.time?`・${day.stops[0].time} 出發`:''}${tot?`・開車合計約 ${fmtDur(tot)}`:''}`;
+  const doneN=day.stops.filter(s=>s.done).length;
+  $('dayEyebrow').textContent=`DAY ${S.activeDay+1} / ${S.days.length}・${day.stops.length} 個地點${day.stops[0]?.time?`・${day.stops[0].time} 出發`:''}${tot?`・開車合計約 ${fmtDur(tot)}`:''}${doneN?`・已完成 ${doneN}/${day.stops.length}`:''}`;
   fetchDrives(); renderWx(); fetchWx();
   $('dayTitle').value=day.title||'';
   $('delDay').hidden=S.days.length<2;
@@ -1383,8 +1393,8 @@ function render(){
     const prev=alt?altFrom(day.stops,i):prevMain(day.stops,i), repl=alt?altReplaces(day.stops,i):null; const ok=valid(s); const open=openTray.has(s.id);
     const nx=alt?nextMain(day.stops,i):null;
     const leg=prev?`<li class="legrow${alt?' altleg':''}" aria-label="與上一站的車程"><span class="leg">${alt?'雨備・':''}${ok&&valid(prev)?legText(prev,s):''}</span></li>`:'';
-    return `${leg}<li class="stop${alt?' alt':''}">
-      <div class="mark"><div class="num">${alt?'雨備':num}</div>${s.time?`<span class="time">${esc(s.time)}</span>`:''}</div>
+    return `${leg}<li class="stop${alt?' alt':''}${s.done?' done':''}">
+      <div class="mark"><div class="num">${s.done?'✓':alt?'雨備':num}</div>${s.time?`<span class="time">${esc(s.time)}</span>`:''}</div>
       <article class="card" id="card-${s.id}">
         <div class="cardtop">
           <span class="sicon" aria-hidden="true">${stopIcon(s)}</span>
@@ -1405,6 +1415,7 @@ function render(){
           ${s.addr?`<div><dt>地址</dt><dd lang="ko">${esc(s.addr)}</dd><button class="small ghost" data-act="cp" data-v="${esc(s.addr)}">複製</button></div>`:''}
         </dl>`:''}
         <div class="actions">
+          <button class="done-btn" data-act="done" data-id="${s.id}" aria-pressed="${!!s.done}"><span class="box" aria-hidden="true">${s.done?'✓':''}</span>${s.done?'已完成':'完成這站'}</button>
           <a class="btn naver small" href="${esc(naverWeb(s))}" target="_blank" rel="noopener">NAVER 地圖</a>
           ${ok?`<a class="btn small" href="${esc(nmapRoute(S.plan.mode,prev&&valid(prev)?prev:null,s))}">${prev&&valid(prev)?'從上一站導航':'導航到這裡'}</a><a class="btn small ghost" href="${esc(naverWebRoute(S.plan.mode,prev&&valid(prev)?prev:null,s))}" target="_blank" rel="noopener">網頁版</a>`:`<span class="coord">缺座標，只能用名稱搜尋</span>`}
         </div>
@@ -1500,6 +1511,7 @@ $('stops').addEventListener('click',async e=>{const b=e.target.closest('[data-ac
   if(act==='more'){const tray=b.closest('.card').querySelector('.tray');const o=tray.hidden;tray.hidden=!o;b.setAttribute('aria-expanded',o);o?openTray.add(s.id):openTray.delete(s.id);return}
   if(act==='cp'){try{await navigator.clipboard.writeText(b.dataset.v);b.textContent='已複製'}catch(err){b.textContent='請長按左邊文字'}setTimeout(()=>b.textContent='複製',1500);return}
   if(act==='copy'){const t=s.ko||s.zh;try{await navigator.clipboard.writeText(t);b.textContent='已複製'}catch(err){b.textContent=t}setTimeout(()=>b.textContent='複製韓文名',1500);return}
+  if(act==='done'){s.done=!s.done;save();render();return}
   if(act==='up'&&i>0){[day.stops[i-1],day.stops[i]]=[day.stops[i],day.stops[i-1]]}
   if(act==='down'&&i<day.stops.length-1){[day.stops[i+1],day.stops[i]]=[day.stops[i],day.stops[i+1]]}
   if(act==='del'){if(b.dataset.armed!=='1'){b.dataset.armed='1';b.textContent='確認刪除';setTimeout(()=>{b.dataset.armed='';b.textContent='刪除'},3000);return}day.stops.splice(i,1);openTray.delete(s.id)}
