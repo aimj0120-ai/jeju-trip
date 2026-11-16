@@ -988,6 +988,27 @@ if(S.tripId===TRIP_ID&&!S.patches.includes('no-nightmarket')){
   S.days.forEach(d=>{d.stops=d.stops.filter(s=>s.ko!=='제주연동야시장')});
   S.patches.push('no-nightmarket');
 }
+/* one-time patch: IT654 on 11/17 delayed to 08:45 → 11:40 arrival; shift the whole first day */
+if(S.tripId===TRIP_ID&&!S.patches.includes('flight-delay')){
+  const d=S.days.find(x=>x.stops.some(s=>s.ko==='머니박스 제주지점'))||S.days[0];
+  const FIX={
+    '제주국제공항':['11:40','IT654 延後：08:45 起飛、11:40 抵達｜'+AIR_NOTE],
+    '롯데렌터카 제주오토하우스지점':['12:40',null,'班機延後，取車改約 12:40；原本預約 11:30，先打 064-751-8000 或用 App 通知樂天租車｜'],
+    '머니박스 제주지점':['13:00'],
+    '황궁쟁반짜장 탐라원 노형점':['13:20'],
+    '오드랑베이커리':['14:30','停留約 20 分｜外帶大蒜麵包、蛋塔｜約 07:00–22:00'],
+    '함덕해수욕장':['14:50','停留約 20 分｜看海、吃麵包；海風強，帶防風外套'+HD_RAIN],
+    '동문재래시장':['14:50',null,'下雨就吃完午餐直接來，車程約 10 分｜'],
+    '스누피가든':['15:40','停留約 1 小時 50 分｜冬季 09:00–18:00，17:00 截止入場，一定要在 17:00 前到'],
+    '금돗 성산흑돼지':['18:00',null,'班機延後，晚餐改 18:00；已經訂位的話記得到 NAVER 改時間｜'],
+    '더퍼스트70호텔':['20:30']};
+  if(d){d.stops.forEach(s=>{const f=FIX[s.ko];if(!f)return;
+      if(s.ko==='더퍼스트70호텔'&&!(s.zh||'').includes('第 1 晚'))return;
+      if(s.ko==='롯데렌터카 제주오토하우스지점'&&!(s.zh||'').includes('取車'))return;
+      s.time=f[0];if(f[1])s.note=f[1];if(f[2]&&!(s.note||'').startsWith(f[2]))s.note=f[2]+(s.note||'')});
+    d.stops.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0)}
+  S.patches.push('flight-delay');
+}
 S.days.forEach(d=>d.stops.forEach(s=>{const c=CONTACT[s.ko];if(c){if(!s.tel&&c[0])s.tel=c[0];if(!s.addr)s.addr=c[1]}}));
 save();
 const $=id=>document.getElementById(id);
