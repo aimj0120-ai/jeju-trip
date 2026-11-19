@@ -613,6 +613,7 @@ const GYEONGMI=()=>st('10:15','경미네집','京美家（點心・海鮮泡麵�
 const SNOOPY19=()=>st('15:35','스누피가든','Snoopy Garden',33.4447,126.7797,'停留約 1 小時 50 分｜冬季 09:00–18:00，17:00 截止入場｜萬丈窟開過來約 20 分鐘，逛完開回濟州市飯店約 35 分鐘');
 const BONTO=()=>st('12:45','제주본토박이감자탕','濟州土生馬鈴薯排骨湯（午餐）',33.49651,126.53391,'在地人排隊的馬鈴薯排骨湯（감자탕）｜小 ₩30,000、中 ₩35,000、大 ₩40,000，3–4 人點中或大，最後加炒飯 ₩3,000｜11:00–21:00，15:00–17:00 休息｜店旁 3–4 個車位，滿了停走路 1 分鐘的公營停車場｜9.81 Park 開過來約 25 分鐘（下雨從東門市場約 4 分鐘），吃完開到 Magpie 約 10 分鐘');
 const DONGMUN20=()=>Object.assign(st('10:00','동문재래시장','東門市場（雨備）',33.51278,126.52830,'下雨、9.81 Park 戶外賽車停開就改來這裡｜有屋頂，08:00–21:00｜飯店開過來約 4 分鐘，停東門公營停車場｜逛到 12:30 左右，開 4 分鐘去吃午餐｜12:45 還要吃馬鈴薯排骨湯，市場裡別吃太飽'),{alt:true});
+const SBHAMDEOK=()=>st('16:10','스타벅스 제주함덕해변점','星巴克 咸德海邊店（看海咖啡）',33.54250,126.66898,'咸德海水浴場正前方的星巴克，看海、等夕陽（11 月約 17:20 日落）｜07:00–22:00｜店小座位擠，人多時飲料要等 10–20 分鐘｜車停咸德舊國小公營停車場（免費），晚餐走路約 5 分鐘到咸德酒幕，不用移車｜不想去星巴克，可以看下方另外 3 家');
 const HAEMUL=()=>st('18:30','삼성혈해물탕 서귀포점','三姓穴海鮮湯 西歸浦店（晚餐・海鮮湯）',33.24881,126.51424,'海鮮湯（해물탕）現煮：鮑魚、章魚、扇貝、花蟹，煮到最後加拉麵｜3 人點中份 ₩80,000，小份 ₩60,000 有人嫌少｜10:30–21:50，最後點餐約 20:50｜店旁空地免費停車，從飯店開車約 7 分鐘');
 const DAKSUIL=()=>st('20:30','제주스럽닭 서귀포올레점','濟州風味雞 偶來市場店（宵夜・炸雞）',33.24428,126.56258,'招牌 댕귤치킨（橘子炸雞）₩24,900，辣的 핫댕귤치킨 評價更好｜離飯店約 500 m，放好車走路過去｜平日 12:30–00:30、週末 14:00–00:30｜Kakao ★4.2｜可內用也可外帶');
 const MONEYBOX=()=>st('12:15','머니박스 제주지점','Money Box 濟州店（換錢）',33.48595,126.48248,'取車後先來換韓元，帶台幣千元鈔｜停留約 15 分鐘｜週一～六 10:00–21:00、週日 10:00–18:00');
@@ -655,6 +656,7 @@ const TRIP={tripId:TRIP_ID,sample:false,activeDay:0,patches:['moneybox','hotel-s
   DONGMUN20(),
   BONTO(),
   st('14:00','맥파이 브루어리 탭룸','Magpie Brewery & Taproom',33.50465,126.61338,'1.5–2 小時｜週三至週日 12:00–20:00｜要喝酒請指定駕駛或搭計程車'),
+  SBHAMDEOK(),
   HDJUMAK(),
   st('20:00','제주노블레스관광호텔','濟州貴族酒店（第 2 晚）',JJN[0],JJN[1],'要喝 Magpie 的話，車先停回飯店再搭計程車'),
   MYOHAM()]},
@@ -691,6 +693,7 @@ const CONTACT={
  '제주우대 노형본점':['0503-7153-1429','제주시 노연로 39'],
  '삼대국수회관 본점':['064-759-6645','제주시 삼성로 41'],
  '제주본토박이감자탕':['064-755-1018','제주시 오복1길 14-1'],
+ '스타벅스 제주함덕해변점':['1522-3232','제주시 조천읍 조함해안로 526'],
  '함덕주막':['0502-5551-1619','제주시 조천읍 함덕로 20'],
  '황궁쟁반짜장 탐라원 노형점':['064-749-6644','제주시 원노형6길 7'],
  '제주스럽닭 서귀포올레점':['064-763-8110','서귀포시 태평로 396'],
@@ -728,6 +731,10 @@ const REVIEWS={
  '제주우대 노형본점':{r:'4.8',n:42,lv:'good',good:['韓牛우대갈비先用稻草煙燻，店員全程幫烤，煙燻香很明顯','推薦調味우대갈비、生拌牛肉（육회）、雪花冷麵（눈꽃냉면），最後一定要點蘿蔔泡菜炒飯','附的牛肉蘿蔔湯免費，小菜都自己做；店內乾淨、店員親切，有評論說帶長輩來很適合'],bad:['少數人說生牛肋偏韌，調味的比較好吃','評論只有 42 則、好評很一致，有一則懷疑灌水','熱門時段要排隊，建議先預約']},
  '삼대국수회관 본점':{r:'3.4',n:285,lv:'mixed',good:['돔베고기（白切黑豬肉）評價最好', '湯頭濃、份量大；營業到深夜，店大不太要排，停車方便', '餃子、拌麵也有人推'],bad:['不少人說湯和麵「分家」、肉乾柴', '湯麵預設會加辣醬，不要辣要先說', '評價很兩極，當宵夜吃吃看就好']},
  '제주본토박이감자탕':{r:'4.6',n:30,lv:'good',good:['在地人說是這一帶最好吃的馬鈴薯排骨湯，常要排隊','小份就有約 9 塊排骨，蔬菜很多','老闆親切，最後加炒飯'],bad:['停車位少，附近公營停車場要走一下','15:00–17:00 休息，太晚到會吃不到']},
+ '스타벅스 제주함덕해변점':{r:'3.8',n:29,lv:'mixed',good:["正對咸德海灘，視野開闊，傍晚看夕陽很漂亮", "可以請店員把熱可可做少甜一點"],bad:["店面小、桌子很擠，人多時飲料要等 10–20 分鐘", "冬天靠窗有點冷"]},
+ '슬며시':{r:'4.9',n:34,lv:'good',good:["在 5 樓，咸德海景一覽無遺", "카이막（土耳其奶油）配麵包被很多人說是「人生카이막」", "人少安靜、音樂不吵，咖啡好喝"],bad:["有人覺得카이막普通"]},
+ '멜츠인빌리지':{r:'4.7',n:74,lv:'good',good:["看得到整片咸德海灘", "巧克力餅乾、卡布奇諾好吃，椅子大又舒服"],bad:["廚房餐具聲有點吵", "鷹嘴豆泥拼盤的蔬菜和餅端上來是冷的"]},
+ '스타벅스 제주용담DT점':{r:'3.8',n:132,lv:'mixed',good:["機場旁海岸路，看得到海和飛機起降", "在飯店一樓，沙發座位寬敞，停車 20 格以上"],bad:["有評論說咖啡普通、出餐慢", "飛機噪音"]},
  '함덕주막':{r:'4.7',n:22,lv:'good',good:['下酒菜份量超大，海鮮泡菜煎餅「像臉盆一樣」', '推薦海鮮煎餅、牛肉煎（육전）、辣炒豬肉豆腐泡菜、甜蝦海鮮煎', '老闆娘非常親切，附的小菜（豬頭肉、蕨菜）也好吃'],bad:['生馬格利偏淡，可以改點冬冬酒（동동주）', '牛肉蘿蔔湯普通']},
  '삼성혈해물탕 서귀포점':{r:'4.6',n:174,lv:'good',good:['海鮮很新鮮，鮑魚、章魚上桌還在動','湯頭清爽不死鹹，越煮越入味，最後加拉麵','老闆親切，店面乾淨，停車方便'],bad:['有人嫌小份 ₩60,000 海鮮少、豆芽多，3 人點中份比較保險','中國觀光客多，有在地人覺得是觀光客取向']},
  '제주스럽닭 서귀포올레점':{r:'4.2',n:58,lv:'good',good:['招牌橘子炸雞（댕귤）、黑得像玄武岩的까망炸雞；辣味핫댕귤最多人推', '蒜味（마농）、花生（우땅）口味也有人大推；配청귤啤酒', '老闆很親切，內用比外帶更酥脆'],bad:['營業時間不太準：有人遇到 3 點才開、11 點就關，傍晚去比較保險', '少數人覺得普通「吃一次就好」', '生蒜口味很嗆']},
@@ -755,6 +762,7 @@ const REVIEWS={
 const HAMDEOK={ko:'함덕국민학교옛터 공영주차장',zh:'咸德舊國小公營停車場',lat:33.54232,lng:126.66843,addr:'제주시 조천읍 함덕리 1004-3',fee:'免費'};
 const HANDAM={ko:'한담공원 무료주차장',zh:'漢潭公園免費停車場',lat:33.45960,lng:126.31104,addr:'제주시 애월읍 애월리 2459-1',fee:'免費'};
 const PARK={
+ '스타벅스 제주함덕해변점':{...HAMDEOK,walk:60,tip:'星巴克門口車位很少，停這個免費公營停車場；晚餐咸德酒幕走路約 5 分鐘，不用移車。'},
  '제주본토박이감자탕':{ko:'제주본토박이감자탕',zh:'店旁專用停車位',lat:33.49651,lng:126.53391,addr:'제주시 오복1길 14-1',fee:'免費（3–4 格）',walk:0,tip:'Kakao 資料：店旁專用車位只有 3–4 格，滿了就停走路約 1 分鐘的公營停車場。'},
  '동문재래시장':{ko:'동문공영주차장',zh:'東門公營停車場',lat:33.51206,lng:126.52860,addr:'제주시 동문로4길 9',fee:'公營，收費',walk:85,tip:'評論說市場周邊很難停；這個最近，滿了就停 제주동문재래시장 공영주차장（중앙로13길 16-8，約 300 m）。'},
  '롯데마트 제주점':{ko:'롯데마트 제주점 주차장',zh:'樂天超市附設停車場',lat:33.48243,lng:126.48185,addr:'제주시 연북로 1',fee:'收費（消費後通常可折抵，結帳時問櫃台）',walk:0,tip:'評論說停車場動線亂、沒有人指揮，進出要慢慢開。旁邊約 300 m 的 E-mart 新濟州店（제주시 1100로 3348）也可以順便比價。'},
@@ -808,7 +816,8 @@ const NEARBY=[
 const RESERVE={'금돗 성산흑돼지':[
   {label:'NAVER 預約',url:'https://map.naver.com/p/search/'+encodeURIComponent('금돗 성산흑돼지'),hint:'打開後點店家，再按「예약」選日期、時間、人數'},
   {label:'Tabling 遠端排隊',url:'https://www.tabling.co.kr/restaurant/7273',hint:'沒訂到位時，到附近再用 Tabling 線上排隊'}]};
-const MUSTEAT={'동문재래시장':[
+const MUSTEAT={'스타벅스 제주함덕해변점':Object.assign([{zh:"슬며시（悄悄）・咸德 5 樓海景",ko:"슬며시",tel:"0503-7152-7529",id:335243253,lat:33.54332,lng:126.67278,note:"Kakao ★4.9｜5 樓海景、安靜，招牌카이막配麵包｜10:00–19:00，免費停車｜走路到咸德酒幕約 3 分鐘"},{zh:"Melts in Village・咸德海灘旁",ko:"멜츠인빌리지",tel:"064-784-9176",id:488158041,lat:33.54256,lng:126.6653,note:"Kakao ★4.7｜看整片咸德海灘的早午餐咖啡廳，推巧克力餅乾、卡布奇諾｜08:00–20:00，免費停車｜開到咸德酒幕約 3 分鐘"},{zh:"星巴克 濟州龍潭 DT 店（濟州市）",ko:"스타벅스 제주용담DT점",tel:"1522-3232",id:26102947,lat:33.51249,lng:126.48448,note:"Kakao ★3.8｜機場旁海岸路，看海也看飛機｜07:00–22:00，免費停車 20 格以上｜離飯店近，適合下雨逛完東門市場、或晚上回飯店後再去"}],{title:'也可以改去這幾家（擇一）'}),
+'동문재래시장':[
   {zh:'東進食堂 豬肉湯麵',ko:'동진식당',tel:'0507-1431-0427',id:9797621,note:'1965 年老店，고기국수湯頭清爽、肉很多，也推拌麵｜08:00–19:00'}],
 '서귀포매일올레시장':[
   {zh:'名不虛傳血腸豬腳',ko:'소문난순대족발',tel:'064-767-3690',id:9151351,note:'豬腳 ₩22,000 那份 3 人吃不完，血腸選有內臟的，完全不腥｜只能外帶'},
@@ -829,6 +838,7 @@ const LINKS={
  '제주우대 노형본점':{yt:'제주우대 노형 우대갈비',a:[['Kakao 店家頁','https://place.map.kakao.com/459856981']]},
  '삼대국수회관 본점':{yt:'濟州 三代麵條會館',a:[['Kakao 店家頁','https://place.map.kakao.com/1027828348']]},
  '제주본토박이감자탕':{yt:'제주 본토박이감자탕',a:[['Kakao 店家頁','https://place.map.kakao.com/10806112']]},
+ '스타벅스 제주함덕해변점':{yt:'함덕 스타벅스 해변점',a:[['Kakao 店家頁','https://place.map.kakao.com/640945310']]},
  '함덕주막':{yt:'咸德 함덕주막',a:[['Kakao 店家頁','https://place.map.kakao.com/1608295869']]},
  '동문재래시장':{yt:'濟州 東門市場 美食',a:[]},
  '롯데마트 제주점':{yt:'濟州 樂天超市 必買',a:[]},
@@ -1110,6 +1120,14 @@ if(S.tripId===TRIP_ID&&!S.patches.includes('no-aewol')){
     d.stops.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0)}
   S.patches.push('no-aewol');
 }
+/* one-time patch: 11/20 ocean-view coffee in Hamdeok between Magpie and dinner (other cafes listed under it) */
+if(S.tripId===TRIP_ID&&!S.patches.includes('cafe-1120')){
+  const d=S.days.find(x=>x.stops.some(s=>s.ko==='맥파이 브루어리 탭룸'));
+  if(d&&!d.stops.some(s=>s.ko==='스타벅스 제주함덕해변점')){
+    d.stops.push(SBHAMDEOK());
+    d.stops.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0)}
+  S.patches.push('cafe-1120');
+}
 S.days.forEach(d=>d.stops.forEach(s=>{const c=CONTACT[s.ko];if(c){if(!s.tel&&c[0])s.tel=c[0];if(!s.addr)s.addr=c[1]}}));
 save();
 const $=id=>document.getElementById(id);
@@ -1327,8 +1345,8 @@ function revHtml(s){const v=REVIEWS[s.ko];if(!v)return '';
 function reserveHtml(s){const v=RESERVE[s.ko];if(!v)return '';
   return `<div class="reserve"><b>預約</b>${v.map(r=>`<div class="rsv-item"><a class="btn small naver" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.label)}</a><span>${esc(r.hint)}</span></div>`).join('')}</div>`}
 function mustHtml(s){const v=MUSTEAT[s.ko];if(!v)return '';
-  return `<div class="must"><b>必吃清單</b>${v.map(m=>`<div class="must-item"><div><b>${esc(m.zh)}</b> <small lang="ko">${esc(m.ko)}</small></div><div class="must-note">${esc(m.note)}</div>${revHtml({ko:m.ko})}
-    <div class="actions">${m.tel?`<a class="btn small" href="tel:${esc(m.tel.replace(/[^\d]/g,''))}">${esc(m.tel)}</a>`:''}${m.id?`<a class="btn small ghost" href="https://place.map.kakao.com/${m.id}" target="_blank" rel="noopener">Kakao 店家頁</a>`:''}</div></div>`).join('')}</div>`}
+  return `<div class="must"><b>${esc(v.title||'必吃清單')}</b>${v.map(m=>`<div class="must-item"><div><b>${esc(m.zh)}</b> <small lang="ko">${esc(m.ko)}</small></div><div class="must-note">${esc(m.note)}</div>${revHtml({ko:m.ko})}
+    <div class="actions">${m.tel?`<a class="btn small" href="tel:${esc(m.tel.replace(/[^\d]/g,''))}">${esc(m.tel)}</a>`:''}${m.lat?`<a class="btn small" href="${esc(nmapRoute('car',null,{lat:m.lat,lng:m.lng,ko:m.ko}))}">導航</a>`:''}${m.id?`<a class="btn small ghost" href="https://place.map.kakao.com/${m.id}" target="_blank" rel="noopener">Kakao 店家頁</a>`:''}</div></div>`).join('')}</div>`}
 function linkHtml(s){const v=LINKS[s.ko];if(!v)return '';
   const yt=`https://www.youtube.com/results?search_query=${encodeURIComponent(v.yt)}`;
   return `<div class="reads"><span>看介紹</span>${v.a.map(([t,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>`).join('')}<a class="yt" href="${esc(yt)}" target="_blank" rel="noopener">▶ YouTube 影片</a></div>`}
@@ -1359,7 +1377,7 @@ const ICON={
  noodle:'<path d="M4 16h24a12 10 0 0 1-24 0z" fill="#fff" stroke="#45444b" stroke-width="1.6"/><path d="M9 16c1-4 3-4 4 0M14 16c1-4 3-4 4 0M19 16c1-4 3-4 4 0" stroke="#e9b53b" stroke-width="1.6" fill="none"/><path d="M20 3l-6 12M25 4l-8 11" stroke="#7a5a3a" stroke-width="1.6" stroke-linecap="round"/><rect x="12" y="17" width="7" height="3" rx="1" fill="#e5698a"/>',
  chicken:'<path d="M20 4c5 0 8 4 7 9-1 6-7 8-11 7l-5 5" fill="none"/><path d="M19 3c6 0 9 5 8 10-1 6-8 9-13 7z" fill="#d99a4e"/><path d="M15 18l-7 7" stroke="#f2e4c1" stroke-width="3.4" stroke-linecap="round"/><circle cx="6.5" cy="26.5" r="2.6" fill="#f2e4c1"/><circle cx="9" cy="28.5" r="2.2" fill="#f2e4c1"/><circle cx="22" cy="10" r="2.2" fill="#f39246"/>',
  pin:'<path d="M16 29s-9-9-9-15a9 9 0 0 1 18 0c0 6-9 15-9 15z" fill="#d2600a"/><circle cx="16" cy="14" r="3.6" fill="#fff"/>'};
-const ICON_OF={'제주국제공항':'plane','제주본토박이감자탕':'noodle','경미네집':'noodle','삼성혈해물탕 서귀포점':'fish','머니박스 제주지점':'money','오드랑베이커리':'bread','함덕해수욕장':'beach','스누피가든':'flower','더퍼스트70호텔':'bed','제주노블레스관광호텔':'bed','정방폭포':'fall','천지연폭포':'fall','서귀포매일올레시장':'market','중문대포해안주상절리대':'columns','이중섭거리':'palette','성산일출봉':'peak','제주해녀박물관':'diver','런던베이글뮤지엄 제주점':'bagel','만장굴':'cave','9.81파크':'kart','애월 카페거리':'coffee','한담해안산책로':'walk','맥파이 브루어리 탭룸':'beer','렌터카 반납':'car','롯데렌터카 제주오토하우스지점':'car','롯데마트 제주점':'cart','동문재래시장':'market','금돗 성산흑돼지':'bbq','중문색달통갈치':'fish','제주우대 노형본점':'bbq','삼대국수회관 본점':'noodle','함덕주막':'beer','황궁쟁반짜장 탐라원 노형점':'noodle','제주스럽닭 서귀포올레점':'chicken','안녕전복':'fish','언덕집국수':'noodle','대춘해장국 노형점':'noodle','제주연동야시장':'market','묘함':'beer','노도고등어회':'fish'};
+const ICON_OF={'제주국제공항':'plane','스타벅스 제주함덕해변점':'coffee','제주본토박이감자탕':'noodle','경미네집':'noodle','삼성혈해물탕 서귀포점':'fish','머니박스 제주지점':'money','오드랑베이커리':'bread','함덕해수욕장':'beach','스누피가든':'flower','더퍼스트70호텔':'bed','제주노블레스관광호텔':'bed','정방폭포':'fall','천지연폭포':'fall','서귀포매일올레시장':'market','중문대포해안주상절리대':'columns','이중섭거리':'palette','성산일출봉':'peak','제주해녀박물관':'diver','런던베이글뮤지엄 제주점':'bagel','만장굴':'cave','9.81파크':'kart','애월 카페거리':'coffee','한담해안산책로':'walk','맥파이 브루어리 탭룸':'beer','렌터카 반납':'car','롯데렌터카 제주오토하우스지점':'car','롯데마트 제주점':'cart','동문재래시장':'market','금돗 성산흑돼지':'bbq','중문색달통갈치':'fish','제주우대 노형본점':'bbq','삼대국수회관 본점':'noodle','함덕주막':'beer','황궁쟁반짜장 탐라원 노형점':'noodle','제주스럽닭 서귀포올레점':'chicken','안녕전복':'fish','언덕집국수':'noodle','대춘해장국 노형점':'noodle','제주연동야시장':'market','묘함':'beer','노도고등어회':'fish'};
 const stopIcon=s=>`<svg viewBox="0 0 32 32">${ICON[ICON_OF[s.ko]||'pin']}</svg>`;
 function parkHtml(s){const p=PARK[s.ko];if(!p)return '';
   const walk=p.walk?`步行約 ${Math.max(1,Math.round(p.walk/70))} 分鐘（${p.walk} m）`:'就在旁邊';
